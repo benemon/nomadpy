@@ -1,0 +1,106 @@
+{
+  "_": "Every deliberate gap between the pinned Go api surface and nomadpy, with its reason. tests/test_drift.py fails on any gap not listed here and on any entry that is no longer a gap.",
+  "files": {
+    "acl.go": "pn-tsu",
+    "agent.go": "pn-cq8",
+    "allocations.go": "pn-qqa",
+    "allocations_exec.go": "pn-k6m",
+    "constraint.go": "pn-txy",
+    "consul.go": "pn-txy",
+    "csi.go": "pn-8nl",
+    "event_stream.go": "pn-gq4",
+    "fs.go": "pn-09z",
+    "host_volume_claims.go": "pn-8nl",
+    "host_volumes.go": "pn-8nl",
+    "ioutil.go": "internal io helpers",
+    "keyring.go": "pn-9sw",
+    "locks.go": "pn-9sw",
+    "namespace.go": "pn-ehx",
+    "node_identity.go": "pn-79x",
+    "node_meta.go": "pn-79x",
+    "node_pools.go": "pn-e9y",
+    "nodes.go": "pn-79x",
+    "operator.go": "pn-d1r",
+    "operator_autopilot.go": "pn-d1r",
+    "operator_metrics.go": "pn-d1r",
+    "quota.go": "pn-966",
+    "raw.go": "raw queries, not ported with the foundation",
+    "recommendations.go": "pn-9u3",
+    "resources.go": "pn-txy",
+    "retry.go": "retry layer, not ported with the foundation",
+    "scaling.go": "pn-9u3",
+    "search.go": "pn-b54",
+    "sentinel.go": "pn-d2t",
+    "services.go": "pn-b54",
+    "system.go": "pn-b54",
+    "task_sched.go": "pn-txy",
+    "tasks.go": "pn-txy",
+    "utils.go": "internal helpers",
+    "variables.go": "pn-9xn"
+  },
+  "receivers": {
+    "UnexpectedResponseError": "Go accessor methods are plain attributes on the Python exception"
+  },
+  "methods": {
+    "Client.Close": "urllib opens a connection per request; nothing to close",
+    "Client.GetNodeClient": "node clients, not ported with the foundation",
+    "Client.GetNodeClientWithTimeout": "node clients, not ported with the foundation",
+    "Jobs.ActionExec": "pn-k6m",
+    "Jobs.EnforceRegister": {"folded": "register"},
+    "Jobs.EvaluateWithOpts": {"folded": "force_evaluate"},
+    "Jobs.ListOptions": {"folded": "list"},
+    "Jobs.ScaleWithRequest": "scale builds the ScalingRequest from its arguments; pn-9u3 revisits with scaling.go"
+  },
+  "structs": {
+    "api.go": {
+      "Client": "hand-mapped foundation",
+      "Config": "hand-mapped foundation",
+      "HttpBasicAuth": "hand-mapped foundation",
+      "QueryMeta": "hand-mapped foundation",
+      "QueryOptions": "hand-mapped foundation",
+      "TLSConfig": "hand-mapped foundation",
+      "WriteMeta": "hand-mapped foundation",
+      "WriteOptions": "hand-mapped foundation"
+    },
+    "jobs.go": {
+      "DesiredUpdates": "plan annotations stay a dict",
+      "FieldDiff": "diffs stay dicts",
+      "Job": "pn-3q6",
+      "JobDeregisterResponse": "flattened to the eval id",
+      "JobDiff": "diffs stay dicts",
+      "JobListFields": "folded into list(meta=)",
+      "JobSubmission": "pn-3q6",
+      "JobSubmissionResponse": "flattened to the submission dict",
+      "JobUIConfig": "pn-3q6",
+      "JobUILink": "pn-3q6",
+      "JobVersionTag": "pn-3q6",
+      "JobVersionsResponse": "flattened to (versions, diffs)",
+      "Multiregion": "pn-3q6",
+      "MultiregionRegion": "pn-3q6",
+      "MultiregionStrategy": "pn-3q6",
+      "ObjectDiff": "diffs stay dicts",
+      "ParameterizedJobConfig": "pn-3q6",
+      "PeriodicConfig": "pn-3q6",
+      "PlanAnnotations": "plan annotations stay a dict",
+      "TaskDiff": "diffs stay dicts",
+      "TaskGroupDiff": "diffs stay dicts",
+      "UpdateStrategy": "pn-3q6"
+    },
+    "evaluations.go": {
+      "EvalCountResponse": "flattened to an int",
+      "EvalDeleteResponse": "flattened to an int"
+    },
+    "deployments.go": {
+      "SingleDeploymentResponse": "not used by any Go method"
+    }
+  },
+  "consts": {
+    "api.go": {
+      "PermissionDeniedErrorContent": "no Python caller inspects error text",
+      "ResultPaginatorErrorContent": "no Python caller inspects error text"
+    },
+    "jobs.go": {
+      "RegisterEnforceIndexErrPrefix": "no Python caller inspects error text"
+    }
+  }
+}

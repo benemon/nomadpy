@@ -1,0 +1,1333 @@
+{
+  "module": "github.com/hashicorp/nomad/api",
+  "version": "v0.0.0-20261013065900-bf24b0dd9743",
+  "requests": [
+    {
+      "op": "status.leader",
+      "method": "GET",
+      "path": "/v1/status/leader",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "\"\""
+    },
+    {
+      "op": "status.region_leader",
+      "method": "GET",
+      "path": "/v1/status/leader",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "eu"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "\"\""
+    },
+    {
+      "op": "status.peers",
+      "method": "GET",
+      "path": "/v1/status/peers",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "regions.list",
+      "method": "GET",
+      "path": "/v1/regions",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.parse_hcl",
+      "method": "PUT",
+      "path": "/v1/jobs/parse",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Canonicalize": true,
+        "JobHCL": "job {}",
+        "Variables": "n = 3"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.validate",
+      "method": "PUT",
+      "path": "/v1/validate/job",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "Job": {
+          "Affinities": null,
+          "AllAtOnce": null,
+          "Constraints": null,
+          "ConsulNamespace": null,
+          "CreateIndex": null,
+          "Datacenters": null,
+          "DispatchIdempotencyToken": null,
+          "Dispatched": false,
+          "ID": "j1",
+          "JobModifyIndex": null,
+          "Meta": null,
+          "Migrate": null,
+          "ModifyIndex": null,
+          "Multiregion": null,
+          "Name": "j1",
+          "Namespace": null,
+          "NodePool": null,
+          "NomadTokenID": null,
+          "ParameterizedJob": null,
+          "ParentID": null,
+          "Payload": null,
+          "Periodic": null,
+          "Priority": null,
+          "Region": null,
+          "Reschedule": null,
+          "Spreads": null,
+          "Stable": null,
+          "Status": null,
+          "StatusDescription": null,
+          "Stop": null,
+          "SubmitTime": null,
+          "TaskGroups": null,
+          "Type": null,
+          "UI": null,
+          "Update": null,
+          "VaultNamespace": null,
+          "Version": null,
+          "VersionTag": null
+        },
+        "Namespace": "",
+        "Region": "r1",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.register",
+      "method": "PUT",
+      "path": "/v1/jobs",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Job": {
+          "Affinities": null,
+          "AllAtOnce": null,
+          "Constraints": null,
+          "ConsulNamespace": null,
+          "CreateIndex": null,
+          "Datacenters": null,
+          "DispatchIdempotencyToken": null,
+          "Dispatched": false,
+          "ID": "j1",
+          "JobModifyIndex": null,
+          "Meta": null,
+          "Migrate": null,
+          "ModifyIndex": null,
+          "Multiregion": null,
+          "Name": "j1",
+          "Namespace": null,
+          "NodePool": null,
+          "NomadTokenID": null,
+          "ParameterizedJob": null,
+          "ParentID": null,
+          "Payload": null,
+          "Periodic": null,
+          "Priority": null,
+          "Region": null,
+          "Reschedule": null,
+          "Spreads": null,
+          "Stable": null,
+          "Status": null,
+          "StatusDescription": null,
+          "Stop": null,
+          "SubmitTime": null,
+          "TaskGroups": null,
+          "Type": null,
+          "UI": null,
+          "Update": null,
+          "VaultNamespace": null,
+          "Version": null,
+          "VersionTag": null
+        },
+        "Namespace": "",
+        "Region": "",
+        "SecretID": "",
+        "Submission": null
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.register_opts",
+      "method": "PUT",
+      "path": "/v1/jobs",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "EnforceIndex": true,
+        "EvalPriority": 50,
+        "Job": {
+          "Affinities": null,
+          "AllAtOnce": null,
+          "Constraints": null,
+          "ConsulNamespace": null,
+          "CreateIndex": null,
+          "Datacenters": null,
+          "DispatchIdempotencyToken": null,
+          "Dispatched": false,
+          "ID": "j1",
+          "JobModifyIndex": null,
+          "Meta": null,
+          "Migrate": null,
+          "ModifyIndex": null,
+          "Multiregion": null,
+          "Name": "j1",
+          "Namespace": null,
+          "NodePool": null,
+          "NomadTokenID": null,
+          "ParameterizedJob": null,
+          "ParentID": null,
+          "Payload": null,
+          "Periodic": null,
+          "Priority": null,
+          "Region": null,
+          "Reschedule": null,
+          "Spreads": null,
+          "Stable": null,
+          "Status": null,
+          "StatusDescription": null,
+          "Stop": null,
+          "SubmitTime": null,
+          "TaskGroups": null,
+          "Type": null,
+          "UI": null,
+          "Update": null,
+          "VaultNamespace": null,
+          "Version": null,
+          "VersionTag": null
+        },
+        "JobModifyIndex": 7,
+        "Namespace": "",
+        "PolicyOverride": true,
+        "PreserveCounts": true,
+        "PreserveResources": true,
+        "Region": "",
+        "SecretID": "",
+        "Submission": {
+          "Format": "hcl2",
+          "Source": "job {}",
+          "VariableFlags": null,
+          "Variables": ""
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.list",
+      "method": "GET",
+      "path": "/v1/jobs",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.list_query_opts",
+      "method": "GET",
+      "path": "/v1/jobs",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.list_meta",
+      "method": "GET",
+      "path": "/v1/jobs",
+      "query": {
+        "meta": [
+          "true"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.prefix_list",
+      "method": "GET",
+      "path": "/v1/jobs",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.info",
+      "method": "GET",
+      "path": "/v1/job/j 1/x",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.scale",
+      "method": "PUT",
+      "path": "/v1/job/j1/scale",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "Count": 2,
+        "Error": true,
+        "JobModifyIndex": 0,
+        "Message": "msg",
+        "Meta": {
+          "k": "v"
+        },
+        "Namespace": "",
+        "PolicyOverride": false,
+        "Region": "",
+        "SecretID": "",
+        "Target": {
+          "Group": "g",
+          "Job": "j1"
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.scale_status",
+      "method": "GET",
+      "path": "/v1/job/j1/scale",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.versions",
+      "method": "GET",
+      "path": "/v1/job/j1/versions",
+      "query": {
+        "diffs": [
+          "true"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.versions_opts",
+      "method": "GET",
+      "path": "/v1/job/j1/versions",
+      "query": {
+        "diff_tag": [
+          "t"
+        ],
+        "diff_version": [
+          "3"
+        ],
+        "diffs": [
+          "false"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.submission",
+      "method": "GET",
+      "path": "/v1/job/j1/submission",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ],
+        "version": [
+          "2"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.allocations",
+      "method": "GET",
+      "path": "/v1/job/j1/allocations",
+      "query": {
+        "all": [
+          "true"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.deployments",
+      "method": "GET",
+      "path": "/v1/job/j1/deployments",
+      "query": {
+        "all": [
+          "true"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.latest_deployment",
+      "method": "GET",
+      "path": "/v1/job/j1/deployment",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.evaluations",
+      "method": "GET",
+      "path": "/v1/job/j1/evaluations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.deregister",
+      "method": "DELETE",
+      "path": "/v1/job/j1",
+      "query": {
+        "eval_priority": [
+          "9"
+        ],
+        "global": [
+          "true"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "no_shutdown_delay": [
+          "true"
+        ],
+        "purge": [
+          "true"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.force_evaluate",
+      "method": "PUT",
+      "path": "/v1/job/j1/evaluate",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "EvalOptions": {
+          "ForceReschedule": true
+        },
+        "JobID": "j1",
+        "Namespace": "",
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.periodic_force",
+      "method": "PUT",
+      "path": "/v1/job/j1/periodic/force",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.plan",
+      "method": "PUT",
+      "path": "/v1/job/j1/plan",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Diff": true,
+        "Job": {
+          "Affinities": null,
+          "AllAtOnce": null,
+          "Constraints": null,
+          "ConsulNamespace": null,
+          "CreateIndex": null,
+          "Datacenters": null,
+          "DispatchIdempotencyToken": null,
+          "Dispatched": false,
+          "ID": "j1",
+          "JobModifyIndex": null,
+          "Meta": null,
+          "Migrate": null,
+          "ModifyIndex": null,
+          "Multiregion": null,
+          "Name": "j1",
+          "Namespace": null,
+          "NodePool": null,
+          "NomadTokenID": null,
+          "ParameterizedJob": null,
+          "ParentID": null,
+          "Payload": null,
+          "Periodic": null,
+          "Priority": null,
+          "Region": null,
+          "Reschedule": null,
+          "Spreads": null,
+          "Stable": null,
+          "Status": null,
+          "StatusDescription": null,
+          "Stop": null,
+          "SubmitTime": null,
+          "TaskGroups": null,
+          "Type": null,
+          "UI": null,
+          "Update": null,
+          "VaultNamespace": null,
+          "Version": null,
+          "VersionTag": null
+        },
+        "Namespace": "",
+        "PolicyOverride": true,
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.summary",
+      "method": "GET",
+      "path": "/v1/job/j1/summary",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "jobs.dispatch",
+      "method": "PUT",
+      "path": "/v1/job/j1/dispatch",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "IdPrefixTemplate": "pfx",
+        "JobID": "j1",
+        "Meta": {
+          "k": "v"
+        },
+        "Payload": "AGhlbGxv",
+        "Priority": 3
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.revert",
+      "method": "PUT",
+      "path": "/v1/job/j1/revert",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "EnforcePriorVersion": 5,
+        "JobID": "j1",
+        "JobVersion": 4,
+        "Namespace": "",
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.stable",
+      "method": "PUT",
+      "path": "/v1/job/j1/stable",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "JobID": "j1",
+        "JobVersion": 4,
+        "Namespace": "",
+        "Region": "",
+        "SecretID": "",
+        "Stable": true
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.services",
+      "method": "GET",
+      "path": "/v1/job/j1/services",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "jobs.tag_version",
+      "method": "PUT",
+      "path": "/v1/job/j1/versions/golden/tag",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Description": "d",
+        "Latest": true,
+        "Namespace": "",
+        "Region": "",
+        "SecretID": "",
+        "Version": 4
+      },
+      "response": "{}"
+    },
+    {
+      "op": "jobs.untag_version",
+      "method": "DELETE",
+      "path": "/v1/job/j1/versions/golden/tag",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "evaluations.list",
+      "method": "GET",
+      "path": "/v1/evaluations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "evaluations.prefix_list",
+      "method": "GET",
+      "path": "/v1/evaluations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "evaluations.count",
+      "method": "GET",
+      "path": "/v1/evaluations/count",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "evaluations.info",
+      "method": "GET",
+      "path": "/v1/evaluation/e1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ],
+        "related": [
+          "true"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "evaluations.delete",
+      "method": "DELETE",
+      "path": "/v1/evaluations",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "EvalIDs": [
+          "e1",
+          "e2"
+        ],
+        "Filter": "f",
+        "Namespace": "",
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "evaluations.allocations",
+      "method": "GET",
+      "path": "/v1/evaluation/e1/allocations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "deployments.list",
+      "method": "GET",
+      "path": "/v1/deployments",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "deployments.prefix_list",
+      "method": "GET",
+      "path": "/v1/deployments",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "deployments.info",
+      "method": "GET",
+      "path": "/v1/deployment/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "deployments.allocations",
+      "method": "GET",
+      "path": "/v1/deployment/allocations/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "deployments.fail",
+      "method": "PUT",
+      "path": "/v1/deployment/fail/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "DeploymentID": "d1",
+        "Namespace": "",
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "deployments.pause",
+      "method": "PUT",
+      "path": "/v1/deployment/pause/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "DeploymentID": "d1",
+        "Namespace": "",
+        "Pause": true,
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "deployments.promote_all",
+      "method": "PUT",
+      "path": "/v1/deployment/promote/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "All": true,
+        "DeploymentID": "d1",
+        "Groups": null,
+        "Namespace": "",
+        "PromotedAt": 0,
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "deployments.promote_groups",
+      "method": "PUT",
+      "path": "/v1/deployment/promote/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "All": false,
+        "DeploymentID": "d1",
+        "Groups": [
+          "g1",
+          "g2"
+        ],
+        "Namespace": "",
+        "PromotedAt": 0,
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "deployments.unblock",
+      "method": "PUT",
+      "path": "/v1/deployment/unblock/d1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "DeploymentID": "d1",
+        "Namespace": "",
+        "Region": "",
+        "SecretID": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "deployments.set_alloc_health",
+      "method": "PUT",
+      "path": "/v1/deployment/allocation-health/d1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "DeploymentID": "d1",
+        "HealthyAllocationIDs": [
+          "a1"
+        ],
+        "Namespace": "",
+        "Region": "",
+        "SecretID": "",
+        "UnhealthyAllocationIDs": [
+          "a2"
+        ]
+      },
+      "response": "{}"
+    }
+  ]
+}

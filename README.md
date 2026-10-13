@@ -24,3 +24,24 @@ are no defaults, and a lane whose variables are unset is skipped.
 pip install -e .[dev]
 NOMADPY_TEST_CE_BIN=$(which nomad) pytest
 ```
+
+## Drift guard
+
+`oracle/` is a Go program that reads the pinned `github.com/hashicorp/nomad/api`
+module and writes two fixtures: `surface.json`, the exported methods, struct
+fields and constants of every Go file, and `wire.json`, the HTTP requests the
+real Go client sends for a fixed table of calls. `tests/test_drift.py` holds
+the Python package to the surface and `tests/test_wire.py` replays the calls
+and compares the requests. Every deliberate gap is listed with its reason in
+`oracle/ledger.json`; anything else is drift and fails.
+
+The fixtures are committed, so the tests need only Python. Go is needed to
+regenerate them:
+
+```
+make oracle   # regenerate from the pinned version
+make bump     # move the pin to upstream main, then regenerate
+```
+
+After a bump, the failing drift tests are the list of what the port must
+catch up on.
