@@ -1,65 +1,9 @@
-import json
 import os
-import threading
-import urllib.parse
 from datetime import timedelta
-from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import pytest
 
 from nomadpy import Client, Config, HttpBasicAuth, QueryOptions, UnexpectedResponseError, WriteOptions, default_config
-
-
-class _Recorder(BaseHTTPRequestHandler):
-    """Records the last request and answers 200 with fixed Nomad metadata headers."""
-
-    last = None
-
-    def do_GET(self):
-        self._record()
-
-    def do_PUT(self):
-        self._record()
-
-    def do_POST(self):
-        self._record()
-
-    def do_DELETE(self):
-        self._record()
-
-    def _record(self):
-        length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(length) if length else b""
-        url = urllib.parse.urlsplit(self.path)
-        _Recorder.last = {
-            "method": self.command,
-            "path": url.path,
-            "query": urllib.parse.parse_qs(url.query, keep_blank_values=True),
-            "headers": dict(self.headers),
-            "body": json.loads(body) if body else None,
-        }
-        payload = b'{"ok": true}'
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(payload)))
-        self.send_header("X-Nomad-Index", "42")
-        self.send_header("X-Nomad-LastContact", "7")
-        self.send_header("X-Nomad-KnownLeader", "true")
-        self.send_header("X-Nomad-NextToken", "abc")
-        self.end_headers()
-        self.wfile.write(payload)
-
-    def log_message(self, *args):
-        pass
-
-
-@pytest.fixture
-def recorder():
-    server = HTTPServer(("127.0.0.1", 0), _Recorder)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    yield f"http://127.0.0.1:{server.server_port}"
-    server.shutdown()
 
 
 def test_default_config_reads_environment(monkeypatch):
@@ -112,14 +56,14 @@ def test_http_auth_without_password(monkeypatch):
 
 
 def test_query_encodes_options_and_parses_meta(recorder):
-    client = Client(Config(address=recorder, region="r0", namespace="ns0", secret_id="tok0",
+    client = Client(Config(address=recorder.address, region="r0", namespace="ns0", secret_id="tok0",
                            wait_time=timedelta(seconds=2), headers={"X-Custom": "1"}))
     q = QueryOptions(region="r1", namespace="ns1", allow_stale=True, wait_index=12,
                      wait_time=timedelta(seconds=1.5), prefix="p", filter="f == 1", per_page=5,
                      next_token="nt", reverse=True, params={"x": "y"}, headers={"H": "v"}, auth_token="tok1")
     resp, qm = client.query("/v1/jobs?extra=1", q)
     assert resp == {"ok": True}
-    last = _Recorder.last
+    last = recorder.last
     assert last["method"] == "GET"
     assert last["path"] == "/v1/jobs"
     assert last["query"] == {
@@ -138,19 +82,19 @@ def test_query_encodes_options_and_parses_meta(recorder):
 
 
 def test_query_uses_config_defaults(recorder):
-    client = Client(Config(address=recorder, region="r0", namespace="ns0", secret_id="tok0",
+    client = Client(Config(address=recorder.address, region="r0", namespace="ns0", secret_id="tok0",
                            wait_time=timedelta(seconds=2)))
     client.query("/v1/jobs")
-    last = _Recorder.last
+    last = recorder.last
     assert last["query"] == {"region": ["r0"], "namespace": ["ns0"], "wait": ["2000ms"]}
     assert last["headers"]["X-Nomad-Token"] == "tok0"
 
 
 def test_write_encodes_options_and_body(recorder):
-    client = Client(Config(address=recorder, secret_id="tok0"))
+    client = Client(Config(address=recorder.address, secret_id="tok0"))
     w = WriteOptions(region="r1", namespace="ns1", auth_token="tok1", idempotency_token="idem", headers={"H": "v"})
     resp, wm = client.put("/v1/namespace/x", {"Name": "x"}, w)
-    last = _Recorder.last
+    last = recorder.last
     assert last["method"] == "PUT"
     assert last["body"] == {"Name": "x"}
     assert last["query"] == {"region": ["r1"], "namespace": ["ns1"], "idempotency_token": ["idem"]}
@@ -160,29 +104,29 @@ def test_write_encodes_options_and_body(recorder):
     assert wm.request_time > timedelta(0)
 
     client.delete("/v1/namespace/x")
-    assert _Recorder.last["method"] == "DELETE"
-    assert _Recorder.last["body"] is None
+    assert recorder.last["method"] == "DELETE"
+    assert recorder.last["body"] is None
     client.post("/v1/jobs", {"Job": {}})
-    assert _Recorder.last["method"] == "POST"
+    assert recorder.last["method"] == "POST"
 
 
 def test_basic_auth_from_url_and_config(recorder):
-    host = recorder.removeprefix("http://")
+    host = recorder.address.removeprefix("http://")
     Client(Config(address=f"http://u:p@{host}")).query("/v1/jobs")
-    assert _Recorder.last["headers"]["Authorization"] == "Basic dTpw"
-    Client(Config(address=recorder, http_auth=HttpBasicAuth("u", "p"))).query("/v1/jobs")
-    assert _Recorder.last["headers"]["Authorization"] == "Basic dTpw"
+    assert recorder.last["headers"]["Authorization"] == "Basic dTpw"
+    Client(Config(address=recorder.address, http_auth=HttpBasicAuth("u", "p"))).query("/v1/jobs")
+    assert recorder.last["headers"]["Authorization"] == "Basic dTpw"
 
 
 def test_setters(recorder):
-    client = Client(Config(address=recorder))
+    client = Client(Config(address=recorder.address))
     client.set_region("r9")
     client.set_namespace("ns9")
     client.set_secret_id("tok9")
     client.query("/v1/jobs")
-    assert _Recorder.last["query"] == {"region": ["r9"], "namespace": ["ns9"]}
-    assert _Recorder.last["headers"]["X-Nomad-Token"] == "tok9"
-    assert client.address() == recorder
+    assert recorder.last["query"] == {"region": ["r9"], "namespace": ["ns9"]}
+    assert recorder.last["headers"]["X-Nomad-Token"] == "tok9"
+    assert client.address() == recorder.address
 
 
 def test_unsupported_scheme():

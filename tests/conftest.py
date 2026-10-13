@@ -1,10 +1,14 @@
+import json
 import os
 import shutil
 import socket
 import subprocess
 import tempfile
+import threading
 import time
+import urllib.parse
 import urllib.request
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import pytest
 
@@ -25,7 +29,8 @@ def start_agent(binary, extra_hcl="", env=None, ready=None):
     """Starts a dev agent on free ports and returns (process, http address, workdir).
 
     `ready` is called with the address until it returns True; the default
-    probes the leader endpoint over plain HTTP.
+    waits over plain HTTP for the dev client node to be ready, so jobs
+    registered by tests can be placed immediately.
     """
     http, rpc, serf = free_ports(3)
     workdir = tempfile.mkdtemp(prefix="nomadpy-agent-")
@@ -42,8 +47,8 @@ def start_agent(binary, extra_hcl="", env=None, ready=None):
     address = f"http://127.0.0.1:{http}"
     if ready is None:
         def ready(addr):
-            with urllib.request.urlopen(f"{addr}/v1/status/leader", timeout=2) as resp:
-                return resp.status == 200 and resp.read() not in (b"", b'""')
+            with urllib.request.urlopen(f"{addr}/v1/nodes", timeout=2) as resp:
+                return any(n["Status"] == "ready" for n in json.load(resp))
 
     deadline = time.monotonic() + 30
     while time.monotonic() < deadline:
@@ -113,3 +118,64 @@ def client(nomad_agent):
 @pytest.fixture
 def ent_client(ent_agent):
     return Client(Config(address=ent_agent))
+
+
+class Recorder:
+    """A local HTTP server that records the last request and answers 200 with fixed Nomad metadata headers.
+
+    `response` is the JSON body returned; tests that decode a specific shape set it.
+    """
+
+    def __init__(self):
+        self.last = None
+        self.response = {"ok": True}
+        recorder = self
+
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                self._record()
+
+            def do_PUT(self):
+                self._record()
+
+            def do_POST(self):
+                self._record()
+
+            def do_DELETE(self):
+                self._record()
+
+            def _record(self):
+                length = int(self.headers.get("Content-Length", 0))
+                body = self.rfile.read(length) if length else b""
+                url = urllib.parse.urlsplit(self.path)
+                recorder.last = {
+                    "method": self.command,
+                    "path": urllib.parse.unquote(url.path),
+                    "query": urllib.parse.parse_qs(url.query, keep_blank_values=True),
+                    "headers": dict(self.headers),
+                    "body": json.loads(body) if body else None,
+                }
+                payload = json.dumps(recorder.response).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(payload)))
+                self.send_header("X-Nomad-Index", "42")
+                self.send_header("X-Nomad-LastContact", "7")
+                self.send_header("X-Nomad-KnownLeader", "true")
+                self.send_header("X-Nomad-NextToken", "abc")
+                self.end_headers()
+                self.wfile.write(payload)
+
+            def log_message(self, *args):
+                pass
+
+        self.server = HTTPServer(("127.0.0.1", 0), Handler)
+        self.address = f"http://127.0.0.1:{self.server.server_port}"
+        threading.Thread(target=self.server.serve_forever, daemon=True).start()
+
+
+@pytest.fixture
+def recorder():
+    r = Recorder()
+    yield r
+    r.server.shutdown()

@@ -16,6 +16,7 @@ from typing import Any
 from .error_unexpected_response import UnexpectedResponseError
 
 DEFAULT_ADDRESS = "http://127.0.0.1:4646"
+ALL_NAMESPACES_NAMESPACE = "*"
 
 
 @dataclass
@@ -197,8 +198,11 @@ class Client:
                 handlers.append(urllib.request.HTTPSHandler(context=ctx))
         self._opener = urllib.request.build_opener(*handlers)
 
-        self.status = Status(self)
+        self.deployments = Deployments(self)
+        self.evaluations = Evaluations(self)
+        self.jobs = Jobs(self)
         self.regions = Regions(self)
+        self.status = Status(self)
 
     def address(self) -> str:
         return self.config.address
@@ -329,5 +333,8 @@ def _decode(raw: bytes) -> Any:
 
 
 # Service modules import the option types above, so they can only be imported once those exist.
+from .deployments import Deployments  # noqa: E402
+from .evaluations import Evaluations  # noqa: E402
+from .jobs import Jobs  # noqa: E402
 from .regions import Regions  # noqa: E402
 from .status import Status  # noqa: E402
