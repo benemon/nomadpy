@@ -201,6 +201,7 @@ class Client:
         self.deployments = Deployments(self)
         self.evaluations = Evaluations(self)
         self.jobs = Jobs(self)
+        self.namespaces = Namespaces(self)
         self.regions = Regions(self)
         self.status = Status(self)
 
@@ -336,5 +337,6 @@ def _decode(raw: bytes) -> Any:
 from .deployments import Deployments  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
 from .jobs import Jobs  # noqa: E402
+from .namespace import Namespaces  # noqa: E402
 from .regions import Regions  # noqa: E402
 from .status import Status  # noqa: E402

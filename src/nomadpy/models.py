@@ -30,6 +30,20 @@ class Model:
                 kwargs[f.name] = _convert(hints[f.name], data[key])
         return cls(**kwargs)
 
+    def to_json(self) -> dict[str, Any]:
+        """to_json encodes every field under its Go name, as the Go client does."""
+        return {f.metadata.get("json", json_name(f.name)): _encode(getattr(self, f.name)) for f in dataclasses.fields(self)}
+
+
+def _encode(value: Any) -> Any:
+    if isinstance(value, Model):
+        return value.to_json()
+    if isinstance(value, list):
+        return [_encode(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _encode(v) for k, v in value.items()}
+    return value
+
 
 def _convert(hint: Any, value: Any) -> Any:
     if value is None:

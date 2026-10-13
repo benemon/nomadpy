@@ -117,7 +117,7 @@ def test_methods(go_file):
         if receiver in LEDGER["receivers"] or receiver == "Client":
             continue
         for python_name, member in inspect.getmembers(cls, callable):
-            if python_name.startswith("_") or python_name == "from_json":
+            if python_name.startswith("_") or hasattr(Model, python_name):
                 continue
             if (receiver, python_name) not in expected_python:
                 problems.append(f"{receiver}.{python_name} exists in Python but has no Go counterpart in {go_file}")

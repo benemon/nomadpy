@@ -12,6 +12,14 @@ from .api import (
 from .deployments import Deployment, DeploymentState, DeploymentUpdateResponse
 from .error_unexpected_response import UnexpectedResponseError
 from .evaluations import Evaluation, EvaluationStub
+from .namespace import (
+    Namespace,
+    NamespaceCapabilities,
+    NamespaceConsulConfiguration,
+    NamespacedID,
+    NamespaceNodePoolConfiguration,
+    NamespaceVaultConfiguration,
+)
 from .jobs import (
     JobChildrenSummary,
     JobDispatchResponse,
@@ -41,6 +49,12 @@ __all__ = [
     "JobStabilityResponse",
     "JobSummary",
     "JobValidateResponse",
+    "Namespace",
+    "NamespaceCapabilities",
+    "NamespaceConsulConfiguration",
+    "NamespaceNodePoolConfiguration",
+    "NamespaceVaultConfiguration",
+    "NamespacedID",
     "QueryMeta",
     "QueryOptions",
     "TLSConfig",

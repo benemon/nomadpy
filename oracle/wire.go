@@ -187,6 +187,22 @@ var ops = []op{
 	}},
 	{"jobs.untag_version", `{}`, func(c *api.Client) error { _, err := c.Jobs().UntagVersion("j1", "golden", nil); return err }},
 
+	{"namespaces.list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().List(nil); return err }},
+	{"namespaces.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().PrefixList("pre", queryOpts); return err }},
+	{"namespaces.info", `{}`, func(c *api.Client) error { _, _, err := c.Namespaces().Info("n1", nil); return err }},
+	{"namespaces.register", `{}`, func(c *api.Client) error {
+		_, err := c.Namespaces().Register(&api.Namespace{
+			Name: "n1", Description: "d", Quota: "q", Meta: map[string]string{"k": "v"},
+			Capabilities:          &api.NamespaceCapabilities{EnabledTaskDrivers: []string{"raw_exec"}, DisabledNetworkModes: []string{"host"}},
+			NodePoolConfiguration: &api.NamespaceNodePoolConfiguration{Default: "p", Allowed: []string{"a"}, Denied: []string{"b"}},
+			VaultConfiguration:    &api.NamespaceVaultConfiguration{Default: "v"},
+			ConsulConfiguration:   &api.NamespaceConsulConfiguration{Default: "c"},
+			RequiredExtraClaims:   map[string]string{"r": "1"}, OptionalExtraClaims: map[string]string{"o": "2"},
+		}, writeOpts)
+		return err
+	}},
+	{"namespaces.delete", `{}`, func(c *api.Client) error { _, err := c.Namespaces().Delete("n1", writeOpts); return err }},
+
 	{"evaluations.list", `[]`, func(c *api.Client) error { _, _, err := c.Evaluations().List(nil); return err }},
 	{"evaluations.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Evaluations().PrefixList("pre"); return err }},
 	{"evaluations.count", `{}`, func(c *api.Client) error { _, _, err := c.Evaluations().Count(nil); return err }},

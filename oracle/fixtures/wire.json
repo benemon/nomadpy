@@ -956,6 +956,178 @@
       "response": "{}"
     },
     {
+      "op": "namespaces.list",
+      "method": "GET",
+      "path": "/v1/namespaces",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "namespaces.prefix_list",
+      "method": "GET",
+      "path": "/v1/namespaces",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "namespaces.info",
+      "method": "GET",
+      "path": "/v1/namespace/n1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "namespaces.register",
+      "method": "PUT",
+      "path": "/v1/namespace",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "Capabilities": {
+          "DisabledNetworkModes": [
+            "host"
+          ],
+          "DisabledTaskDrivers": null,
+          "EnabledNetworkModes": null,
+          "EnabledTaskDrivers": [
+            "raw_exec"
+          ]
+        },
+        "ConsulConfiguration": {
+          "Allowed": null,
+          "Default": "c",
+          "Denied": null
+        },
+        "CreateIndex": 0,
+        "Description": "d",
+        "Meta": {
+          "k": "v"
+        },
+        "ModifyIndex": 0,
+        "Name": "n1",
+        "NodePoolConfiguration": {
+          "Allowed": [
+            "a"
+          ],
+          "Default": "p",
+          "Denied": [
+            "b"
+          ]
+        },
+        "OptionalExtraClaims": {
+          "o": "2"
+        },
+        "Quota": "q",
+        "RequiredExtraClaims": {
+          "r": "1"
+        },
+        "VaultConfiguration": {
+          "Allowed": null,
+          "Default": "v",
+          "Denied": null
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "namespaces.delete",
+      "method": "DELETE",
+      "path": "/v1/namespace/n1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
       "op": "evaluations.list",
       "method": "GET",
       "path": "/v1/evaluations",

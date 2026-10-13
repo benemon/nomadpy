@@ -15,7 +15,17 @@ from pathlib import Path
 
 import pytest
 
-from nomadpy import Client, Config, QueryOptions, WriteOptions
+from nomadpy import (
+    Client,
+    Config,
+    Namespace,
+    NamespaceCapabilities,
+    NamespaceConsulConfiguration,
+    NamespaceNodePoolConfiguration,
+    NamespaceVaultConfiguration,
+    QueryOptions,
+    WriteOptions,
+)
 
 WIRE = json.loads((Path(__file__).resolve().parent.parent / "oracle/fixtures/wire.json").read_text())
 
@@ -62,6 +72,18 @@ OPS = {
     "jobs.services": lambda c: c.jobs.services("j1"),
     "jobs.tag_version": lambda c: c.jobs.tag_version("j1", "golden", 4, "d", latest=True),
     "jobs.untag_version": lambda c: c.jobs.untag_version("j1", "golden"),
+
+    "namespaces.list": lambda c: c.namespaces.list(),
+    "namespaces.prefix_list": lambda c: c.namespaces.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),
+    "namespaces.info": lambda c: c.namespaces.info("n1"),
+    "namespaces.register": lambda c: c.namespaces.register(Namespace(
+        name="n1", description="d", quota="q", meta={"k": "v"},
+        capabilities=NamespaceCapabilities(enabled_task_drivers=["raw_exec"], disabled_network_modes=["host"]),
+        node_pool_configuration=NamespaceNodePoolConfiguration(default="p", allowed=["a"], denied=["b"]),
+        vault_configuration=NamespaceVaultConfiguration(default="v"),
+        consul_configuration=NamespaceConsulConfiguration(default="c"),
+        required_extra_claims={"r": "1"}, optional_extra_claims={"o": "2"}), WRITE_OPTS),
+    "namespaces.delete": lambda c: c.namespaces.delete("n1", WRITE_OPTS),
 
     "evaluations.list": lambda c: c.evaluations.list(),
     "evaluations.prefix_list": lambda c: c.evaluations.prefix_list("pre"),

@@ -15,7 +15,6 @@
     "ioutil.go": "internal io helpers",
     "keyring.go": "pn-9sw",
     "locks.go": "pn-9sw",
-    "namespace.go": "pn-ehx",
     "node_identity.go": "pn-79x",
     "node_meta.go": "pn-79x",
     "node_pools.go": "pn-e9y",
