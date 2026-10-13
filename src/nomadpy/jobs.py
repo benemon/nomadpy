@@ -64,7 +64,7 @@ class JobListStub(Model):
     id: str = field(default="", metadata={"json": "ID"})
     parent_id: str = field(default="", metadata={"json": "ParentID"})
     name: str = ""
-    namespace: str = ""
+    namespace: str = field(default="", metadata={"omitempty": True})
     datacenters: list[str] | None = None
     type: str = ""
     priority: int = 0
@@ -78,7 +78,7 @@ class JobListStub(Model):
     modify_index: int = 0
     job_modify_index: int = 0
     submit_time: int = 0
-    meta: dict[str, str] | None = None
+    meta: dict[str, str] | None = field(default=None, metadata={"omitempty": True})
 
 
 @dataclass
@@ -104,7 +104,7 @@ class JobPlanResponse(Model):
     diff: dict[str, Any] | None = None
     annotations: dict[str, Any] | None = None
     failed_tg_allocs: dict[str, Any] | None = field(default=None, metadata={"json": "FailedTGAllocs"})
-    next_periodic_launch: str = ""
+    next_periodic_launch: str = field(default="", metadata={"time": True})
     warnings: str = ""
 
 

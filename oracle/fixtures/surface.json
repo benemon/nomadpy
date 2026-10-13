@@ -1177,12 +1177,14 @@
             {
               "name": "ExpirationTime",
               "json": "ExpirationTime",
-              "type": "*time.Time"
+              "type": "*time.Time",
+              "omitempty": true
             },
             {
               "name": "ExpirationTTL",
               "json": "ExpirationTTL",
-              "type": "time.Duration"
+              "type": "time.Duration",
+              "omitempty": true
             },
             {
               "name": "CreateIndex",
@@ -1236,7 +1238,8 @@
             {
               "name": "ExpirationTime",
               "json": "ExpirationTime",
-              "type": "*time.Time"
+              "type": "*time.Time",
+              "omitempty": true
             },
             {
               "name": "CreateIndex",
@@ -1814,12 +1817,14 @@
             {
               "name": "Client",
               "json": "client",
-              "type": "*AgentHealth"
+              "type": "*AgentHealth",
+              "omitempty": true
             },
             {
               "name": "Server",
               "json": "server",
-              "type": "*AgentHealth"
+              "type": "*AgentHealth",
+              "omitempty": true
             }
           ]
         },
@@ -2047,7 +2052,8 @@
             {
               "name": "HostData",
               "json": "HostData",
-              "type": "*HostData"
+              "type": "*HostData",
+              "omitempty": true
             }
           ]
         },
@@ -2890,7 +2896,8 @@
             {
               "name": "AllocatedResources",
               "json": "AllocatedResources",
-              "type": "*AllocatedResources"
+              "type": "*AllocatedResources",
+              "omitempty": true
             },
             {
               "name": "DesiredStatus",
@@ -3113,12 +3120,14 @@
             {
               "name": "Data",
               "json": "data",
-              "type": "[]byte"
+              "type": "[]byte",
+              "omitempty": true
             },
             {
               "name": "Close",
               "json": "close",
-              "type": "bool"
+              "type": "bool",
+              "omitempty": true
             }
           ]
         },
@@ -3127,12 +3136,14 @@
             {
               "name": "Stdin",
               "json": "stdin",
-              "type": "*ExecStreamingIOOperation"
+              "type": "*ExecStreamingIOOperation",
+              "omitempty": true
             },
             {
               "name": "TTYSize",
               "json": "tty_size",
-              "type": "*TerminalSize"
+              "type": "*TerminalSize",
+              "omitempty": true
             }
           ]
         },
@@ -3141,22 +3152,26 @@
             {
               "name": "Stdout",
               "json": "stdout",
-              "type": "*ExecStreamingIOOperation"
+              "type": "*ExecStreamingIOOperation",
+              "omitempty": true
             },
             {
               "name": "Stderr",
               "json": "stderr",
-              "type": "*ExecStreamingIOOperation"
+              "type": "*ExecStreamingIOOperation",
+              "omitempty": true
             },
             {
               "name": "Exited",
               "json": "exited",
-              "type": "bool"
+              "type": "bool",
+              "omitempty": true
             },
             {
               "name": "Result",
               "json": "result",
-              "type": "*ExecStreamingExitResult"
+              "type": "*ExecStreamingExitResult",
+              "omitempty": true
             }
           ]
         },
@@ -3251,12 +3266,14 @@
             {
               "name": "Height",
               "json": "height",
-              "type": "int"
+              "type": "int",
+              "omitempty": true
             },
             {
               "name": "Width",
               "json": "width",
-              "type": "int"
+              "type": "int",
+              "omitempty": true
             }
           ]
         }
@@ -7274,22 +7291,26 @@
             {
               "name": "Offset",
               "json": "Offset",
-              "type": "int64"
+              "type": "int64",
+              "omitempty": true
             },
             {
               "name": "Data",
               "json": "Data",
-              "type": "[]byte"
+              "type": "[]byte",
+              "omitempty": true
             },
             {
               "name": "File",
               "json": "File",
-              "type": "string"
+              "type": "string",
+              "omitempty": true
             },
             {
               "name": "FileEvent",
               "json": "FileEvent",
-              "type": "string"
+              "type": "string",
+              "omitempty": true
             }
           ]
         }
@@ -7536,7 +7557,8 @@
             {
               "name": "Constraints",
               "json": "Constraints",
-              "type": "[]*Constraint"
+              "type": "[]*Constraint",
+              "omitempty": true
             },
             {
               "name": "RequestedCapacityMinBytes",
@@ -7561,7 +7583,8 @@
             {
               "name": "Parameters",
               "json": "Parameters",
-              "type": "map[string]string"
+              "type": "map[string]string",
+              "omitempty": true
             },
             {
               "name": "HostPath",
@@ -7596,7 +7619,8 @@
             {
               "name": "Allocations",
               "json": "Allocations",
-              "type": "[]*AllocationListStub"
+              "type": "[]*AllocationListStub",
+              "omitempty": true
             }
           ]
         },
@@ -9192,7 +9216,8 @@
             {
               "name": "Namespace",
               "json": "Namespace",
-              "type": "string"
+              "type": "string",
+              "omitempty": true
             },
             {
               "name": "Datacenters",
@@ -9262,7 +9287,8 @@
             {
               "name": "Meta",
               "json": "Meta",
-              "type": "map[string]string"
+              "type": "map[string]string",
+              "omitempty": true
             }
           ]
         },
@@ -9345,32 +9371,38 @@
             {
               "name": "EnforceIndex",
               "json": "EnforceIndex",
-              "type": "bool"
+              "type": "bool",
+              "omitempty": true
             },
             {
               "name": "JobModifyIndex",
               "json": "JobModifyIndex",
-              "type": "uint64"
+              "type": "uint64",
+              "omitempty": true
             },
             {
               "name": "PolicyOverride",
               "json": "PolicyOverride",
-              "type": "bool"
+              "type": "bool",
+              "omitempty": true
             },
             {
               "name": "PreserveCounts",
               "json": "PreserveCounts",
-              "type": "bool"
+              "type": "bool",
+              "omitempty": true
             },
             {
               "name": "PreserveResources",
               "json": "PreserveResources",
-              "type": "bool"
+              "type": "bool",
+              "omitempty": true
             },
             {
               "name": "EvalPriority",
               "json": "EvalPriority",
-              "type": "int"
+              "type": "int",
+              "omitempty": true
             },
             {
               "name": "WriteRequest",
@@ -11409,12 +11441,14 @@
             {
               "name": "ControllerInfo",
               "json": "ControllerInfo",
-              "type": "*CSIControllerInfo"
+              "type": "*CSIControllerInfo",
+              "omitempty": true
             },
             {
               "name": "NodeInfo",
               "json": "NodeInfo",
-              "type": "*CSINodeInfo"
+              "type": "*CSINodeInfo",
+              "omitempty": true
             }
           ]
         },
@@ -12103,7 +12137,8 @@
             {
               "name": "Attributes",
               "json": "Attributes",
-              "type": "map[string]string"
+              "type": "map[string]string",
+              "omitempty": true
             },
             {
               "name": "Datacenter",
@@ -12158,12 +12193,14 @@
             {
               "name": "NodeResources",
               "json": "NodeResources",
-              "type": "*NodeResources"
+              "type": "*NodeResources",
+              "omitempty": true
             },
             {
               "name": "ReservedResources",
               "json": "ReservedResources",
-              "type": "*NodeReservedResources"
+              "type": "*NodeReservedResources",
+              "omitempty": true
             },
             {
               "name": "LastDrain",
@@ -12369,42 +12406,50 @@
             {
               "name": "FloatNumeratorVal",
               "json": "FloatNumeratorVal",
-              "type": "*float64"
+              "type": "*float64",
+              "omitempty": true
             },
             {
               "name": "FloatDenominatorVal",
               "json": "FloatDenominatorVal",
-              "type": "*float64"
+              "type": "*float64",
+              "omitempty": true
             },
             {
               "name": "IntNumeratorVal",
               "json": "IntNumeratorVal",
-              "type": "*int64"
+              "type": "*int64",
+              "omitempty": true
             },
             {
               "name": "IntDenominatorVal",
               "json": "IntDenominatorVal",
-              "type": "*int64"
+              "type": "*int64",
+              "omitempty": true
             },
             {
               "name": "StringVal",
               "json": "StringVal",
-              "type": "*string"
+              "type": "*string",
+              "omitempty": true
             },
             {
               "name": "BoolVal",
               "json": "BoolVal",
-              "type": "*bool"
+              "type": "*bool",
+              "omitempty": true
             },
             {
               "name": "Unit",
               "json": "Unit",
-              "type": "string"
+              "type": "string",
+              "omitempty": true
             },
             {
               "name": "Desc",
               "json": "Desc",
-              "type": "string"
+              "type": "string",
+              "omitempty": true
             }
           ]
         }
@@ -13306,22 +13351,26 @@
             {
               "name": "ReadReplicas",
               "json": "ReadReplicas",
-              "type": "[]string"
+              "type": "[]string",
+              "omitempty": true
             },
             {
               "name": "RedundancyZones",
               "json": "RedundancyZones",
-              "type": "map[string]AutopilotZone"
+              "type": "map[string]AutopilotZone",
+              "omitempty": true
             },
             {
               "name": "Upgrade",
               "json": "Upgrade",
-              "type": "*AutopilotUpgrade"
+              "type": "*AutopilotUpgrade",
+              "omitempty": true
             },
             {
               "name": "OptimisticFailureTolerance",
               "json": "OptimisticFailureTolerance",
-              "type": "int"
+              "type": "int",
+              "omitempty": true
             }
           ]
         },
@@ -14404,22 +14453,26 @@
             {
               "name": "FloatVal",
               "json": "Float",
-              "type": "*float64"
+              "type": "*float64",
+              "omitempty": true
             },
             {
               "name": "IntVal",
               "json": "Int",
-              "type": "*int64"
+              "type": "*int64",
+              "omitempty": true
             },
             {
               "name": "StringVal",
               "json": "String",
-              "type": "*string"
+              "type": "*string",
+              "omitempty": true
             },
             {
               "name": "BoolVal",
               "json": "Bool",
-              "type": "*bool"
+              "type": "*bool",
+              "omitempty": true
             },
             {
               "name": "Unit",
@@ -15052,7 +15105,8 @@
             {
               "name": "Scope",
               "json": "Scope",
-              "type": "[]string"
+              "type": "[]string",
+              "omitempty": true
             }
           ]
         },
@@ -16782,7 +16836,8 @@
             {
               "name": "CSIPluginConfig",
               "json": "CSIPluginConfig",
-              "type": "*TaskCSIPluginConfig"
+              "type": "*TaskCSIPluginConfig",
+              "omitempty": true
             },
             {
               "name": "Leader",
@@ -17972,7 +18027,8 @@
             {
               "name": "Lock",
               "json": "Lock",
-              "type": "*VariableLock"
+              "type": "*VariableLock",
+              "omitempty": true
             }
           ]
         },
@@ -18030,7 +18086,8 @@
             {
               "name": "Lock",
               "json": "Lock",
-              "type": "*VariableLock"
+              "type": "*VariableLock",
+              "omitempty": true
             }
           ]
         },

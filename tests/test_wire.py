@@ -6,7 +6,8 @@ the same call with the same arguments. Query strings, paths and headers must
 match exactly. Bodies match after the zero-value rule: Go serialises every
 struct field, so a key Go sent with a zero value (null, "", 0, false, empty
 list or object) may be absent from the Python body, but anything Python
-sends must exist in the Go body with the same value.
+sends must exist in the Go body with the same value. Go's zero time.Time
+serialises as "0001-01-01T00:00:00Z" and counts as a zero value.
 """
 
 import json
@@ -16,16 +17,33 @@ from pathlib import Path
 import pytest
 
 from nomadpy import (
+    ACLAuthMethod,
+    ACLAuthMethodConfig,
+    ACLBindingRule,
+    ACLPolicy,
+    ACLRole,
+    ACLRolePolicyLink,
+    ACLToken,
+    ACLTokenRoleLink,
     Client,
     Config,
+    JobACL,
     Namespace,
     NamespaceCapabilities,
     NamespaceConsulConfiguration,
     NamespaceNodePoolConfiguration,
     NamespaceVaultConfiguration,
+    OIDCClientAssertion,
+    OIDCClientAssertionKey,
     QueryOptions,
     WriteOptions,
 )
+
+MILLISECOND = 1_000_000
+SECOND = 1_000 * MILLISECOND
+MINUTE = 60 * SECOND
+HOUR = 60 * MINUTE
+GO_ZERO_TIME = "0001-01-01T00:00:00Z"
 
 WIRE = json.loads((Path(__file__).resolve().parent.parent / "oracle/fixtures/wire.json").read_text())
 
@@ -73,6 +91,51 @@ OPS = {
     "jobs.tag_version": lambda c: c.jobs.tag_version("j1", "golden", 4, "d", latest=True),
     "jobs.untag_version": lambda c: c.jobs.untag_version("j1", "golden"),
 
+    "acl_policies.list": lambda c: c.acl_policies.list(),
+    "acl_policies.upsert": lambda c: c.acl_policies.upsert(ACLPolicy(
+        name="p1", description="d", rules='namespace "default" { policy = "read" }', job_acl=JobACL(namespace="ns", job_id="j")), WRITE_OPTS),
+    "acl_policies.delete": lambda c: c.acl_policies.delete("p1"),
+    "acl_policies.info": lambda c: c.acl_policies.info("p1"),
+    "acl_policies.self": lambda c: c.acl_policies.self(),
+    "acl_tokens.bootstrap": lambda c: c.acl_tokens.bootstrap(),
+    "acl_tokens.bootstrap_opts": lambda c: c.acl_tokens.bootstrap(WRITE_OPTS, bootstrap_secret="secret"),
+    "acl_tokens.list": lambda c: c.acl_tokens.list(),
+    "acl_tokens.create": lambda c: c.acl_tokens.create(ACLToken(
+        name="t", type="client", policies=["p1"], roles=[ACLTokenRoleLink(id="r1")], global_=True, expiration_ttl=90 * MINUTE)),
+    "acl_tokens.upload": lambda c: c.acl_tokens.upload(ACLToken(accessor_id="acc", secret_id="sec", name="t", type="client", policies=["p1"])),
+    "acl_tokens.update": lambda c: c.acl_tokens.update(ACLToken(accessor_id="acc", name="t2")),
+    "acl_tokens.delete": lambda c: c.acl_tokens.delete("acc"),
+    "acl_tokens.info": lambda c: c.acl_tokens.info("acc"),
+    "acl_tokens.self": lambda c: c.acl_tokens.self(),
+    "acl_tokens.upsert_one_time_token": lambda c: c.acl_tokens.upsert_one_time_token(),
+    "acl_tokens.exchange_one_time_token": lambda c: c.acl_tokens.exchange_one_time_token("ott"),
+    "acl_roles.list": lambda c: c.acl_roles.list(),
+    "acl_roles.create": lambda c: c.acl_roles.create(ACLRole(name="r", description="d", policies=[ACLRolePolicyLink(name="p1")])),
+    "acl_roles.update": lambda c: c.acl_roles.update(ACLRole(id="rid", name="r2")),
+    "acl_roles.delete": lambda c: c.acl_roles.delete("rid"),
+    "acl_roles.get": lambda c: c.acl_roles.get("rid"),
+    "acl_roles.get_by_name": lambda c: c.acl_roles.get_by_name("r"),
+    "acl_auth_methods.list": lambda c: c.acl_auth_methods.list(),
+    "acl_auth_methods.create": lambda c: c.acl_auth_methods.create(ACLAuthMethod(
+        name="m", type="JWT", token_locality="global", token_name_format="${auth_method_type}-${value.sub}", max_token_ttl=HOUR, default=True,
+        config=ACLAuthMethodConfig(
+            jwks_url="https://idp.example/jwks", bound_audiences=["nomad"], claim_mappings={"sub": "user"},
+            expiration_leeway=90 * SECOND, clock_skew_leeway=1500 * MILLISECOND,
+            oidc_client_assertion=OIDCClientAssertion(audience=["a"], key_source="nomad", private_key=OIDCClientAssertionKey(key_id_header="kid", key_id="k"))))),
+    "acl_auth_methods.update": lambda c: c.acl_auth_methods.update(ACLAuthMethod(name="m", type="JWT")),
+    "acl_auth_methods.delete": lambda c: c.acl_auth_methods.delete("m"),
+    "acl_auth_methods.get": lambda c: c.acl_auth_methods.get("m"),
+    "acl_binding_rules.list": lambda c: c.acl_binding_rules.list(),
+    "acl_binding_rules.create": lambda c: c.acl_binding_rules.create(ACLBindingRule(
+        description="d", auth_method="m", selector='value.user == "a"', bind_type="policy", bind_name="p1")),
+    "acl_binding_rules.update": lambda c: c.acl_binding_rules.update(ACLBindingRule(id="bid", auth_method="m", bind_type="role", bind_name="r")),
+    "acl_binding_rules.delete": lambda c: c.acl_binding_rules.delete("bid"),
+    "acl_binding_rules.get": lambda c: c.acl_binding_rules.get("bid"),
+    "acl_auth.get_auth_url": lambda c: c.acl_auth.get_auth_url("m", "http://127.0.0.1/cb", "n"),
+    "acl_auth.complete_auth": lambda c: c.acl_auth.complete_auth("m", "n", "s", "c", "i", "http://127.0.0.1/cb"),
+    "acl_auth.login": lambda c: c.acl_auth.login("m", "jwt"),
+    "acl_identity.create_client_introduction_token": lambda c: c.acl_identity.create_client_introduction_token(5 * MINUTE, "n", "p", WRITE_OPTS),
+
     "namespaces.list": lambda c: c.namespaces.list(),
     "namespaces.prefix_list": lambda c: c.namespaces.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),
     "namespaces.info": lambda c: c.namespaces.info("n1"),
@@ -106,6 +169,8 @@ OPS = {
 
 # The recorder answers what Go's did, except where the Python method flattens a response field.
 RESPONSES = {
+    "acl_tokens.upsert_one_time_token": {"OneTimeToken": {}},
+    "acl_tokens.exchange_one_time_token": {"Token": {}},
     "evaluations.count": {"Count": 0},
     "evaluations.delete": {"Count": 0},
     "jobs.deregister": {"EvalID": ""},
@@ -117,7 +182,7 @@ RESPONSES = {
 
 
 def is_zero(value) -> bool:
-    return value is None or value == "" or value == 0 or value is False or value == [] or value == {}
+    return value is None or value in ("", GO_ZERO_TIME, 0, False, [], {})
 
 
 def body_problems(go, py, path="body"):

@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 )
@@ -36,10 +37,11 @@ type Struct struct {
 }
 
 type Field struct {
-	Name     string `json:"name"`
-	JSON     string `json:"json"`
-	Type     string `json:"type"`
-	Embedded bool   `json:"embedded,omitempty"`
+	Name      string `json:"name"`
+	JSON      string `json:"json"`
+	Type      string `json:"type"`
+	Embedded  bool   `json:"embedded,omitempty"`
+	OmitEmpty bool   `json:"omitempty,omitempty"`
 }
 
 type Const struct {
@@ -148,10 +150,12 @@ func structSurface(st *ast.StructType) Struct {
 		if f.Tag != nil {
 			tag = reflect.StructTag(strings.Trim(f.Tag.Value, "`")).Get("json")
 		}
-		jsonName := strings.Split(tag, ",")[0]
+		parts := strings.Split(tag, ",")
+		jsonName := parts[0]
 		if jsonName == "-" {
 			continue
 		}
+		omitEmpty := slices.Contains(parts[1:], "omitempty")
 		if len(f.Names) == 0 {
 			name := strings.TrimPrefix(t, "*")
 			out.Fields = append(out.Fields, Field{Name: name, JSON: jsonName, Type: t, Embedded: true})
@@ -165,7 +169,7 @@ func structSurface(st *ast.StructType) Struct {
 			if j == "" {
 				j = name.Name
 			}
-			out.Fields = append(out.Fields, Field{Name: name.Name, JSON: j, Type: t})
+			out.Fields = append(out.Fields, Field{Name: name.Name, JSON: j, Type: t, OmitEmpty: omitEmpty})
 		}
 	}
 	return out

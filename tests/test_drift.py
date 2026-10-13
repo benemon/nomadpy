@@ -6,12 +6,13 @@ lists every deliberate gap. Anything else that differs is drift and fails.
 Rules that need no ledger entry:
 - a Go file maps to the Python module of the same stem;
 - `Client.<Service>()` constructors map to `self.<service> = <Service>(self)` in Client.__init__;
-- Len/Less/Swap on *Sort receivers, and methods on unexported receivers, are Go-only;
+- Len/Less/Swap on *Sort receivers, MarshalJSON/UnmarshalJSON, and methods on unexported receivers, are Go-only;
 - methods on structs the ledger lists as dicts are Go-only;
 - a Go `Foo`/`FooOpts` pair maps to one Python method `foo`;
 - structs named *Request and *Options are request bodies or keyword arguments, not models;
 - a Go struct whose Python class is not a Model (services, Client, options, the exception) is not field-compared;
 - embedded fields (QueryMeta, WriteMeta, WriteRequest) are not model fields;
+- a Go time.Time field carries metadata time=True, and omitempty metadata mirrors the Go json tag;
 - Go consts map to UPPER_SNAKE names in the same module.
 """
 
@@ -85,9 +86,13 @@ def test_methods(go_file):
             continue
         if receiver.endswith("Sort") and name in ("Len", "Less", "Swap"):
             continue
-        if receiver == "Client" and name == struct_service_name(go_file, name):
+        if receiver == "Client" and name in SURFACE["files"][go_file]["structs"]:
+            if isinstance(LEDGER["methods"].get(key), str):
+                continue
             if f"self.{snake(name)} = {name}(self)" not in CLIENT_INIT:
                 problems.append(f"Client.{name}() has no `self.{snake(name)} = {name}(self)` in Client.__init__")
+            continue
+        if name in ("MarshalJSON", "UnmarshalJSON"):
             continue
         if receiver in LEDGER["structs"].get(go_file, {}) and receiver != "Client":
             continue
@@ -124,18 +129,6 @@ def test_methods(go_file):
     assert not problems, "\n".join(problems)
 
 
-def struct_service_name(go_file: str, name: str) -> str | None:
-    """Returns name when it is the service struct of go_file (Jobs for jobs.go), else None."""
-    return name if name in SURFACE["files"][go_file]["structs"] and name == name_of_service(go_file) else None
-
-
-def name_of_service(go_file: str) -> str | None:
-    for m in SURFACE["files"][go_file]["methods"]:
-        if m["receiver"] == "Client" and m["name"] in SURFACE["files"][go_file]["structs"]:
-            return m["name"]
-    return None
-
-
 @pytest.mark.parametrize("go_file", ported_files())
 def test_structs(go_file):
     module = module_for(go_file)
@@ -155,12 +148,18 @@ def test_structs(go_file):
             continue
         if not is_model(cls):
             continue
-        go_fields = {f["json"] for f in st["fields"] if not f.get("embedded")}
-        py_fields = {f.metadata.get("json", json_name(f.name)) for f in dataclasses.fields(cls)}
-        for missing in sorted(go_fields - py_fields):
+        go_fields = {f["json"]: f for f in st["fields"] if not f.get("embedded")}
+        py_fields = {f.metadata.get("json", json_name(f.name)): f for f in dataclasses.fields(cls)}
+        for missing in sorted(go_fields.keys() - py_fields.keys()):
             problems.append(f"{name}: Go field {missing} is not on the dataclass")
-        for extra in sorted(py_fields - go_fields):
+        for extra in sorted(py_fields.keys() - go_fields.keys()):
             problems.append(f"{name}: dataclass field {extra} does not exist in Go")
+        for key in sorted(go_fields.keys() & py_fields.keys()):
+            go_type, meta = go_fields[key]["type"], py_fields[key].metadata
+            if go_type.endswith("time.Time") and not meta.get("time"):
+                problems.append(f"{name}.{key}: Go type is {go_type}; the field needs metadata time=True")
+            if bool(go_fields[key].get("omitempty")) != bool(meta.get("omitempty")):
+                problems.append(f"{name}.{key}: Go omitempty={bool(go_fields[key].get('omitempty'))}, dataclass metadata differs")
 
     for name, cls in inspect.getmembers(module, is_model):
         if cls.__module__ == module.__name__ and name not in go_structs:

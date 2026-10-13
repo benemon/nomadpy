@@ -198,6 +198,13 @@ class Client:
                 handlers.append(urllib.request.HTTPSHandler(context=ctx))
         self._opener = urllib.request.build_opener(*handlers)
 
+        self.acl_auth = ACLAuth(self)
+        self.acl_auth_methods = ACLAuthMethods(self)
+        self.acl_binding_rules = ACLBindingRules(self)
+        self.acl_identity = ACLIdentity(self)
+        self.acl_policies = ACLPolicies(self)
+        self.acl_roles = ACLRoles(self)
+        self.acl_tokens = ACLTokens(self)
         self.deployments = Deployments(self)
         self.evaluations = Evaluations(self)
         self.jobs = Jobs(self)
@@ -334,6 +341,7 @@ def _decode(raw: bytes) -> Any:
 
 
 # Service modules import the option types above, so they can only be imported once those exist.
+from .acl import ACLAuth, ACLAuthMethods, ACLBindingRules, ACLIdentity, ACLPolicies, ACLRoles, ACLTokens  # noqa: E402
 from .deployments import Deployments  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
 from .jobs import Jobs  # noqa: E402

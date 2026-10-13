@@ -27,7 +27,7 @@ class EvaluationStub(Model):
     deployment_id: str = field(default="", metadata={"json": "DeploymentID"})
     status: str = ""
     status_description: str = ""
-    wait_until: str = ""
+    wait_until: str = field(default="", metadata={"time": True})
     next_eval: str = ""
     previous_eval: str = ""
     blocked_eval: str = ""
@@ -52,7 +52,7 @@ class Evaluation(Model):
     status: str = ""
     status_description: str = ""
     wait: int = 0
-    wait_until: str = ""
+    wait_until: str = field(default="", metadata={"time": True})
     next_eval: str = ""
     previous_eval: str = ""
     blocked_eval: str = ""

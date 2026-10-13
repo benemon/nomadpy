@@ -1,7 +1,6 @@
 {
   "_": "Every deliberate gap between the pinned Go api surface and nomadpy, with its reason. tests/test_drift.py fails on any gap not listed here and on any entry that is no longer a gap.",
   "files": {
-    "acl.go": "pn-tsu",
     "agent.go": "pn-cq8",
     "allocations.go": "pn-qqa",
     "allocations_exec.go": "pn-k6m",
@@ -45,10 +44,17 @@
     "Client.GetNodeClient": "node clients, not ported with the foundation",
     "Client.GetNodeClientWithTimeout": "node clients, not ported with the foundation",
     "Jobs.ActionExec": "pn-k6m",
-    "Jobs.EnforceRegister": {"folded": "register"},
-    "Jobs.EvaluateWithOpts": {"folded": "force_evaluate"},
-    "Jobs.ListOptions": {"folded": "list"},
-    "Jobs.ScaleWithRequest": "scale builds the ScalingRequest from its arguments; pn-9u3 revisits with scaling.go"
+    "Jobs.EnforceRegister": {
+      "folded": "register"
+    },
+    "Jobs.EvaluateWithOpts": {
+      "folded": "force_evaluate"
+    },
+    "Jobs.ListOptions": {
+      "folded": "list"
+    },
+    "Jobs.ScaleWithRequest": "scale builds the ScalingRequest from its arguments; pn-9u3 revisits with scaling.go",
+    "Client.ACLOIDC": "deprecated alias of ACLAuth"
   },
   "structs": {
     "api.go": {
@@ -91,6 +97,11 @@
     },
     "deployments.go": {
       "SingleDeploymentResponse": "not used by any Go method"
+    },
+    "acl.go": {
+      "ACLOIDC": "deprecated alias of ACLAuth",
+      "OneTimeTokenUpsertResponse": "flattened to the OneTimeToken",
+      "OneTimeTokenExchangeResponse": "flattened to the ACLToken"
     }
   },
   "consts": {

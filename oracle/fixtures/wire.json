@@ -956,6 +956,883 @@
       "response": "{}"
     },
     {
+      "op": "acl_policies.list",
+      "method": "GET",
+      "path": "/v1/acl/policies",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "acl_policies.upsert",
+      "method": "PUT",
+      "path": "/v1/acl/policy/p1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "d",
+        "JobACL": {
+          "Group": "",
+          "JobID": "j",
+          "Namespace": "ns",
+          "Task": ""
+        },
+        "ModifyIndex": 0,
+        "Name": "p1",
+        "Rules": "namespace \"default\" { policy = \"read\" }"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_policies.delete",
+      "method": "DELETE",
+      "path": "/v1/acl/policy/p1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_policies.info",
+      "method": "GET",
+      "path": "/v1/acl/policy/p1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_policies.self",
+      "method": "GET",
+      "path": "/v1/acl/policy/self",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "acl_tokens.bootstrap",
+      "method": "PUT",
+      "path": "/v1/acl/bootstrap",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.bootstrap_opts",
+      "method": "PUT",
+      "path": "/v1/acl/bootstrap",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "BootstrapSecret": "secret"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.list",
+      "method": "GET",
+      "path": "/v1/acl/tokens",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "acl_tokens.create",
+      "method": "PUT",
+      "path": "/v1/acl/token",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AccessorID": "",
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "ExpirationTTL": "1h30m0s",
+        "Global": true,
+        "ModifyIndex": 0,
+        "Name": "t",
+        "Policies": [
+          "p1"
+        ],
+        "Roles": [
+          {
+            "ID": "r1",
+            "Name": ""
+          }
+        ],
+        "SecretID": "",
+        "Type": "client"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.upload",
+      "method": "PUT",
+      "path": "/v1/acl/token/acc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AccessorID": "acc",
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "ExpirationTTL": "",
+        "Global": false,
+        "ModifyIndex": 0,
+        "Name": "t",
+        "Policies": [
+          "p1"
+        ],
+        "Roles": null,
+        "SecretID": "sec",
+        "Type": "client"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.update",
+      "method": "PUT",
+      "path": "/v1/acl/token/acc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AccessorID": "acc",
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "ExpirationTTL": "",
+        "Global": false,
+        "ModifyIndex": 0,
+        "Name": "t2",
+        "Policies": null,
+        "Roles": null,
+        "SecretID": "",
+        "Type": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.delete",
+      "method": "DELETE",
+      "path": "/v1/acl/token/acc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.info",
+      "method": "GET",
+      "path": "/v1/acl/token/acc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.self",
+      "method": "GET",
+      "path": "/v1/acl/token/self",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_tokens.upsert_one_time_token",
+      "method": "PUT",
+      "path": "/v1/acl/token/onetime",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{\"OneTimeToken\":{}}"
+    },
+    {
+      "op": "acl_tokens.exchange_one_time_token",
+      "method": "PUT",
+      "path": "/v1/acl/token/onetime/exchange",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "OneTimeSecretID": "ott"
+      },
+      "response": "{\"Token\":{}}"
+    },
+    {
+      "op": "acl_roles.list",
+      "method": "GET",
+      "path": "/v1/acl/roles",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "acl_roles.create",
+      "method": "PUT",
+      "path": "/v1/acl/role",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "d",
+        "ID": "",
+        "ModifyIndex": 0,
+        "Name": "r",
+        "Policies": [
+          {
+            "Name": "p1"
+          }
+        ]
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_roles.update",
+      "method": "PUT",
+      "path": "/v1/acl/role/rid",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "",
+        "ID": "rid",
+        "ModifyIndex": 0,
+        "Name": "r2",
+        "Policies": null
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_roles.delete",
+      "method": "DELETE",
+      "path": "/v1/acl/role/rid",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_roles.get",
+      "method": "GET",
+      "path": "/v1/acl/role/rid",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_roles.get_by_name",
+      "method": "GET",
+      "path": "/v1/acl/role/name/r",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth_methods.list",
+      "method": "GET",
+      "path": "/v1/acl/auth-methods",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "acl_auth_methods.create",
+      "method": "PUT",
+      "path": "/v1/acl/auth-method",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Config": {
+          "AllowedRedirectURIs": null,
+          "BoundAudiences": [
+            "nomad"
+          ],
+          "BoundIssuer": null,
+          "ClaimMappings": {
+            "sub": "user"
+          },
+          "ClockSkewLeeway": "1.5s",
+          "DiscoveryCaPem": null,
+          "ExpirationLeeway": "1m30s",
+          "JWKSCACert": "",
+          "JWKSURL": "https://idp.example/jwks",
+          "JWTValidationPubKeys": null,
+          "ListClaimMappings": null,
+          "NotBeforeLeeway": "",
+          "OIDCClientAssertion": {
+            "Audience": [
+              "a"
+            ],
+            "ExtraHeaders": null,
+            "KeyAlgorithm": "",
+            "KeySource": "nomad",
+            "PrivateKey": {
+              "KeyID": "k",
+              "KeyIDHeader": "kid",
+              "PemCert": "",
+              "PemCertFile": "",
+              "PemKey": "",
+              "PemKeyFile": ""
+            }
+          },
+          "OIDCClientID": "",
+          "OIDCClientSecret": "",
+          "OIDCDisableUserInfo": false,
+          "OIDCDiscoveryURL": "",
+          "OIDCEnablePKCE": false,
+          "OIDCScopes": null,
+          "SigningAlgs": null,
+          "VerboseLogging": false
+        },
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "Default": true,
+        "MaxTokenTTL": "1h0m0s",
+        "ModifyIndex": 0,
+        "ModifyTime": "0001-01-01T00:00:00Z",
+        "Name": "m",
+        "TokenLocality": "global",
+        "TokenNameFormat": "${auth_method_type}-${value.sub}",
+        "Type": "JWT"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth_methods.update",
+      "method": "PUT",
+      "path": "/v1/acl/auth-method/m",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Config": null,
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "Default": false,
+        "MaxTokenTTL": "",
+        "ModifyIndex": 0,
+        "ModifyTime": "0001-01-01T00:00:00Z",
+        "Name": "m",
+        "TokenLocality": "",
+        "TokenNameFormat": "",
+        "Type": "JWT"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth_methods.delete",
+      "method": "DELETE",
+      "path": "/v1/acl/auth-method/m",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth_methods.get",
+      "method": "GET",
+      "path": "/v1/acl/auth-method/m",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_binding_rules.list",
+      "method": "GET",
+      "path": "/v1/acl/binding-rules",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "acl_binding_rules.create",
+      "method": "PUT",
+      "path": "/v1/acl/binding-rule",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AuthMethod": "m",
+        "BindName": "p1",
+        "BindType": "policy",
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "Description": "d",
+        "ID": "",
+        "ModifyIndex": 0,
+        "ModifyTime": "0001-01-01T00:00:00Z",
+        "Selector": "value.user == \"a\""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_binding_rules.update",
+      "method": "PUT",
+      "path": "/v1/acl/binding-rule/bid",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AuthMethod": "m",
+        "BindName": "r",
+        "BindType": "role",
+        "CreateIndex": 0,
+        "CreateTime": "0001-01-01T00:00:00Z",
+        "Description": "",
+        "ID": "bid",
+        "ModifyIndex": 0,
+        "ModifyTime": "0001-01-01T00:00:00Z",
+        "Selector": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_binding_rules.delete",
+      "method": "DELETE",
+      "path": "/v1/acl/binding-rule/bid",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_binding_rules.get",
+      "method": "GET",
+      "path": "/v1/acl/binding-rule/bid",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth.get_auth_url",
+      "method": "PUT",
+      "path": "/v1/acl/oidc/auth-url",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AuthMethodName": "m",
+        "ClientNonce": "n",
+        "RedirectURI": "http://127.0.0.1/cb"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth.complete_auth",
+      "method": "PUT",
+      "path": "/v1/acl/oidc/complete-auth",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AuthMethodName": "m",
+        "ClientNonce": "n",
+        "Code": "c",
+        "Iss": "i",
+        "RedirectURI": "http://127.0.0.1/cb",
+        "State": "s"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_auth.login",
+      "method": "PUT",
+      "path": "/v1/acl/login",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AuthMethodName": "m",
+        "LoginToken": "jwt"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "acl_identity.create_client_introduction_token",
+      "method": "PUT",
+      "path": "/v1/acl/identity/client-introduction-token",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "NodeName": "n",
+        "NodePool": "p",
+        "TTL": 300000000000
+      },
+      "response": "{}"
+    },
+    {
       "op": "namespaces.list",
       "method": "GET",
       "path": "/v1/namespaces",

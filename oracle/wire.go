@@ -101,8 +101,6 @@ func capture(name string, r *http.Request, body []byte) Request {
 	return Request{Op: name, Method: r.Method, Path: r.URL.Path, Query: query, Headers: headers, Body: decoded}
 }
 
-func ptr[T any](v T) *T { return &v }
-
 var queryOpts = &api.QueryOptions{
 	Region: "r1", Namespace: "ns1", AllowStale: true, WaitIndex: 12, WaitTime: 1500 * time.Millisecond,
 	Prefix: "p", Filter: "f == 1", PerPage: 5, NextToken: "nt", Reverse: true,
@@ -113,7 +111,7 @@ var writeOpts = &api.WriteOptions{
 	Region: "r1", Namespace: "ns1", AuthToken: "tok1", IdempotencyToken: "idem", Headers: map[string]string{"H": "v"},
 }
 
-var job = &api.Job{ID: ptr("j1"), Name: ptr("j1")}
+var job = &api.Job{ID: new("j1"), Name: new("j1")}
 
 var ops = []op{
 	{"status.leader", `""`, func(c *api.Client) error { _, err := c.Status().Leader(); return err }},
@@ -143,13 +141,13 @@ var ops = []op{
 	{"jobs.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Jobs().PrefixList("pre"); return err }},
 	{"jobs.info", `{}`, func(c *api.Client) error { _, _, err := c.Jobs().Info("j 1/x", nil); return err }},
 	{"jobs.scale", `{}`, func(c *api.Client) error {
-		_, _, err := c.Jobs().Scale("j1", "g", ptr(2), "msg", true, map[string]any{"k": "v"}, writeOpts)
+		_, _, err := c.Jobs().Scale("j1", "g", new(2), "msg", true, map[string]any{"k": "v"}, writeOpts)
 		return err
 	}},
 	{"jobs.scale_status", `{}`, func(c *api.Client) error { _, _, err := c.Jobs().ScaleStatus("j1", nil); return err }},
 	{"jobs.versions", `{}`, func(c *api.Client) error { _, _, _, err := c.Jobs().Versions("j1", true, nil); return err }},
 	{"jobs.versions_opts", `{}`, func(c *api.Client) error {
-		_, _, _, err := c.Jobs().VersionsOpts("j1", &api.VersionsOptions{Diffs: false, DiffTag: "t", DiffVersion: ptr(uint64(3))}, nil)
+		_, _, _, err := c.Jobs().VersionsOpts("j1", &api.VersionsOptions{Diffs: false, DiffTag: "t", DiffVersion: new(uint64(3))}, nil)
 		return err
 	}},
 	{"jobs.submission", `{}`, func(c *api.Client) error { _, _, err := c.Jobs().Submission("j1", 2, nil); return err }},
@@ -176,7 +174,7 @@ var ops = []op{
 		return err
 	}},
 	{"jobs.revert", `{}`, func(c *api.Client) error {
-		_, _, err := c.Jobs().Revert("j1", 4, ptr(uint64(5)), nil, "", "")
+		_, _, err := c.Jobs().Revert("j1", 4, new(uint64(5)), nil, "", "")
 		return err
 	}},
 	{"jobs.stable", `{}`, func(c *api.Client) error { _, _, err := c.Jobs().Stable("j1", 4, true, nil); return err }},
@@ -186,6 +184,90 @@ var ops = []op{
 		return err
 	}},
 	{"jobs.untag_version", `{}`, func(c *api.Client) error { _, err := c.Jobs().UntagVersion("j1", "golden", nil); return err }},
+
+	{"acl_policies.list", `[]`, func(c *api.Client) error { _, _, err := c.ACLPolicies().List(nil); return err }},
+	{"acl_policies.upsert", `{}`, func(c *api.Client) error {
+		_, err := c.ACLPolicies().Upsert(&api.ACLPolicy{Name: "p1", Description: "d", Rules: `namespace "default" { policy = "read" }`, JobACL: &api.JobACL{Namespace: "ns", JobID: "j"}}, writeOpts)
+		return err
+	}},
+	{"acl_policies.delete", `{}`, func(c *api.Client) error { _, err := c.ACLPolicies().Delete("p1", nil); return err }},
+	{"acl_policies.info", `{}`, func(c *api.Client) error { _, _, err := c.ACLPolicies().Info("p1", nil); return err }},
+	{"acl_policies.self", `[]`, func(c *api.Client) error { _, _, err := c.ACLPolicies().Self(nil); return err }},
+	{"acl_tokens.bootstrap", `{}`, func(c *api.Client) error { _, _, err := c.ACLTokens().Bootstrap(nil); return err }},
+	{"acl_tokens.bootstrap_opts", `{}`, func(c *api.Client) error { _, _, err := c.ACLTokens().BootstrapOpts("secret", writeOpts); return err }},
+	{"acl_tokens.list", `[]`, func(c *api.Client) error { _, _, err := c.ACLTokens().List(nil); return err }},
+	{"acl_tokens.create", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLTokens().Create(&api.ACLToken{Name: "t", Type: "client", Policies: []string{"p1"}, Roles: []*api.ACLTokenRoleLink{{ID: "r1"}}, Global: true, ExpirationTTL: 90 * time.Minute}, nil)
+		return err
+	}},
+	{"acl_tokens.upload", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLTokens().Upload(&api.ACLToken{AccessorID: "acc", SecretID: "sec", Name: "t", Type: "client", Policies: []string{"p1"}}, nil)
+		return err
+	}},
+	{"acl_tokens.update", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLTokens().Update(&api.ACLToken{AccessorID: "acc", Name: "t2"}, nil)
+		return err
+	}},
+	{"acl_tokens.delete", `{}`, func(c *api.Client) error { _, err := c.ACLTokens().Delete("acc", nil); return err }},
+	{"acl_tokens.info", `{}`, func(c *api.Client) error { _, _, err := c.ACLTokens().Info("acc", nil); return err }},
+	{"acl_tokens.self", `{}`, func(c *api.Client) error { _, _, err := c.ACLTokens().Self(nil); return err }},
+	{"acl_tokens.upsert_one_time_token", `{"OneTimeToken":{}}`, func(c *api.Client) error { _, _, err := c.ACLTokens().UpsertOneTimeToken(nil); return err }},
+	{"acl_tokens.exchange_one_time_token", `{"Token":{}}`, func(c *api.Client) error { _, _, err := c.ACLTokens().ExchangeOneTimeToken("ott", nil); return err }},
+	{"acl_roles.list", `[]`, func(c *api.Client) error { _, _, err := c.ACLRoles().List(nil); return err }},
+	{"acl_roles.create", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLRoles().Create(&api.ACLRole{Name: "r", Description: "d", Policies: []*api.ACLRolePolicyLink{{Name: "p1"}}}, nil)
+		return err
+	}},
+	{"acl_roles.update", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLRoles().Update(&api.ACLRole{ID: "rid", Name: "r2"}, nil)
+		return err
+	}},
+	{"acl_roles.delete", `{}`, func(c *api.Client) error { _, err := c.ACLRoles().Delete("rid", nil); return err }},
+	{"acl_roles.get", `{}`, func(c *api.Client) error { _, _, err := c.ACLRoles().Get("rid", nil); return err }},
+	{"acl_roles.get_by_name", `{}`, func(c *api.Client) error { _, _, err := c.ACLRoles().GetByName("r", nil); return err }},
+	{"acl_auth_methods.list", `[]`, func(c *api.Client) error { _, _, err := c.ACLAuthMethods().List(nil); return err }},
+	{"acl_auth_methods.create", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLAuthMethods().Create(&api.ACLAuthMethod{
+			Name: "m", Type: "JWT", TokenLocality: "global", TokenNameFormat: "${auth_method_type}-${value.sub}", MaxTokenTTL: time.Hour, Default: true,
+			Config: &api.ACLAuthMethodConfig{JWKSURL: "https://idp.example/jwks", BoundAudiences: []string{"nomad"}, ClaimMappings: map[string]string{"sub": "user"},
+				ExpirationLeeway: 90 * time.Second, ClockSkewLeeway: 1500 * time.Millisecond,
+				OIDCClientAssertion: &api.OIDCClientAssertion{Audience: []string{"a"}, KeySource: api.OIDCKeySourceNomad, PrivateKey: &api.OIDCClientAssertionKey{KeyIDHeader: api.OIDCClientAssertionHeaderKid, KeyID: "k"}}},
+		}, nil)
+		return err
+	}},
+	{"acl_auth_methods.update", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLAuthMethods().Update(&api.ACLAuthMethod{Name: "m", Type: "JWT"}, nil)
+		return err
+	}},
+	{"acl_auth_methods.delete", `{}`, func(c *api.Client) error { _, err := c.ACLAuthMethods().Delete("m", nil); return err }},
+	{"acl_auth_methods.get", `{}`, func(c *api.Client) error { _, _, err := c.ACLAuthMethods().Get("m", nil); return err }},
+	{"acl_binding_rules.list", `[]`, func(c *api.Client) error { _, _, err := c.ACLBindingRules().List(nil); return err }},
+	{"acl_binding_rules.create", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLBindingRules().Create(&api.ACLBindingRule{Description: "d", AuthMethod: "m", Selector: "value.user == \"a\"", BindType: "policy", BindName: "p1"}, nil)
+		return err
+	}},
+	{"acl_binding_rules.update", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLBindingRules().Update(&api.ACLBindingRule{ID: "bid", AuthMethod: "m", BindType: "role", BindName: "r"}, nil)
+		return err
+	}},
+	{"acl_binding_rules.delete", `{}`, func(c *api.Client) error { _, err := c.ACLBindingRules().Delete("bid", nil); return err }},
+	{"acl_binding_rules.get", `{}`, func(c *api.Client) error { _, _, err := c.ACLBindingRules().Get("bid", nil); return err }},
+	{"acl_auth.get_auth_url", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLAuth().GetAuthURL(&api.ACLOIDCAuthURLRequest{AuthMethodName: "m", RedirectURI: "http://127.0.0.1/cb", ClientNonce: "n"}, nil)
+		return err
+	}},
+	{"acl_auth.complete_auth", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLAuth().CompleteAuth(&api.ACLOIDCCompleteAuthRequest{AuthMethodName: "m", ClientNonce: "n", State: "s", Code: "c", Iss: "i", RedirectURI: "http://127.0.0.1/cb"}, nil)
+		return err
+	}},
+	{"acl_auth.login", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLAuth().Login(&api.ACLLoginRequest{AuthMethodName: "m", LoginToken: "jwt"}, nil)
+		return err
+	}},
+	{"acl_identity.create_client_introduction_token", `{}`, func(c *api.Client) error {
+		_, _, err := c.ACLIdentity().CreateClientIntroductionToken(&api.ACLIdentityClientIntroductionTokenRequest{TTL: 5 * time.Minute, NodeName: "n", NodePool: "p"}, writeOpts)
+		return err
+	}},
 
 	{"namespaces.list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().List(nil); return err }},
 	{"namespaces.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().PrefixList("pre", queryOpts); return err }},

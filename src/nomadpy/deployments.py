@@ -23,7 +23,7 @@ class DeploymentState(Model):
     placed_canaries: list[str] | None = None
     auto_revert: bool = False
     progress_deadline: int = 0
-    require_progress_by: str = ""
+    require_progress_by: str = field(default="", metadata={"time": True})
     promoted: bool = False
     desired_canaries: int = 0
     desired_total: int = 0

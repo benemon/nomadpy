@@ -115,6 +115,29 @@ def client(nomad_agent):
     return Client(Config(address=nomad_agent))
 
 
+def leader_ready(address):
+    with urllib.request.urlopen(f"{address}/v1/status/leader", timeout=2) as resp:
+        return resp.status == 200 and resp.read() not in (b"", b'""')
+
+
+@pytest.fixture(scope="session")
+def acl_agent(nomad_bin):
+    """A dev agent with ACLs enabled. Node listing needs a token, so readiness is the leader endpoint."""
+    proc, address, workdir = start_agent(nomad_bin, "acl { enabled = true }\n", ready=leader_ready)
+    yield address
+    stop_agent(proc)
+    shutil.rmtree(workdir, ignore_errors=True)
+
+
+@pytest.fixture(scope="session")
+def acl_client(acl_agent):
+    """A client holding the bootstrap management token of acl_agent."""
+    client = Client(Config(address=acl_agent))
+    token, _ = client.acl_tokens.bootstrap()
+    client.set_secret_id(token.secret_id)
+    return client
+
+
 @pytest.fixture
 def ent_client(ent_agent):
     return Client(Config(address=ent_agent))
