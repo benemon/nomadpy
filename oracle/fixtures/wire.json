@@ -1833,6 +1833,2325 @@
       "response": "{}"
     },
     {
+      "op": "allocations.list",
+      "method": "GET",
+      "path": "/v1/allocations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "allocations.prefix_list",
+      "method": "GET",
+      "path": "/v1/allocations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "allocations.info",
+      "method": "GET",
+      "path": "/v1/allocation/a1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "allocations.stats",
+      "method": "GET",
+      "path": "/v1/client/allocation/a1/stats",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "allocations.checks",
+      "method": "GET",
+      "path": "/v1/client/allocation/a1/checks",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "allocations.gc",
+      "method": "GET",
+      "path": "/v1/client/allocation/a1/gc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "allocations.restart",
+      "method": "PUT",
+      "path": "/v1/client/allocation/a1/restart",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AllTasks": false,
+        "TaskName": "t"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "allocations.restart_all_tasks",
+      "method": "PUT",
+      "path": "/v1/client/allocation/a1/restart",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AllTasks": true,
+        "TaskName": ""
+      },
+      "response": "{}"
+    },
+    {
+      "op": "allocations.stop",
+      "method": "PUT",
+      "path": "/v1/allocation/a1/stop",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "allocations.signal",
+      "method": "PUT",
+      "path": "/v1/client/allocation/a1/signal",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Signal": "SIGHUP",
+        "Task": "t"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "allocations.set_pause_state",
+      "method": "PUT",
+      "path": "/v1/client/allocation/a1/pause",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "ScheduleState": "pause",
+        "Task": "t"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "allocations.get_pause_state",
+      "method": "GET",
+      "path": "/v1/client/allocation/a1/pause",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ],
+        "task": [
+          "t"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "allocations.services",
+      "method": "GET",
+      "path": "/v1/allocation/a1/services",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "nodes.list",
+      "method": "GET",
+      "path": "/v1/nodes",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "nodes.prefix_list",
+      "method": "GET",
+      "path": "/v1/nodes",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "nodes.info",
+      "method": "GET",
+      "path": "/v1/node/n1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "nodes.update_drain",
+      "method": "PUT",
+      "path": "/v1/node/n1/drain",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "DrainSpec": {
+          "Deadline": 3600000000000,
+          "IgnoreSystemJobs": true
+        },
+        "MarkEligible": true,
+        "Meta": {
+          "k": "v"
+        },
+        "NodeID": "n1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "nodes.update_drain_stop",
+      "method": "PUT",
+      "path": "/v1/node/n1/drain",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "DrainSpec": null,
+        "MarkEligible": true,
+        "Meta": null,
+        "NodeID": "n1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "nodes.toggle_eligibility",
+      "method": "PUT",
+      "path": "/v1/node/n1/eligibility",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Eligibility": "ineligible",
+        "NodeID": "n1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "nodes.allocations",
+      "method": "GET",
+      "path": "/v1/node/n1/allocations",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "nodes.csi_volumes",
+      "method": "GET",
+      "path": "/v1/volumes",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ],
+        "type": [
+          "csi"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "nodes.force_evaluate",
+      "method": "PUT",
+      "path": "/v1/node/n1/evaluate",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "nodes.stats",
+      "method": "GET",
+      "path": "/v1/client/stats",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "nodes.gc",
+      "method": "GET",
+      "path": "/v1/client/gc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": ""
+    },
+    {
+      "op": "nodes.gc_alloc",
+      "method": "GET",
+      "path": "/v1/client/allocation/a1/gc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": ""
+    },
+    {
+      "op": "nodes.purge",
+      "method": "PUT",
+      "path": "/v1/node/n1/purge",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "node_meta.apply",
+      "method": "POST",
+      "path": "/v1/client/metadata",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Meta": {
+          "gone": null,
+          "k": "v"
+        },
+        "NodeID": "n1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "node_meta.read",
+      "method": "GET",
+      "path": "/v1/client/metadata",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "node_identity.get",
+      "method": "GET",
+      "path": "/v1/client/identity",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "node_identity.renew",
+      "method": "POST",
+      "path": "/v1/client/identity/renew",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "NodeID": "n1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.create",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": {
+          "k": "v"
+        },
+        "ModifyIndex": 0,
+        "ModifyTime": 0,
+        "Namespace": "ns1",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.checked_create",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "cas": [
+          "0"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": {
+          "k": "v"
+        },
+        "ModifyIndex": 0,
+        "ModifyTime": 0,
+        "Namespace": "",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.read",
+      "method": "GET",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "variables.peek",
+      "method": "GET",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "variables.update",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": {
+          "k": "v2"
+        },
+        "Lock": {
+          "ID": "lid",
+          "LockDelay": "",
+          "TTL": ""
+        },
+        "ModifyIndex": 9,
+        "ModifyTime": 0,
+        "Namespace": "",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.checked_update",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "cas": [
+          "9"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": {
+          "k": "v2"
+        },
+        "ModifyIndex": 9,
+        "ModifyTime": 0,
+        "Namespace": "",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.delete",
+      "method": "DELETE",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "variables.checked_delete",
+      "method": "DELETE",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "cas": [
+          "9"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "variables.list",
+      "method": "GET",
+      "path": "/v1/vars",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "variables.prefix_list",
+      "method": "GET",
+      "path": "/v1/vars",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "nomadpy/"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "variables.get_items",
+      "method": "GET",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "variables.renew_lock",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "lock-renew": [
+          ""
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": null,
+        "Lock": {
+          "ID": "lid",
+          "LockDelay": "",
+          "TTL": ""
+        },
+        "ModifyIndex": 0,
+        "ModifyTime": 0,
+        "Namespace": "",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.release_lock",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "lock-release": [
+          ""
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": null,
+        "Lock": {
+          "ID": "lid",
+          "LockDelay": "",
+          "TTL": ""
+        },
+        "ModifyIndex": 0,
+        "ModifyTime": 0,
+        "Namespace": "",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "variables.acquire_lock",
+      "method": "PUT",
+      "path": "/v1/var/nomadpy/v1",
+      "query": {
+        "lock-acquire": [
+          ""
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "CreateTime": 0,
+        "Items": {
+          "k": "v"
+        },
+        "Lock": {
+          "ID": "",
+          "LockDelay": "5s",
+          "TTL": "15s"
+        },
+        "ModifyIndex": 0,
+        "ModifyTime": 0,
+        "Namespace": "",
+        "Path": "nomadpy/v1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "agent.self",
+      "method": "GET",
+      "path": "/v1/agent/self",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.join",
+      "method": "PUT",
+      "path": "/v1/agent/join",
+      "query": {
+        "address": [
+          "10.0.0.1:4648",
+          "10.0.0.2:4648"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.members",
+      "method": "GET",
+      "path": "/v1/agent/members",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.force_leave",
+      "method": "PUT",
+      "path": "/v1/agent/force-leave",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node": [
+          "n1"
+        ],
+        "prune": [
+          "1"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.servers",
+      "method": "GET",
+      "path": "/v1/agent/servers",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "agent.set_servers",
+      "method": "PUT",
+      "path": "/v1/agent/servers",
+      "query": {
+        "address": [
+          "10.0.0.1:4647",
+          "10.0.0.2:4647"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.list_keys",
+      "method": "GET",
+      "path": "/v1/agent/keyring/list",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.reload",
+      "method": "PUT",
+      "path": "/v1/agent/reload",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.install_key",
+      "method": "PUT",
+      "path": "/v1/agent/keyring/install",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Key": "k1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "agent.use_key",
+      "method": "PUT",
+      "path": "/v1/agent/keyring/use",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Key": "k1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "agent.remove_key",
+      "method": "PUT",
+      "path": "/v1/agent/keyring/remove",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Key": "k1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "agent.health",
+      "method": "GET",
+      "path": "/v1/agent/health",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.host",
+      "method": "GET",
+      "path": "/v1/agent/host",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ],
+        "server_id": [
+          "s1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.get_scheduler_worker_config",
+      "method": "GET",
+      "path": "/v1/agent/schedulers/config",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "agent.set_scheduler_worker_config",
+      "method": "PUT",
+      "path": "/v1/agent/schedulers/config",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "enabled_schedulers": [
+          "service",
+          "batch"
+        ],
+        "num_schedulers": 2
+      },
+      "response": "{}"
+    },
+    {
+      "op": "agent.get_scheduler_workers_info",
+      "method": "GET",
+      "path": "/v1/agent/schedulers",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.raft_get_configuration",
+      "method": "GET",
+      "path": "/v1/operator/raft/configuration",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.raft_remove_peer_by_address",
+      "method": "DELETE",
+      "path": "/v1/operator/raft/peer",
+      "query": {
+        "address": [
+          "10.0.0.1:4647"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.raft_remove_peer_by_id",
+      "method": "DELETE",
+      "path": "/v1/operator/raft/peer",
+      "query": {
+        "id": [
+          "id1"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.raft_transfer_leadership_by_address",
+      "method": "PUT",
+      "path": "/v1/operator/raft/transfer-leadership",
+      "query": {
+        "address": [
+          "10.0.0.1:4647"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.raft_transfer_leadership_by_id",
+      "method": "PUT",
+      "path": "/v1/operator/raft/transfer-leadership",
+      "query": {
+        "id": [
+          "id1"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.scheduler_get_configuration",
+      "method": "GET",
+      "path": "/v1/operator/scheduler/configuration",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.scheduler_set_configuration",
+      "method": "PUT",
+      "path": "/v1/operator/scheduler/configuration",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "MemoryOversubscriptionEnabled": false,
+        "ModifyIndex": 3,
+        "NodeLimitForFeasibilityChecks": 0,
+        "PauseEvalBroker": true,
+        "PreemptionConfig": {
+          "BatchSchedulerEnabled": false,
+          "ServiceSchedulerEnabled": true,
+          "SysBatchSchedulerEnabled": false,
+          "SystemSchedulerEnabled": false
+        },
+        "RejectJobRegistration": false,
+        "SchedulerAlgorithm": "spread"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "operator.scheduler_cas_configuration",
+      "method": "PUT",
+      "path": "/v1/operator/scheduler/configuration",
+      "query": {
+        "cas": [
+          "3"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "MemoryOversubscriptionEnabled": false,
+        "ModifyIndex": 3,
+        "NodeLimitForFeasibilityChecks": 0,
+        "PauseEvalBroker": false,
+        "PreemptionConfig": {
+          "BatchSchedulerEnabled": false,
+          "ServiceSchedulerEnabled": false,
+          "SysBatchSchedulerEnabled": false,
+          "SystemSchedulerEnabled": false
+        },
+        "RejectJobRegistration": false,
+        "SchedulerAlgorithm": "binpack"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "operator.apply_license",
+      "method": "PUT",
+      "path": "/v1/operator/license",
+      "query": {
+        "force": [
+          "true"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": "02MV4UU43BK5",
+      "response": "{}"
+    },
+    {
+      "op": "operator.license_get",
+      "method": "GET",
+      "path": "/v1/operator/license",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.upgrade_check_vault_workload_identity",
+      "method": "GET",
+      "path": "/v1/operator/upgrade-check/vault-workload-identity",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.utilization",
+      "method": "POST",
+      "path": "/v1/operator/utilization",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ],
+        "today": [
+          "true"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.autopilot_get_configuration",
+      "method": "GET",
+      "path": "/v1/operator/autopilot/configuration",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.autopilot_set_configuration",
+      "method": "PUT",
+      "path": "/v1/operator/autopilot/configuration",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CleanupDeadServers": true,
+        "CreateIndex": 0,
+        "DisableUpgradeMigration": false,
+        "EnableCustomUpgrades": false,
+        "EnableRedundancyZones": true,
+        "LastContactThreshold": "200ms",
+        "MaxTrailingLogs": 250,
+        "MinQuorum": 3,
+        "ModifyIndex": 4,
+        "ServerStabilizationTime": "10s"
+      },
+      "response": "true"
+    },
+    {
+      "op": "operator.autopilot_cas_configuration",
+      "method": "PUT",
+      "path": "/v1/operator/autopilot/configuration",
+      "query": {
+        "cas": [
+          "4"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CleanupDeadServers": true,
+        "CreateIndex": 0,
+        "DisableUpgradeMigration": false,
+        "EnableCustomUpgrades": false,
+        "EnableRedundancyZones": false,
+        "LastContactThreshold": "0s",
+        "MaxTrailingLogs": 0,
+        "MinQuorum": 0,
+        "ModifyIndex": 4,
+        "ServerStabilizationTime": "0s"
+      },
+      "response": "true"
+    },
+    {
+      "op": "operator.autopilot_server_health",
+      "method": "GET",
+      "path": "/v1/operator/autopilot/health",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.metrics",
+      "method": "GET",
+      "path": "/v1/metrics",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "format": [
+          "prometheus"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "operator.metrics_summary",
+      "method": "GET",
+      "path": "/v1/metrics",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "quotas.list",
+      "method": "GET",
+      "path": "/v1/quotas",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "quotas.prefix_list",
+      "method": "GET",
+      "path": "/v1/quotas",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "quotas.list_usage",
+      "method": "GET",
+      "path": "/v1/quota-usages",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "quotas.prefix_list_usage",
+      "method": "GET",
+      "path": "/v1/quota-usages",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "quotas.info",
+      "method": "GET",
+      "path": "/v1/quota/q1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "quotas.usage",
+      "method": "GET",
+      "path": "/v1/quota/usage/q1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "quotas.register",
+      "method": "PUT",
+      "path": "/v1/quota",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "d",
+        "Limits": [
+          {
+            "Hash": null,
+            "Region": "global",
+            "RegionLimit": {
+              "CPU": 1000,
+              "Cores": null,
+              "Devices": null,
+              "MemoryMB": 1024,
+              "MemoryMaxMB": null,
+              "NUMA": null,
+              "NodePools": [
+                {
+                  "CPU": null,
+                  "Cores": 2,
+                  "Devices": null,
+                  "MemoryMB": null,
+                  "MemoryMaxMB": null,
+                  "NUMA": null,
+                  "NodePool": "default",
+                  "SecretsMB": null,
+                  "Storage": null
+                }
+              ],
+              "SecretsMB": null,
+              "Storage": {
+                "HostVolumesMB": 20,
+                "VariablesMB": 10
+              }
+            },
+            "VariablesLimit": 5
+          }
+        ],
+        "ModifyIndex": 0,
+        "Name": "q1"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "quotas.delete",
+      "method": "DELETE",
+      "path": "/v1/quota/q1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "sentinel_policies.list",
+      "method": "GET",
+      "path": "/v1/sentinel/policies",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "sentinel_policies.upsert",
+      "method": "PUT",
+      "path": "/v1/sentinel/policy/s1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "d",
+        "EnforcementLevel": "advisory",
+        "ModifyIndex": 0,
+        "Name": "s1",
+        "Policy": "main = rule { true }",
+        "Scope": "submit-job"
+      },
+      "response": "{}"
+    },
+    {
+      "op": "sentinel_policies.delete",
+      "method": "DELETE",
+      "path": "/v1/sentinel/policy/s1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "sentinel_policies.info",
+      "method": "GET",
+      "path": "/v1/sentinel/policy/s1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
       "op": "namespaces.list",
       "method": "GET",
       "path": "/v1/namespaces",

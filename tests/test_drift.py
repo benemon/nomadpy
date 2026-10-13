@@ -9,18 +9,21 @@ Rules that need no ledger entry:
 - Len/Less/Swap on *Sort receivers, MarshalJSON/UnmarshalJSON, and methods on unexported receivers, are Go-only;
 - methods on structs the ledger lists as dicts are Go-only;
 - a Go `Foo`/`FooOpts` pair maps to one Python method `foo`;
-- structs named *Request and *Options are request bodies or keyword arguments, not models;
+- structs named *Request, *Options and *Opts are request bodies or keyword arguments, not models;
+- a receiver's Python class may live in another module when Go spreads its methods over several files;
 - a Go struct whose Python class is not a Model (services, Client, options, the exception) is not field-compared;
-- embedded fields (QueryMeta, WriteMeta, WriteRequest) are not model fields;
+- embedded QueryMeta, WriteMeta and WriteRequest are not model fields; other embedded structs are flattened as encoding/json does;
 - a Go time.Time field carries metadata time=True, and omitempty metadata mirrors the Go json tag;
 - Go consts map to UPPER_SNAKE names in the same module.
 """
 
+import collections
 import dataclasses
 import importlib
 import inspect
 import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
@@ -101,7 +104,7 @@ def test_methods(go_file):
         entry = LEDGER["methods"].get(key)
         if isinstance(entry, str):
             continue
-        cls = getattr(nomadpy.api if receiver == "Client" else module, receiver, None)
+        cls = find_class(module, receiver)
         if cls is None:
             problems.append(f"{key}: receiver has no Python class and no ledger entry")
             continue
@@ -116,7 +119,7 @@ def test_methods(go_file):
         expected_python[(receiver, python_name)] = key
 
     for receiver in {m["receiver"] for m in go_methods}:
-        cls = getattr(nomadpy.api if receiver == "Client" else module, receiver, None)
+        cls = find_class(module, receiver)
         if cls is None or receiver in LEDGER["structs"].get(go_file, {}):
             continue
         if receiver in LEDGER["receivers"] or receiver == "Client":
@@ -124,9 +127,58 @@ def test_methods(go_file):
         for python_name, member in inspect.getmembers(cls, callable):
             if python_name.startswith("_") or hasattr(Model, python_name):
                 continue
-            if (receiver, python_name) not in expected_python:
+            if (receiver, python_name) not in expected_python and python_name not in ALL_PYTHON_NAMES[receiver]:
                 problems.append(f"{receiver}.{python_name} exists in Python but has no Go counterpart in {go_file}")
     assert not problems, "\n".join(problems)
+
+
+def find_class(module, receiver):
+    """The Python class for a Go receiver: in the file's own module, or anywhere in the package when Go spreads a type's methods over several files."""
+    if receiver == "Client":
+        return nomadpy.Client
+    cls = getattr(module, receiver, None)
+    if cls is not None:
+        return cls
+    for name in list(sys.modules):
+        if name.startswith("nomadpy.") and getattr(sys.modules[name], receiver, None) is not None:
+            return getattr(sys.modules[name], receiver)
+    return None
+
+
+def all_python_names():
+    """Every Python method name any Go file maps onto, per receiver, so a receiver's methods can live in several Go files."""
+    out = collections.defaultdict(set)
+    for go_file, file in SURFACE["files"].items():
+        for m in file["methods"]:
+            key = f'{m["receiver"]}.{m["name"]}'
+            entry = LEDGER["methods"].get(key)
+            if isinstance(entry, dict):
+                out[m["receiver"]].add(entry["folded"])
+            elif m["name"].endswith("Opts") and any(x["receiver"] == m["receiver"] and x["name"] == m["name"][:-4] for x in file["methods"]):
+                out[m["receiver"]].add(snake(m["name"][:-4]))
+            else:
+                out[m["receiver"]].add(snake(m["name"]))
+    return out
+
+
+ALL_PYTHON_NAMES = all_python_names()
+
+
+EMBEDDED_META = {"QueryMeta", "WriteMeta", "WriteRequest"}
+
+
+def expand_embedded(fields):
+    """Flattens embedded structs the way encoding/json does, except the request and response metadata."""
+    out = []
+    for f in fields:
+        if not f.get("embedded"):
+            out.append(f)
+        elif f["name"] not in EMBEDDED_META:
+            for file in SURFACE["files"].values():
+                if f["name"] in file["structs"]:
+                    out += expand_embedded(file["structs"][f["name"]]["fields"])
+                    break
+    return out
 
 
 @pytest.mark.parametrize("go_file", ported_files())
@@ -136,7 +188,7 @@ def test_structs(go_file):
     ledger = LEDGER["structs"].get(go_file, {})
     problems = []
     for name, st in go_structs.items():
-        if name.endswith(("Request", "Options")):
+        if name.endswith(("Request", "Options", "Opts")):
             continue
         cls = getattr(module, name, None)
         if name in ledger:
@@ -148,7 +200,7 @@ def test_structs(go_file):
             continue
         if not is_model(cls):
             continue
-        go_fields = {f["json"]: f for f in st["fields"] if not f.get("embedded")}
+        go_fields = {f["json"]: f for f in expand_embedded(st["fields"])}
         py_fields = {f.metadata.get("json", json_name(f.name)): f for f in dataclasses.fields(cls)}
         for missing in sorted(go_fields.keys() - py_fields.keys()):
             problems.append(f"{name}: Go field {missing} is not on the dataclass")

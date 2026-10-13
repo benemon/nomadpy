@@ -33,7 +33,8 @@ type Wire struct {
 }
 
 // op is one Go client call. response is the body the recorder answers with,
-// which only has to decode into the method's result type.
+// which only has to decode into the method's result type; it is empty for
+// calls that decode nothing.
 type op struct {
 	name     string
 	response string
@@ -101,10 +102,13 @@ func capture(name string, r *http.Request, body []byte) Request {
 	return Request{Op: name, Method: r.Method, Path: r.URL.Path, Query: query, Headers: headers, Body: decoded}
 }
 
-var queryOpts = &api.QueryOptions{
-	Region: "r1", Namespace: "ns1", AllowStale: true, WaitIndex: 12, WaitTime: 1500 * time.Millisecond,
-	Prefix: "p", Filter: "f == 1", PerPage: 5, NextToken: "nt", Reverse: true,
-	Params: map[string]string{"x": "y"}, Headers: map[string]string{"H": "v"}, AuthToken: "tok1",
+// queryOpts returns a fresh value each time: methods such as PrefixList mutate the options they are given.
+func queryOpts() *api.QueryOptions {
+	return &api.QueryOptions{
+		Region: "r1", Namespace: "ns1", AllowStale: true, WaitIndex: 12, WaitTime: 1500 * time.Millisecond,
+		Prefix: "p", Filter: "f == 1", PerPage: 5, NextToken: "nt", Reverse: true,
+		Params: map[string]string{"x": "y"}, Headers: map[string]string{"H": "v"}, AuthToken: "tok1",
+	}
 }
 
 var writeOpts = &api.WriteOptions{
@@ -133,7 +137,7 @@ var ops = []op{
 		return err
 	}},
 	{"jobs.list", `[]`, func(c *api.Client) error { _, _, err := c.Jobs().List(nil); return err }},
-	{"jobs.list_query_opts", `[]`, func(c *api.Client) error { _, _, err := c.Jobs().List(queryOpts); return err }},
+	{"jobs.list_query_opts", `[]`, func(c *api.Client) error { _, _, err := c.Jobs().List(queryOpts()); return err }},
 	{"jobs.list_meta", `[]`, func(c *api.Client) error {
 		_, _, err := c.Jobs().ListOptions(&api.JobListOptions{Fields: &api.JobListFields{Meta: true}}, nil)
 		return err
@@ -269,8 +273,190 @@ var ops = []op{
 		return err
 	}},
 
+	{"allocations.list", `[]`, func(c *api.Client) error { _, _, err := c.Allocations().List(nil); return err }},
+	{"allocations.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Allocations().PrefixList("pre"); return err }},
+	{"allocations.info", `{}`, func(c *api.Client) error { _, _, err := c.Allocations().Info("a1", nil); return err }},
+	{"allocations.stats", `{}`, func(c *api.Client) error {
+		_, err := c.Allocations().Stats(&api.Allocation{ID: "a1"}, queryOpts())
+		return err
+	}},
+	{"allocations.checks", `{}`, func(c *api.Client) error { _, err := c.Allocations().Checks("a1", nil); return err }},
+	{"allocations.gc", `{}`, func(c *api.Client) error { return c.Allocations().GC(&api.Allocation{ID: "a1"}, queryOpts()) }},
+	{"allocations.restart", `{}`, func(c *api.Client) error { return c.Allocations().Restart(&api.Allocation{ID: "a1"}, "t", nil) }},
+	{"allocations.restart_all_tasks", `{}`, func(c *api.Client) error { return c.Allocations().RestartAllTasks(&api.Allocation{ID: "a1"}, nil) }},
+	{"allocations.stop", `{}`, func(c *api.Client) error {
+		_, err := c.Allocations().Stop(&api.Allocation{ID: "a1"}, queryOpts())
+		return err
+	}},
+	{"allocations.signal", `{}`, func(c *api.Client) error {
+		return c.Allocations().Signal(&api.Allocation{ID: "a1"}, nil, "t", "SIGHUP")
+	}},
+	{"allocations.set_pause_state", `{}`, func(c *api.Client) error {
+		return c.Allocations().SetPauseState(&api.Allocation{ID: "a1"}, nil, "t", "pause")
+	}},
+	{"allocations.get_pause_state", `{}`, func(c *api.Client) error {
+		_, _, err := c.Allocations().GetPauseState(&api.Allocation{ID: "a1"}, nil, "t")
+		return err
+	}},
+	{"allocations.services", `[]`, func(c *api.Client) error { _, _, err := c.Allocations().Services("a1", nil); return err }},
+
+	{"nodes.list", `[]`, func(c *api.Client) error { _, _, err := c.Nodes().List(nil); return err }},
+	{"nodes.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Nodes().PrefixListOpts("pre", queryOpts()); return err }},
+	{"nodes.info", `{}`, func(c *api.Client) error { _, _, err := c.Nodes().Info("n1", nil); return err }},
+	{"nodes.update_drain", `{}`, func(c *api.Client) error {
+		_, err := c.Nodes().UpdateDrainOpts("n1", &api.DrainOptions{DrainSpec: &api.DrainSpec{Deadline: time.Hour, IgnoreSystemJobs: true}, MarkEligible: true, Meta: map[string]string{"k": "v"}}, writeOpts)
+		return err
+	}},
+	{"nodes.update_drain_stop", `{}`, func(c *api.Client) error { _, err := c.Nodes().UpdateDrain("n1", nil, true, nil); return err }},
+	{"nodes.toggle_eligibility", `{}`, func(c *api.Client) error { _, err := c.Nodes().ToggleEligibility("n1", false, nil); return err }},
+	{"nodes.allocations", `[]`, func(c *api.Client) error { _, _, err := c.Nodes().Allocations("n1", nil); return err }},
+	{"nodes.csi_volumes", `[]`, func(c *api.Client) error { _, err := c.Nodes().CSIVolumes("n1", nil); return err }},
+	{"nodes.force_evaluate", `{}`, func(c *api.Client) error { _, _, err := c.Nodes().ForceEvaluate("n1", nil); return err }},
+	{"nodes.stats", `{}`, func(c *api.Client) error { _, err := c.Nodes().Stats("n1", nil); return err }},
+	{"nodes.gc", ``, func(c *api.Client) error { return c.Nodes().GC("n1", nil) }},
+	{"nodes.gc_alloc", ``, func(c *api.Client) error { return c.Nodes().GcAlloc("a1", nil) }},
+	{"nodes.purge", `{}`, func(c *api.Client) error { _, _, err := c.Nodes().Purge("n1", nil); return err }},
+	{"node_meta.apply", `{}`, func(c *api.Client) error {
+		_, err := c.Nodes().Meta().Apply(&api.NodeMetaApplyRequest{NodeID: "n1", Meta: map[string]*string{"k": new("v"), "gone": nil}}, nil)
+		return err
+	}},
+	{"node_meta.read", `{}`, func(c *api.Client) error { _, err := c.Nodes().Meta().Read("n1", nil); return err }},
+	{"node_identity.get", `{}`, func(c *api.Client) error {
+		_, err := c.Nodes().Identity().Get(&api.NodeIdentityGetRequest{NodeID: "n1"}, nil)
+		return err
+	}},
+	{"node_identity.renew", `{}`, func(c *api.Client) error {
+		_, err := c.Nodes().Identity().Renew(&api.NodeIdentityRenewRequest{NodeID: "n1"}, nil)
+		return err
+	}},
+
+	{"variables.create", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().Create(&api.Variable{Path: "/nomadpy/v1/", Namespace: "ns1", Items: api.VariableItems{"k": "v"}}, writeOpts)
+		return err
+	}},
+	{"variables.checked_create", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().CheckedCreate(&api.Variable{Path: "nomadpy/v1", Items: api.VariableItems{"k": "v"}}, nil)
+		return err
+	}},
+	{"variables.read", `{}`, func(c *api.Client) error { _, _, err := c.Variables().Read(" nomadpy/v1 ", queryOpts()); return err }},
+	{"variables.peek", `{}`, func(c *api.Client) error { _, _, err := c.Variables().Peek("nomadpy/v1", nil); return err }},
+	{"variables.update", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().Update(&api.Variable{Path: "nomadpy/v1", ModifyIndex: 9, Items: api.VariableItems{"k": "v2"}, Lock: &api.VariableLock{ID: "lid"}}, nil)
+		return err
+	}},
+	{"variables.checked_update", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().CheckedUpdate(&api.Variable{Path: "nomadpy/v1", ModifyIndex: 9, Items: api.VariableItems{"k": "v2"}}, nil)
+		return err
+	}},
+	{"variables.delete", `{}`, func(c *api.Client) error { _, err := c.Variables().Delete("nomadpy/v1", writeOpts); return err }},
+	{"variables.checked_delete", `{}`, func(c *api.Client) error { _, err := c.Variables().CheckedDelete("nomadpy/v1", 9, nil); return err }},
+	{"variables.list", `[]`, func(c *api.Client) error { _, _, err := c.Variables().List(nil); return err }},
+	{"variables.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Variables().PrefixList("nomadpy/", nil); return err }},
+	{"variables.get_items", `{}`, func(c *api.Client) error { _, _, err := c.Variables().GetItems("nomadpy/v1", nil); return err }},
+	{"variables.renew_lock", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().RenewLock(&api.Variable{Path: "nomadpy/v1", Lock: &api.VariableLock{ID: "lid"}}, nil)
+		return err
+	}},
+	{"variables.release_lock", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().ReleaseLock(&api.Variable{Path: "nomadpy/v1", Lock: &api.VariableLock{ID: "lid"}}, nil)
+		return err
+	}},
+	{"variables.acquire_lock", `{}`, func(c *api.Client) error {
+		_, _, err := c.Variables().AcquireLock(&api.Variable{Path: "nomadpy/v1", Items: api.VariableItems{"k": "v"}, Lock: &api.VariableLock{TTL: "15s", LockDelay: "5s"}}, nil)
+		return err
+	}},
+
+	{"agent.self", `{}`, func(c *api.Client) error { _, err := c.Agent().Self(); return err }},
+	{"agent.join", `{}`, func(c *api.Client) error { _, err := c.Agent().Join("10.0.0.1:4648", "10.0.0.2:4648"); return err }},
+	{"agent.members", `{}`, func(c *api.Client) error { _, err := c.Agent().MembersOpts(queryOpts()); return err }},
+	{"agent.force_leave", `{}`, func(c *api.Client) error {
+		return c.Agent().ForceLeaveWithOptions("n1", api.ForceLeaveOpts{Prune: true})
+	}},
+	{"agent.servers", `[]`, func(c *api.Client) error { _, err := c.Agent().Servers(); return err }},
+	{"agent.set_servers", `{}`, func(c *api.Client) error { return c.Agent().SetServers([]string{"10.0.0.1:4647", "10.0.0.2:4647"}) }},
+	{"agent.list_keys", `{}`, func(c *api.Client) error { _, err := c.Agent().ListKeys(); return err }},
+	{"agent.reload", `{}`, func(c *api.Client) error { return c.Agent().Reload(nil, writeOpts) }},
+	{"agent.install_key", `{}`, func(c *api.Client) error { _, err := c.Agent().InstallKey("k1"); return err }},
+	{"agent.use_key", `{}`, func(c *api.Client) error { _, err := c.Agent().UseKey("k1"); return err }},
+	{"agent.remove_key", `{}`, func(c *api.Client) error { _, err := c.Agent().RemoveKey("k1"); return err }},
+	{"agent.health", `{}`, func(c *api.Client) error { _, err := c.Agent().Health(); return err }},
+	{"agent.host", `{}`, func(c *api.Client) error { _, err := c.Agent().Host("s1", "n1", nil); return err }},
+	{"agent.get_scheduler_worker_config", `{}`, func(c *api.Client) error { _, err := c.Agent().GetSchedulerWorkerConfig(nil); return err }},
+	{"agent.set_scheduler_worker_config", `{}`, func(c *api.Client) error {
+		_, err := c.Agent().SetSchedulerWorkerConfig(api.SchedulerWorkerPoolArgs{NumSchedulers: 2, EnabledSchedulers: []string{"service", "batch"}}, writeOpts)
+		return err
+	}},
+	{"agent.get_scheduler_workers_info", `{}`, func(c *api.Client) error { _, err := c.Agent().GetSchedulerWorkersInfo(nil); return err }},
+	{"operator.raft_get_configuration", `{}`, func(c *api.Client) error { _, err := c.Operator().RaftGetConfiguration(queryOpts()); return err }},
+	{"operator.raft_remove_peer_by_address", `{}`, func(c *api.Client) error { return c.Operator().RaftRemovePeerByAddress("10.0.0.1:4647", writeOpts) }},
+	{"operator.raft_remove_peer_by_id", `{}`, func(c *api.Client) error { return c.Operator().RaftRemovePeerByID("id1", nil) }},
+	{"operator.raft_transfer_leadership_by_address", `{}`, func(c *api.Client) error { return c.Operator().RaftTransferLeadershipByAddress("10.0.0.1:4647", nil) }},
+	{"operator.raft_transfer_leadership_by_id", `{}`, func(c *api.Client) error { return c.Operator().RaftTransferLeadershipByID("id1", writeOpts) }},
+	{"operator.scheduler_get_configuration", `{}`, func(c *api.Client) error { _, _, err := c.Operator().SchedulerGetConfiguration(nil); return err }},
+	{"operator.scheduler_set_configuration", `{}`, func(c *api.Client) error {
+		_, _, err := c.Operator().SchedulerSetConfiguration(&api.SchedulerConfiguration{SchedulerAlgorithm: api.SchedulerAlgorithmSpread, PreemptionConfig: api.PreemptionConfig{ServiceSchedulerEnabled: true}, PauseEvalBroker: true, ModifyIndex: 3}, nil)
+		return err
+	}},
+	{"operator.scheduler_cas_configuration", `{}`, func(c *api.Client) error {
+		_, _, err := c.Operator().SchedulerCASConfiguration(&api.SchedulerConfiguration{SchedulerAlgorithm: api.SchedulerAlgorithmBinpack, ModifyIndex: 3}, writeOpts)
+		return err
+	}},
+	{"operator.apply_license", `{}`, func(c *api.Client) error {
+		_, err := c.Operator().ApplyLicense("02MV4UU43BK5", &api.ApplyLicenseOptions{Force: true}, writeOpts)
+		return err
+	}},
+	{"operator.license_get", `{}`, func(c *api.Client) error { _, _, err := c.Operator().LicenseGet(queryOpts()); return err }},
+	{"operator.upgrade_check_vault_workload_identity", `{}`, func(c *api.Client) error {
+		_, _, err := c.Operator().UpgradeCheckVaultWorkloadIdentity(nil)
+		return err
+	}},
+	{"operator.utilization", `{}`, func(c *api.Client) error {
+		_, _, err := c.Operator().Utilization(&api.OperatorUtilizationOptions{TodayOnly: true}, writeOpts)
+		return err
+	}},
+	{"operator.autopilot_get_configuration", `{}`, func(c *api.Client) error { _, _, err := c.Operator().AutopilotGetConfiguration(nil); return err }},
+	{"operator.autopilot_set_configuration", `true`, func(c *api.Client) error {
+		_, err := c.Operator().AutopilotSetConfiguration(&api.AutopilotConfiguration{CleanupDeadServers: true, LastContactThreshold: 200 * time.Millisecond, MaxTrailingLogs: 250, MinQuorum: 3, ServerStabilizationTime: 10 * time.Second, EnableRedundancyZones: true, ModifyIndex: 4}, nil)
+		return err
+	}},
+	{"operator.autopilot_cas_configuration", `true`, func(c *api.Client) error {
+		_, _, err := c.Operator().AutopilotCASConfiguration(&api.AutopilotConfiguration{CleanupDeadServers: true, ModifyIndex: 4}, writeOpts)
+		return err
+	}},
+	{"operator.autopilot_server_health", `{}`, func(c *api.Client) error { _, _, err := c.Operator().AutopilotServerHealth(nil); return err }},
+	{"operator.metrics", `{}`, func(c *api.Client) error {
+		q := queryOpts()
+		q.Params["format"] = "prometheus"
+		_, err := c.Operator().Metrics(q)
+		return err
+	}},
+	{"operator.metrics_summary", `{}`, func(c *api.Client) error { _, _, err := c.Operator().MetricsSummary(nil); return err }},
+
+	{"quotas.list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().List(nil); return err }},
+	{"quotas.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().PrefixList("pre", nil); return err }},
+	{"quotas.list_usage", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().ListUsage(nil); return err }},
+	{"quotas.prefix_list_usage", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().PrefixListUsage("pre", queryOpts()); return err }},
+	{"quotas.info", `{}`, func(c *api.Client) error { _, _, err := c.Quotas().Info("q1", nil); return err }},
+	{"quotas.usage", `{}`, func(c *api.Client) error { _, _, err := c.Quotas().Usage("q1", nil); return err }},
+	{"quotas.register", `{}`, func(c *api.Client) error {
+		_, err := c.Quotas().Register(&api.QuotaSpec{Name: "q1", Description: "d", Limits: []*api.QuotaLimit{{
+			Region: "global", VariablesLimit: new(5),
+			RegionLimit: &api.QuotaResources{CPU: new(1000), MemoryMB: new(1024), Storage: &api.QuotaStorageResources{VariablesMB: 10, HostVolumesMB: 20},
+				NodePools: []*api.NodePoolLimit{{NodePool: "default", Cores: new(2)}}},
+		}}}, writeOpts)
+		return err
+	}},
+	{"quotas.delete", `{}`, func(c *api.Client) error { _, err := c.Quotas().Delete("q1", nil); return err }},
+	{"sentinel_policies.list", `[]`, func(c *api.Client) error { _, _, err := c.SentinelPolicies().List(nil); return err }},
+	{"sentinel_policies.upsert", `{}`, func(c *api.Client) error {
+		_, err := c.SentinelPolicies().Upsert(&api.SentinelPolicy{Name: "s1", Description: "d", Scope: "submit-job", EnforcementLevel: "advisory", Policy: "main = rule { true }"}, writeOpts)
+		return err
+	}},
+	{"sentinel_policies.delete", `{}`, func(c *api.Client) error { _, err := c.SentinelPolicies().Delete("s1", nil); return err }},
+	{"sentinel_policies.info", `{}`, func(c *api.Client) error { _, _, err := c.SentinelPolicies().Info("s1", nil); return err }},
+
 	{"namespaces.list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().List(nil); return err }},
-	{"namespaces.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().PrefixList("pre", queryOpts); return err }},
+	{"namespaces.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().PrefixList("pre", queryOpts()); return err }},
 	{"namespaces.info", `{}`, func(c *api.Client) error { _, _, err := c.Namespaces().Info("n1", nil); return err }},
 	{"namespaces.register", `{}`, func(c *api.Client) error {
 		_, err := c.Namespaces().Register(&api.Namespace{

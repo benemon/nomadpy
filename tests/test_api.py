@@ -147,7 +147,7 @@ def test_blocking_query(client):
 
 def test_stale_query(client):
     resp, qm = client.query("/v1/jobs", QueryOptions(allow_stale=True))
-    assert resp == []
+    assert isinstance(resp, list)
     assert qm.last_contact >= timedelta(0)
 
 

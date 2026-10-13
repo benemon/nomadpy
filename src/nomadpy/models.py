@@ -54,7 +54,8 @@ class Model:
             if f.metadata.get("omitempty") and not value:
                 continue
             if f.metadata.get("duration") == "string":
-                value = format_duration(value) if value else ""
+                # Go's ACL types blank a zero duration; the autopilot types render it as "0s" (metadata zero="0s").
+                value = format_duration(value) if value else f.metadata.get("zero", "")
             elif f.metadata.get("time") and not value:
                 value = GO_ZERO_TIME
             out[f.metadata.get("json", json_name(f.name))] = _encode(value)

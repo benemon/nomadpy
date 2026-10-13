@@ -130,12 +130,41 @@ def acl_agent(nomad_bin):
 
 
 @pytest.fixture(scope="session")
-def acl_client(acl_agent):
-    """A client holding the bootstrap management token of acl_agent."""
-    client = Client(Config(address=acl_agent))
+def ent_acl_agent():
+    """An Enterprise dev agent with ACLs enabled, for the Enterprise features that require them."""
+    binary = _binary("NOMADPY_TEST_ENT_BIN")
+    license_path = os.environ.get("NOMAD_LICENSE_PATH")
+    if not license_path or not os.path.isfile(license_path):
+        pytest.skip("NOMAD_LICENSE_PATH not set")
+    proc, address, workdir = start_agent(binary, "acl { enabled = true }\n", env={"NOMAD_LICENSE_PATH": license_path}, ready=leader_ready)
+    yield address
+    stop_agent(proc)
+    shutil.rmtree(workdir, ignore_errors=True)
+
+
+def bootstrap(address):
+    """A management-token client for an ACL-enabled agent, returned once the server keyring exists so signing endpoints work."""
+    client = Client(Config(address=address))
     token, _ = client.acl_tokens.bootstrap()
     client.set_secret_id(token.secret_id)
-    return client
+    deadline = time.monotonic() + 30
+    while time.monotonic() < deadline:
+        keys, _ = client.query("/v1/operator/keyring/keys")
+        if keys:
+            return client
+        time.sleep(0.25)
+    raise RuntimeError("server keyring never initialised")
+
+
+@pytest.fixture(scope="session")
+def ent_acl_client(ent_acl_agent):
+    return bootstrap(ent_acl_agent)
+
+
+@pytest.fixture(scope="session")
+def acl_client(acl_agent):
+    """A client holding the bootstrap management token of acl_agent."""
+    return bootstrap(acl_agent)
 
 
 @pytest.fixture
@@ -143,10 +172,19 @@ def ent_client(ent_agent):
     return Client(Config(address=ent_agent))
 
 
+def _decode_body(body):
+    if not body:
+        return None
+    try:
+        return json.loads(body)
+    except ValueError:
+        return body.decode(errors="replace")
+
+
 class Recorder:
     """A local HTTP server that records the last request and answers 200 with fixed Nomad metadata headers.
 
-    `response` is the JSON body returned; tests that decode a specific shape set it.
+    `response` is the JSON body returned, or None for an empty body; tests that decode a specific shape set it.
     """
 
     def __init__(self):
@@ -176,9 +214,9 @@ class Recorder:
                     "path": urllib.parse.unquote(url.path),
                     "query": urllib.parse.parse_qs(url.query, keep_blank_values=True),
                     "headers": dict(self.headers),
-                    "body": json.loads(body) if body else None,
+                    "body": _decode_body(body),
                 }
-                payload = json.dumps(recorder.response).encode()
+                payload = b"" if recorder.response is None else json.dumps(recorder.response).encode()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(payload)))

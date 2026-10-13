@@ -205,12 +205,19 @@ class Client:
         self.acl_policies = ACLPolicies(self)
         self.acl_roles = ACLRoles(self)
         self.acl_tokens = ACLTokens(self)
+        self.agent = Agent(self)
+        self.allocations = Allocations(self)
         self.deployments = Deployments(self)
         self.evaluations = Evaluations(self)
         self.jobs = Jobs(self)
+        self.operator = Operator(self)
         self.namespaces = Namespaces(self)
+        self.nodes = Nodes(self)
+        self.quotas = Quotas(self)
         self.regions = Regions(self)
+        self.sentinel_policies = SentinelPolicies(self)
         self.status = Status(self)
+        self.variables = Variables(self)
 
     def address(self) -> str:
         return self.config.address
@@ -225,51 +232,64 @@ class Client:
         self.config.secret_id = secret_id
 
     def query(self, endpoint: str, q: QueryOptions | None = None) -> tuple[Any, QueryMeta]:
-        return self._query("GET", endpoint, None, q)
+        return self._query("GET", endpoint, None, q)[1:]
 
     def put_query(self, endpoint: str, body: Any, q: QueryOptions | None = None) -> tuple[Any, QueryMeta]:
-        return self._query("PUT", endpoint, body, q)
+        return self._query("PUT", endpoint, body, q)[1:]
 
     def post_query(self, endpoint: str, body: Any, q: QueryOptions | None = None) -> tuple[Any, QueryMeta]:
-        return self._query("POST", endpoint, body, q)
+        return self._query("POST", endpoint, body, q)[1:]
 
     def put(self, endpoint: str, body: Any, w: WriteOptions | None = None) -> tuple[Any, WriteMeta]:
-        return self._write("PUT", endpoint, body, w)
+        return self._write("PUT", endpoint, body, w)[1:]
 
     def post(self, endpoint: str, body: Any, w: WriteOptions | None = None) -> tuple[Any, WriteMeta]:
-        return self._write("POST", endpoint, body, w)
+        return self._write("POST", endpoint, body, w)[1:]
 
     def delete(self, endpoint: str, body: Any = None, w: WriteOptions | None = None) -> tuple[Any, WriteMeta]:
-        return self._write("DELETE", endpoint, body, w)
+        return self._write("DELETE", endpoint, body, w)[1:]
 
-    def _query(self, method: str, endpoint: str, body: Any, q: QueryOptions | None) -> tuple[Any, QueryMeta]:
+    def raw_query(self, endpoint: str, q: QueryOptions | None = None) -> tuple[bytes, QueryMeta]:
+        """raw_query returns the undecoded response body."""
+        status, raw, qm = self._query("GET", endpoint, None, q, (200,), decode=False)
+        return raw, qm
+
+    def request(self, method: str, endpoint: str, body: Any = None, opts: QueryOptions | WriteOptions | None = None,
+                expected: tuple[int, ...] = (200,)) -> tuple[int, Any, QueryMeta | WriteMeta]:
+        """request is the general form: any status in `expected` is returned instead of raised, with its decoded body."""
+        if method == "GET" or isinstance(opts, QueryOptions):
+            return self._query(method, endpoint, body, opts, expected)
+        return self._write(method, endpoint, body, opts, expected)
+
+    def _query(self, method: str, endpoint: str, body: Any, q: QueryOptions | None,
+               expected: tuple[int, ...] = (200,), decode: bool = True) -> tuple[int, Any, QueryMeta]:
         params, headers, token = self._base_request(endpoint)
         if q is not None:
             if q.region:
-                params["region"] = q.region
+                params["region"] = [q.region]
             if q.namespace:
-                params["namespace"] = q.namespace
+                params["namespace"] = [q.namespace]
             if q.auth_token:
                 token = q.auth_token
             if q.allow_stale:
-                params["stale"] = ""
+                params["stale"] = [""]
             if q.wait_index:
-                params["index"] = str(q.wait_index)
+                params["index"] = [str(q.wait_index)]
             if q.wait_time:
-                params["wait"] = _msec(q.wait_time)
+                params["wait"] = [_msec(q.wait_time)]
             if q.prefix:
-                params["prefix"] = q.prefix
+                params["prefix"] = [q.prefix]
             if q.filter:
-                params["filter"] = q.filter
+                params["filter"] = [q.filter]
             if q.per_page:
-                params["per_page"] = str(q.per_page)
+                params["per_page"] = [str(q.per_page)]
             if q.next_token:
-                params["next_token"] = q.next_token
+                params["next_token"] = [q.next_token]
             if q.reverse:
-                params["reverse"] = "true"
-            params.update(q.params)
+                params["reverse"] = ["true"]
+            params.update({k: [v] for k, v in q.params.items()})
             headers.update(q.headers)
-        rtt, resp_headers, data = self._do(method, endpoint, params, headers, token, body)
+        status, rtt, resp_headers, data = self._do(method, endpoint, params, headers, token, body, expected)
         qm = QueryMeta(
             last_index=_parse_index(resp_headers, "X-Nomad-Index"),
             last_contact=timedelta(milliseconds=_parse_index(resp_headers, "X-Nomad-LastContact")),
@@ -277,38 +297,44 @@ class Client:
             request_time=rtt,
             next_token=resp_headers.get("X-Nomad-NextToken", ""),
         )
-        return _decode(data), qm
+        return status, (_decode(data) if decode else data), qm
 
-    def _write(self, method: str, endpoint: str, body: Any, w: WriteOptions | None) -> tuple[Any, WriteMeta]:
+    def _write(self, method: str, endpoint: str, body: Any, w: WriteOptions | None,
+               expected: tuple[int, ...] = (200,)) -> tuple[int, Any, WriteMeta]:
         params, headers, token = self._base_request(endpoint)
         if w is not None:
             if w.region:
-                params["region"] = w.region
+                params["region"] = [w.region]
             if w.namespace:
-                params["namespace"] = w.namespace
+                params["namespace"] = [w.namespace]
             if w.auth_token:
                 token = w.auth_token
             if w.idempotency_token:
-                params["idempotency_token"] = w.idempotency_token
+                params["idempotency_token"] = [w.idempotency_token]
             headers.update(w.headers)
-        rtt, resp_headers, data = self._do(method, endpoint, params, headers, token, body)
+        status, rtt, resp_headers, data = self._do(method, endpoint, params, headers, token, body, expected)
         wm = WriteMeta(last_index=_parse_index(resp_headers, "X-Nomad-Index"), request_time=rtt)
-        return _decode(data), wm
+        return status, _decode(data), wm
 
-    def _base_request(self, endpoint: str) -> tuple[dict[str, str], dict[str, str], str]:
-        params: dict[str, str] = {}
+    def _base_request(self, endpoint: str) -> tuple[dict[str, list[str]], dict[str, str], str]:
+        # Values are lists, as in Go's url.Values: an endpoint's own query string may repeat a key
+        # (?address=a&address=b) while the options replace a key outright.
+        params: dict[str, list[str]] = {}
         if self.config.region:
-            params["region"] = self.config.region
+            params["region"] = [self.config.region]
         if self.config.namespace:
-            params["namespace"] = self.config.namespace
+            params["namespace"] = [self.config.namespace]
         if self.config.wait_time:
-            params["wait"] = _msec(self.config.wait_time)
-        params.update(urllib.parse.parse_qsl(urllib.parse.urlsplit(endpoint).query))
+            params["wait"] = [_msec(self.config.wait_time)]
+        # keep_blank_values so flag-style keys such as ?lock-acquire survive, as they do in Go.
+        for k, v in urllib.parse.parse_qsl(urllib.parse.urlsplit(endpoint).query, keep_blank_values=True):
+            params.setdefault(k, []).append(v)
         return params, dict(self.config.headers), self.config.secret_id
 
-    def _do(self, method: str, endpoint: str, params: dict[str, str], headers: dict[str, str], token: str, body: Any):
+    def _do(self, method: str, endpoint: str, params: dict[str, list[str]], headers: dict[str, str], token: str, body: Any,
+            expected: tuple[int, ...]):
         path = urllib.parse.urlsplit(endpoint).path
-        url = urllib.parse.urlunsplit((self._url.scheme, self._netloc, path, urllib.parse.urlencode(params), ""))
+        url = urllib.parse.urlunsplit((self._url.scheme, self._netloc, path, urllib.parse.urlencode(params, doseq=True), ""))
         if self._url.username is not None:
             auth = f"{self._url.username}:{self._url.password or ''}"
         elif self.config.http_auth is not None:
@@ -319,7 +345,7 @@ class Client:
             headers["Authorization"] = "Basic " + base64.b64encode(auth.encode()).decode()
         if token:
             headers["X-Nomad-Token"] = token
-        data = None if body is None else json.dumps(body).encode()
+        data = body if body is None or isinstance(body, bytes) else json.dumps(body).encode()
         req = urllib.request.Request(url, data=data, headers=headers, method=method)
         start = time.monotonic()
         try:
@@ -329,22 +355,33 @@ class Client:
         rtt = timedelta(seconds=time.monotonic() - start)
         with resp:
             raw = resp.read()
-        if resp.status != 200:
-            raise UnexpectedResponseError(resp.status, resp.reason, raw.decode(errors="replace").strip(), (200,))
-        return rtt, resp.headers, raw
+        if resp.status not in expected:
+            raise UnexpectedResponseError(resp.status, resp.reason, raw.decode(errors="replace").strip(), expected)
+        return resp.status, rtt, resp.headers, raw
 
 
 def _decode(raw: bytes) -> Any:
     if not raw:
         return None
-    return json.loads(raw)
+    try:
+        return json.loads(raw)
+    except ValueError:
+        # Accepted non-200 statuses may carry a plain-text body.
+        return raw.decode(errors="replace").strip()
 
 
 # Service modules import the option types above, so they can only be imported once those exist.
+from .agent import Agent  # noqa: E402
 from .acl import ACLAuth, ACLAuthMethods, ACLBindingRules, ACLIdentity, ACLPolicies, ACLRoles, ACLTokens  # noqa: E402
+from .allocations import Allocations  # noqa: E402
 from .deployments import Deployments  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
 from .jobs import Jobs  # noqa: E402
 from .namespace import Namespaces  # noqa: E402
+from .nodes import Nodes  # noqa: E402
+from .operator import Operator  # noqa: E402
+from .quota import Quotas  # noqa: E402
 from .regions import Regions  # noqa: E402
+from .sentinel import SentinelPolicies  # noqa: E402
 from .status import Status  # noqa: E402
+from .variables import Variables  # noqa: E402

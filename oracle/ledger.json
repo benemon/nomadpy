@@ -1,8 +1,6 @@
 {
   "_": "Every deliberate gap between the pinned Go api surface and nomadpy, with its reason. tests/test_drift.py fails on any gap not listed here and on any entry that is no longer a gap.",
   "files": {
-    "agent.go": "pn-cq8",
-    "allocations.go": "pn-qqa",
     "allocations_exec.go": "pn-k6m",
     "constraint.go": "pn-txy",
     "consul.go": "pn-txy",
@@ -14,27 +12,18 @@
     "ioutil.go": "internal io helpers",
     "keyring.go": "pn-9sw",
     "locks.go": "pn-9sw",
-    "node_identity.go": "pn-79x",
-    "node_meta.go": "pn-79x",
     "node_pools.go": "pn-e9y",
-    "nodes.go": "pn-79x",
-    "operator.go": "pn-d1r",
-    "operator_autopilot.go": "pn-d1r",
-    "operator_metrics.go": "pn-d1r",
-    "quota.go": "pn-966",
     "raw.go": "raw queries, not ported with the foundation",
     "recommendations.go": "pn-9u3",
     "resources.go": "pn-txy",
     "retry.go": "retry layer, not ported with the foundation",
     "scaling.go": "pn-9u3",
     "search.go": "pn-b54",
-    "sentinel.go": "pn-d2t",
     "services.go": "pn-b54",
     "system.go": "pn-b54",
     "task_sched.go": "pn-txy",
     "tasks.go": "pn-txy",
-    "utils.go": "internal helpers",
-    "variables.go": "pn-9xn"
+    "utils.go": "internal helpers"
   },
   "receivers": {
     "UnexpectedResponseError": "Go accessor methods are plain attributes on the Python exception"
@@ -54,7 +43,47 @@
       "folded": "list"
     },
     "Jobs.ScaleWithRequest": "scale builds the ScalingRequest from its arguments; pn-9u3 revisits with scaling.go",
-    "Client.ACLOIDC": "deprecated alias of ACLAuth"
+    "Client.ACLOIDC": "deprecated alias of ACLAuth",
+    "Variables.GetVariableItems": {
+      "folded": "get_items"
+    },
+    "Variable.Copy": "dataclasses.replace",
+    "Variable.AsJSON": "to_json plus json.dumps",
+    "Variable.AsPrettyJSON": "to_json plus json.dumps",
+    "Nodes.PrefixListOpts": {
+      "folded": "prefix_list"
+    },
+    "Nodes.UpdateDrainOpts": {
+      "folded": "update_drain"
+    },
+    "Nodes.Meta": "attribute nodes.meta",
+    "Nodes.Identity": "attribute nodes.identity",
+    "Nodes.MonitorDrain": "channel-based drain monitor; streaming is deferred with pn-gq4",
+    "DrainStrategy.Equal": "dataclass equality",
+    "DrainStrategy.String": "__str__",
+    "Allocations.Exec": "pn-k6m",
+    "Allocation.Stub": "Allocation stays a dict; pn-cmv",
+    "Allocation.ServerTerminalStatus": "Allocation stays a dict; pn-cmv",
+    "Allocation.ClientTerminalStatus": "Allocation stays a dict; pn-cmv",
+    "Agent.MembersOpts": {
+      "folded": "members"
+    },
+    "Agent.ForceLeaveWithOptions": {
+      "folded": "force_leave"
+    },
+    "Agent.Monitor": "streaming log monitor; deferred with pn-gq4",
+    "Agent.MonitorExport": "streaming log monitor; deferred with pn-gq4",
+    "Agent.CPUProfile": "pprof profiles are raw bytes; post-MVP",
+    "Agent.Trace": "pprof profiles are raw bytes; post-MVP",
+    "Agent.Lookup": "pprof profiles are raw bytes; post-MVP",
+    "Operator.Snapshot": "raft snapshot streams with digest validation; post-MVP",
+    "Operator.SnapshotRestore": "raft snapshot streams; post-MVP",
+    "Operator.LicensePut": {
+      "folded": "apply_license"
+    },
+    "Operator.LicenseGet": {
+      "folded": "license_get"
+    }
   },
   "structs": {
     "api.go": {
@@ -102,6 +131,53 @@
       "ACLOIDC": "deprecated alias of ACLAuth",
       "OneTimeTokenUpsertResponse": "flattened to the OneTimeToken",
       "OneTimeTokenExchangeResponse": "flattened to the ACLToken"
+    },
+    "variables.go": {
+      "ErrCASConflict": "exception class, not a model"
+    },
+    "nodes.go": {
+      "Node": "Node stays a dict; pn-02c",
+      "HostVolumeInfo": "Node stays a dict; pn-02c",
+      "HostNetworkInfo": "Node stays a dict; pn-02c",
+      "NodeEvent": "Node stays a dict; pn-02c",
+      "CSITopologyRequest": "Node stays a dict; pn-02c",
+      "CSITopology": "Node stays a dict; pn-02c",
+      "CSINodeInfo": "Node stays a dict; pn-02c",
+      "CSIControllerInfo": "Node stays a dict; pn-02c",
+      "CSIInfo": "Node stays a dict; pn-02c",
+      "HostStats": "Node stays a dict; pn-02c",
+      "HostMemoryStats": "Node stays a dict; pn-02c",
+      "HostCPUStats": "Node stays a dict; pn-02c",
+      "HostDiskStats": "Node stays a dict; pn-02c",
+      "DeviceGroupStats": "Node stays a dict; pn-02c",
+      "DeviceStats": "Node stays a dict; pn-02c",
+      "StatObject": "Node stays a dict; pn-02c",
+      "StatValue": "Node stays a dict; pn-02c",
+      "MonitorMessage": "only produced by MonitorDrain"
+    },
+    "allocations.go": {
+      "Allocation": "Allocation stays a dict; pn-cmv",
+      "AllocationMetric": "Allocation stays a dict; pn-cmv",
+      "NodeScoreMeta": "Allocation stays a dict; pn-cmv",
+      "AllocNetworkStatus": "Allocation stays a dict; pn-cmv",
+      "DesiredTransition": "Allocation stays a dict; pn-cmv",
+      "GenericResponse": "only WriteMeta, which the client returns separately",
+      "ExecStreamingIOOperation": "pn-k6m",
+      "TerminalSize": "pn-k6m",
+      "ExecStreamingInput": "pn-k6m",
+      "ExecStreamingExitResult": "pn-k6m",
+      "ExecStreamingOutput": "pn-k6m",
+      "AllocGetPauseResponse": "flattened to the schedule state string"
+    },
+    "agent.go": {
+      "AgentSchedulerWorkerConfigResponse": "flattened into SchedulerWorkerPoolArgs, as Go does"
+    },
+    "operator.go": {
+      "LeadershipTransferResponse": "not used by any Go method"
+    },
+    "operator_metrics.go": {
+      "AggregateSample": "flattened into SampledValue by encoding/json",
+      "Label": "only behind json:\"-\" fields"
     }
   },
   "consts": {

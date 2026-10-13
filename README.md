@@ -25,6 +25,11 @@ pip install -e .[dev]
 NOMADPY_TEST_CE_BIN=$(which nomad) pytest
 ```
 
+The Enterprise lane needs an Enterprise build (`nomad_<version>+ent` from
+releases.hashicorp.com) and a licence file. The Governance & Policy tests
+(quotas, Sentinel) skip themselves when the licence lacks that module. CI
+runs both lanes from the `NOMAD_LICENSE` repository secret.
+
 ## Drift guard
 
 `oracle/` is a Go program that reads the pinned `github.com/hashicorp/nomad/api`
