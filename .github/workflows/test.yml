@@ -14,6 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.13"]
+    env:
+      NOMAD_LICENSE: ${{ secrets.NOMAD_LICENSE }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,20 +34,17 @@ jobs:
             unzip -oq "${z}" nomad -d "$HOME/nomad${edition}"
           done
           sudo apt-get install -y --no-install-recommends openssl
+          echo "NOMADPY_TEST_CE_BIN=$HOME/nomad/nomad" >> "$GITHUB_ENV"
+          echo "NOMADPY_TEST_ENT_BIN=$HOME/nomad+ent/nomad" >> "$GITHUB_ENV"
       - name: Write the Enterprise licence
         if: ${{ env.NOMAD_LICENSE != '' }}
-        env:
-          NOMAD_LICENSE: ${{ secrets.NOMAD_LICENSE }}
         run: |
           umask 077
           printf '%s\n' "$NOMAD_LICENSE" > "$HOME/nomad.hclic"
           echo "NOMAD_LICENSE_PATH=$HOME/nomad.hclic" >> "$GITHUB_ENV"
       - name: Install
-        run: python -m pip install -e .[dev]
+        run: python -m pip install -e '.[dev]'
       - name: Test
-        env:
-          NOMADPY_TEST_CE_BIN: ${{ env.HOME }}/nomad/nomad
-          NOMADPY_TEST_ENT_BIN: ${{ env.HOME }}/nomad+ent/nomad
         run: pytest -q -rs
 
   oracle:
@@ -55,7 +54,11 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: oracle/go.mod
-      - name: Fixtures match the pinned module
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Fixtures and models match the pinned module
         run: |
           make oracle
-          git diff --exit-code -- oracle/fixtures
+          make models
+          git diff --exit-code -- oracle/fixtures src/nomadpy
