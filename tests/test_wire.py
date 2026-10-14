@@ -329,6 +329,14 @@ OPS = {
     "task_group_host_volume_claims.list": lambda c: c.task_group_host_volume_claims.list(qopts(), job_id="j1", task_group="g", volume_name="hv"),
     "task_group_host_volume_claims.delete": lambda c: c.task_group_host_volume_claims.delete("c 1", WRITE_OPTS),
 
+    "event_stream.stream": lambda c: list(c.event_stream.stream({"Job": ["j1", "j2"], "Node": []}, 7, qopts())),
+    "alloc_fs.list": lambda c: c.alloc_fs.list("a1", "/alloc"),
+    "alloc_fs.stat": lambda c: c.alloc_fs.stat("a1", "alloc/logs", qopts()),
+    "alloc_fs.read_at": lambda c: c.alloc_fs.read_at("a1", "alloc/logs/t.stdout.0", 10, 20),
+    "alloc_fs.cat": lambda c: c.alloc_fs.cat("a1", "alloc/logs/t.stdout.0"),
+    "alloc_fs.stream": lambda c: list(c.alloc_fs.stream("a1", "alloc/logs/t.stdout.0", "start", 5)),
+    "alloc_fs.logs": lambda c: list(c.alloc_fs.logs("a1", True, "t", "stderr", "end", 0)),
+
     "namespaces.list": lambda c: c.namespaces.list(),
     "namespaces.prefix_list": lambda c: c.namespaces.prefix_list("pre", qopts()),
     "namespaces.info": lambda c: c.namespaces.info("n1"),

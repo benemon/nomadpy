@@ -66,6 +66,8 @@ from .host_volumes import HostVolume, HostVolumeCapability, HostVolumeStub
 from .deployments import Deployment, DeploymentState, DeploymentUpdateResponse
 from .error_unexpected_response import UnexpectedResponseError
 from .evaluations import Evaluation, EvaluationStub
+from .event_stream import Event, Events
+from .fs import AllocFileInfo, StreamFrame
 from .keyring import RootKeyMeta
 from .namespace import (
     Namespace,
@@ -200,6 +202,7 @@ __all__ = [
     "AllocationMetric",
     "AllocCheckStatus",
     "AllocDeploymentStatus",
+    "AllocFileInfo",
     "AllocResourceUsage",
     "AllocStopResponse",
     "AutopilotConfiguration",
@@ -227,6 +230,8 @@ __all__ = [
     "ErrCASConflict",
     "Evaluation",
     "EvaluationStub",
+    "Event",
+    "Events",
     "FuzzyMatch",
     "FuzzySearchResponse",
     "GaugeValue",
@@ -324,6 +329,7 @@ __all__ = [
     "SingleRecommendationApplyError",
     "SingleRecommendationApplyResult",
     "Spread",
+    "StreamFrame",
     "Task",
     "TaskEvent",
     "TaskGroup",

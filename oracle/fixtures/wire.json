@@ -5861,6 +5861,240 @@
       "response": "{}"
     },
     {
+      "op": "event_stream.stream",
+      "method": "GET",
+      "path": "/v1/event/stream",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "7"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "topic": [
+          "Job:j1",
+          "Job:j2",
+          "Node"
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "alloc_fs.list",
+      "method": "GET",
+      "path": "/v1/client/fs/ls/a1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "path": [
+          "/alloc"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "alloc_fs.stat",
+      "method": "GET",
+      "path": "/v1/client/fs/stat/a1",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "path": [
+          "alloc/logs"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "alloc_fs.read_at",
+      "method": "GET",
+      "path": "/v1/client/fs/readat/a1",
+      "query": {
+        "limit": [
+          "20"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "offset": [
+          "10"
+        ],
+        "path": [
+          "alloc/logs/t.stdout.0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "alloc_fs.cat",
+      "method": "GET",
+      "path": "/v1/client/fs/cat/a1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "path": [
+          "alloc/logs/t.stdout.0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "alloc_fs.stream",
+      "method": "GET",
+      "path": "/v1/client/fs/stream/a1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "offset": [
+          "5"
+        ],
+        "origin": [
+          "start"
+        ],
+        "path": [
+          "alloc/logs/t.stdout.0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "alloc_fs.logs",
+      "method": "GET",
+      "path": "/v1/client/fs/logs/a1",
+      "query": {
+        "follow": [
+          "true"
+        ],
+        "namespace": [
+          "ns0"
+        ],
+        "offset": [
+          "0"
+        ],
+        "origin": [
+          "end"
+        ],
+        "region": [
+          "r0"
+        ],
+        "task": [
+          "t"
+        ],
+        "type": [
+          "stderr"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
       "op": "namespaces.list",
       "method": "GET",
       "path": "/v1/namespaces",

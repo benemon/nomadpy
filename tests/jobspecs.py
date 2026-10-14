@@ -11,7 +11,7 @@ WAIT = timedelta(seconds=10)
 DEADLINE = 90
 
 
-def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False, scaling=False):
+def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False, scaling=False, command=None):
     service = ""
     if scaling:
         service += """
@@ -57,7 +57,7 @@ job "{job_id}" {{
       driver = "raw_exec"
       config {{
         command = "/bin/sh"
-        args    = ["-c", "sleep {sleep}"]
+        args    = ["-c", "{command or f'sleep {sleep}'}"]
       }}
       resources {{
         cpu    = 10

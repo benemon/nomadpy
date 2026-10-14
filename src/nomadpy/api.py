@@ -11,7 +11,7 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import timedelta
-from typing import Any
+from typing import Any, Iterator
 
 from .error_unexpected_response import UnexpectedResponseError
 
@@ -206,11 +206,13 @@ class Client:
         self.acl_roles = ACLRoles(self)
         self.acl_tokens = ACLTokens(self)
         self.agent = Agent(self)
+        self.alloc_fs = AllocFS(self)
         self.allocations = Allocations(self)
         self.csi_plugins = CSIPlugins(self)
         self.csi_volumes = CSIVolumes(self)
         self.deployments = Deployments(self)
         self.evaluations = Evaluations(self)
+        self.event_stream = EventStream(self)
         self.host_volumes = HostVolumes(self)
         self.jobs = Jobs(self)
         self.operator = Operator(self)
@@ -272,9 +274,50 @@ class Client:
             return self._query(method, endpoint, body, opts, expected)
         return self._write(method, endpoint, body, opts, expected)
 
+    def stream_json(self, endpoint: str, q: QueryOptions | None = None, timeout: float | None = None) -> Iterator[Any]:
+        """stream_json yields each JSON value of a streaming response as it arrives.
+
+        Values are decoded from the byte stream as they complete, with no
+        reliance on newlines: the filesystem stream sends frames without them.
+        The response stays open until the server ends it or the generator is
+        closed; `timeout` bounds each wait for more bytes, as a socket timeout.
+        """
+        params, headers, token = self._base_request(endpoint)
+        token = self._apply_query_options(q, params, headers, token)
+        resp = self._open("GET", endpoint, params, headers, token, None, (200,), timeout)
+        decoder = json.JSONDecoder()
+        buffer = ""
+        try:
+            while chunk := resp.read1(65536):
+                buffer += chunk.decode()
+                while True:
+                    buffer = buffer.lstrip()
+                    if not buffer:
+                        break
+                    try:
+                        value, end = decoder.raw_decode(buffer)
+                    except json.JSONDecodeError:
+                        break
+                    buffer = buffer[end:]
+                    yield value
+        finally:
+            resp.close()
+
     def _query(self, method: str, endpoint: str, body: Any, q: QueryOptions | None,
                expected: tuple[int, ...] = (200,), decode: bool = True) -> tuple[int, Any, QueryMeta]:
         params, headers, token = self._base_request(endpoint)
+        token = self._apply_query_options(q, params, headers, token)
+        status, rtt, resp_headers, data = self._do(method, endpoint, params, headers, token, body, expected)
+        qm = QueryMeta(
+            last_index=_parse_index(resp_headers, "X-Nomad-Index"),
+            last_contact=timedelta(milliseconds=_parse_index(resp_headers, "X-Nomad-LastContact")),
+            known_leader=resp_headers.get("X-Nomad-KnownLeader") == "true",
+            request_time=rtt,
+            next_token=resp_headers.get("X-Nomad-NextToken", ""),
+        )
+        return status, (_decode(data) if decode else data), qm
+
+    def _apply_query_options(self, q: QueryOptions | None, params: dict[str, list[str]], headers: dict[str, str], token: str) -> str:
         if q is not None:
             if q.region:
                 params["region"] = [q.region]
@@ -300,15 +343,7 @@ class Client:
                 params["reverse"] = ["true"]
             params.update({k: [v] for k, v in q.params.items()})
             headers.update(q.headers)
-        status, rtt, resp_headers, data = self._do(method, endpoint, params, headers, token, body, expected)
-        qm = QueryMeta(
-            last_index=_parse_index(resp_headers, "X-Nomad-Index"),
-            last_contact=timedelta(milliseconds=_parse_index(resp_headers, "X-Nomad-LastContact")),
-            known_leader=resp_headers.get("X-Nomad-KnownLeader") == "true",
-            request_time=rtt,
-            next_token=resp_headers.get("X-Nomad-NextToken", ""),
-        )
-        return status, (_decode(data) if decode else data), qm
+        return token
 
     def _write(self, method: str, endpoint: str, body: Any, w: WriteOptions | None,
                expected: tuple[int, ...] = (200,)) -> tuple[int, Any, WriteMeta]:
@@ -344,6 +379,16 @@ class Client:
 
     def _do(self, method: str, endpoint: str, params: dict[str, list[str]], headers: dict[str, str], token: str, body: Any,
             expected: tuple[int, ...]):
+        start = time.monotonic()
+        resp = self._open(method, endpoint, params, headers, token, body, expected)
+        rtt = timedelta(seconds=time.monotonic() - start)
+        with resp:
+            raw = resp.read()
+        return resp.status, rtt, resp.headers, raw
+
+    def _open(self, method: str, endpoint: str, params: dict[str, list[str]], headers: dict[str, str], token: str, body: Any,
+              expected: tuple[int, ...], timeout: float | None = None):
+        """Sends the request and returns the open response once its status is one of `expected`."""
         path = urllib.parse.urlsplit(endpoint).path
         url = urllib.parse.urlunsplit((self._url.scheme, self._netloc, path, urllib.parse.urlencode(params, doseq=True), ""))
         if self._url.username is not None:
@@ -358,17 +403,15 @@ class Client:
             headers["X-Nomad-Token"] = token
         data = body if body is None or isinstance(body, bytes) else json.dumps(body).encode()
         req = urllib.request.Request(url, data=data, headers=headers, method=method)
-        start = time.monotonic()
         try:
-            resp = self._opener.open(req)
+            resp = self._opener.open(req, timeout=timeout)
         except urllib.error.HTTPError as e:
             resp = e
-        rtt = timedelta(seconds=time.monotonic() - start)
-        with resp:
-            raw = resp.read()
         if resp.status not in expected:
+            with resp:
+                raw = resp.read()
             raise UnexpectedResponseError(resp.status, resp.reason, raw.decode(errors="replace").strip(), expected)
-        return resp.status, rtt, resp.headers, raw
+        return resp
 
 
 def _decode(raw: bytes) -> Any:
@@ -390,6 +433,8 @@ from .deployments import Deployments  # noqa: E402
 from .host_volume_claims import TaskGroupHostVolumeClaims  # noqa: E402
 from .host_volumes import HostVolumes  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
+from .event_stream import EventStream  # noqa: E402
+from .fs import AllocFS  # noqa: E402
 from .jobs import Jobs  # noqa: E402
 from .keyring import Keyring  # noqa: E402
 from .namespace import Namespaces  # noqa: E402

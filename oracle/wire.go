@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -51,6 +52,13 @@ func wire() (any, error) {
 	var captured []Request
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
+		// The Go filesystem methods first look the allocation's node up to connect to it directly; the
+		// Python client always goes through the server, so that lookup is not part of the call.
+		if strings.HasPrefix(current.name, "alloc_fs.") && strings.HasPrefix(r.URL.Path, "/v1/node/") {
+			w.WriteHeader(http.StatusOK)
+			io.WriteString(w, `{}`)
+			return
+		}
 		req := capture(current.name, r, body)
 		req.Response = current.response
 		captured = append(captured, req)
@@ -574,6 +582,62 @@ var ops = []op{
 	{"task_group_host_volume_claims.delete", `{}`, func(c *api.Client) error {
 		_, err := c.TaskGroupHostVolumeClaims().Delete("c 1", writeOpts())
 		return err
+	}},
+
+	{"event_stream.stream", `{}`, func(c *api.Client) error {
+		ch, err := c.EventStream().Stream(context.Background(), map[api.Topic][]string{api.TopicJob: {"j1", "j2"}, api.TopicNode: {}}, 7, queryOpts())
+		if err != nil {
+			return err
+		}
+		for range ch {
+		}
+		return nil
+	}},
+	{"alloc_fs.list", `[]`, func(c *api.Client) error {
+		_, _, err := c.AllocFS().List(&api.Allocation{ID: "a1"}, "/alloc", nil)
+		return err
+	}},
+	{"alloc_fs.stat", `{}`, func(c *api.Client) error {
+		_, _, err := c.AllocFS().Stat(&api.Allocation{ID: "a1"}, "alloc/logs", queryOpts())
+		return err
+	}},
+	{"alloc_fs.read_at", `{}`, func(c *api.Client) error {
+		r, err := c.AllocFS().ReadAt(&api.Allocation{ID: "a1"}, "alloc/logs/t.stdout.0", 10, 20, nil)
+		if err == nil {
+			r.Close()
+		}
+		return err
+	}},
+	{"alloc_fs.cat", `{}`, func(c *api.Client) error {
+		r, err := c.AllocFS().Cat(&api.Allocation{ID: "a1"}, "alloc/logs/t.stdout.0", nil)
+		if err == nil {
+			r.Close()
+		}
+		return err
+	}},
+	{"alloc_fs.stream", `{}`, func(c *api.Client) error {
+		frames, errCh := c.AllocFS().Stream(&api.Allocation{ID: "a1"}, "alloc/logs/t.stdout.0", "start", 5, nil, nil)
+		for range frames {
+		}
+		select {
+		case err := <-errCh:
+			if err != nil && err.Error() != "EOF" {
+				return err
+			}
+		default:
+		}
+		return nil
+	}},
+	{"alloc_fs.logs", `{}`, func(c *api.Client) error {
+		frames, errCh := c.AllocFS().Logs(&api.Allocation{ID: "a1"}, true, "t", "stderr", "end", 0, nil, nil)
+		for range frames {
+		}
+		select {
+		case err := <-errCh:
+			return err
+		default:
+		}
+		return nil
 	}},
 
 	{"namespaces.list", `[]`, func(c *api.Client) error { _, _, err := c.Namespaces().List(nil); return err }},

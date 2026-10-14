@@ -2,8 +2,6 @@
   "_": "Every deliberate gap between the pinned Go api surface and nomadpy, with its reason. tests/test_drift.py fails on any gap not listed here and on any entry that is no longer a gap.",
   "files": {
     "allocations_exec.go": "pn-k6m",
-    "event_stream.go": "pn-gq4",
-    "fs.go": "pn-09z",
     "ioutil.go": "internal io helpers",
     "locks.go": "client-side lease orchestration over the variables lock endpoints, which are ported; out of scope by decision on 2026-10-14",
     "raw.go": "raw queries, not ported with the foundation",
@@ -70,7 +68,8 @@
     "ServiceWeights": "job-spec builder and canonicalize helpers; the server canonicalises on register",
     "Services": "job-spec builder and canonicalize helpers; the server canonicalises on register",
     "StatValue": "String is a display formatter",
-    "CSIMountOptions": "Merge is a job-spec helper"
+    "CSIMountOptions": "Merge is a job-spec helper",
+    "FrameReader": "io.Reader adapter over frame channels; Python callers iterate frames"
   },
   "methods": {
     "Client.Close": "urllib opens a connection per request; nothing to close",
@@ -137,7 +136,8 @@
       "folded": "list_snapshots"
     },
     "QueryOptions.SetHeadersFromCSISecrets": "secrets keyword arguments on the CSI methods set the header",
-    "WriteOptions.SetHeadersFromCSISecrets": "secrets keyword arguments on the CSI methods set the header"
+    "WriteOptions.SetHeadersFromCSISecrets": "secrets keyword arguments on the CSI methods set the header",
+    "Topic.String": "topics are plain strings"
   },
   "structs": {
     "api.go": {
@@ -195,6 +195,9 @@
     },
     "host_volumes.go": {
       "HostVolumeDeleteResponse": "empty; delete returns WriteMeta"
+    },
+    "fs.go": {
+      "FrameReader": "io.Reader adapter over frame channels; Python callers iterate frames"
     }
   },
   "consts": {
