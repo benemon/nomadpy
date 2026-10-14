@@ -4990,6 +4990,877 @@
       "response": "{}"
     },
     {
+      "op": "csi_volumes.list",
+      "method": "GET",
+      "path": "/v1/volumes",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "type": [
+          "csi"
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "csi_volumes.list_external",
+      "method": "GET",
+      "path": "/v1/volumes/external",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "plugin_id": [
+          "plug"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.plugin_list",
+      "method": "GET",
+      "path": "/v1/volumes",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "prefix": [
+          "plug"
+        ],
+        "region": [
+          "r0"
+        ],
+        "type": [
+          "csi"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "csi_volumes.info",
+      "method": "GET",
+      "path": "/v1/volume/csi/v1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.register",
+      "method": "PUT",
+      "path": "/v1/volume/csi/v1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "Namespace": "",
+        "PolicyOverride": false,
+        "Region": "",
+        "SecretID": "",
+        "Volumes": [
+          {
+            "AccessMode": "",
+            "Allocations": null,
+            "AttachmentMode": "",
+            "Capacity": 0,
+            "CloneID": "",
+            "Context": null,
+            "ControllerRequired": false,
+            "ControllersExpected": 0,
+            "ControllersHealthy": 0,
+            "CreateIndex": 0,
+            "CreateTime": 0,
+            "ExternalID": "ext",
+            "ID": "v1",
+            "ModifyIndex": 0,
+            "ModifyTime": 0,
+            "MountOptions": null,
+            "Name": "vol",
+            "Namespace": "",
+            "NodesExpected": 0,
+            "NodesHealthy": 0,
+            "Parameters": null,
+            "PluginID": "plug",
+            "Provider": "",
+            "ProviderVersion": "",
+            "ReadAllocs": null,
+            "RequestedCapabilities": [
+              {
+                "AccessMode": "single-node-writer",
+                "AttachmentMode": "file-system"
+              }
+            ],
+            "RequestedCapacityMax": 0,
+            "RequestedCapacityMin": 0,
+            "RequestedTopologies": null,
+            "ResourceExhausted": "0001-01-01T00:00:00Z",
+            "Schedulable": false,
+            "Secrets": {
+              "k": "v"
+            },
+            "SnapshotID": "",
+            "Topologies": null,
+            "WriteAllocs": null
+          }
+        ]
+      },
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.deregister",
+      "method": "DELETE",
+      "path": "/v1/volume/csi/v 1",
+      "query": {
+        "force": [
+          "true"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.create",
+      "method": "PUT",
+      "path": "/v1/volume/csi/v1/create",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Namespace": "",
+        "PolicyOverride": false,
+        "Region": "",
+        "SecretID": "",
+        "Volumes": [
+          {
+            "AccessMode": "",
+            "Allocations": null,
+            "AttachmentMode": "",
+            "Capacity": 0,
+            "CloneID": "",
+            "Context": null,
+            "ControllerRequired": false,
+            "ControllersExpected": 0,
+            "ControllersHealthy": 0,
+            "CreateIndex": 0,
+            "CreateTime": 0,
+            "ExternalID": "",
+            "ID": "v1",
+            "ModifyIndex": 0,
+            "ModifyTime": 0,
+            "MountOptions": null,
+            "Name": "vol",
+            "Namespace": "",
+            "NodesExpected": 0,
+            "NodesHealthy": 0,
+            "Parameters": null,
+            "PluginID": "plug",
+            "Provider": "",
+            "ProviderVersion": "",
+            "ReadAllocs": null,
+            "RequestedCapabilities": null,
+            "RequestedCapacityMax": 0,
+            "RequestedCapacityMin": 1024,
+            "RequestedTopologies": null,
+            "ResourceExhausted": "0001-01-01T00:00:00Z",
+            "Schedulable": false,
+            "Secrets": null,
+            "SnapshotID": "",
+            "Topologies": null,
+            "WriteAllocs": null
+          }
+        ]
+      },
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.delete",
+      "method": "DELETE",
+      "path": "/v1/volume/csi/ext 1/delete",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.detach",
+      "method": "DELETE",
+      "path": "/v1/volume/csi/v1/detach",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node": [
+          "n1"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.create_snapshot",
+      "method": "PUT",
+      "path": "/v1/volumes/snapshot",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Namespace": "",
+        "Region": "",
+        "SecretID": "",
+        "Snapshots": [
+          {
+            "CreateTime": 0,
+            "ExternalSourceVolumeID": "",
+            "ID": "",
+            "IsReady": false,
+            "Name": "snap",
+            "Parameters": null,
+            "PluginID": "plug",
+            "Secrets": {
+              "k": "v"
+            },
+            "SizeBytes": 0,
+            "SourceVolumeID": "v1"
+          }
+        ]
+      },
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.delete_snapshot",
+      "method": "DELETE",
+      "path": "/v1/volumes/snapshot",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "plugin_id": [
+          "plug"
+        ],
+        "region": [
+          "r1"
+        ],
+        "snapshot_id": [
+          "s1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.list_snapshots",
+      "method": "GET",
+      "path": "/v1/volumes/snapshot",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "plugin_id": [
+          "plug"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_volumes.list_snapshots_opts",
+      "method": "GET",
+      "path": "/v1/volumes/snapshot",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "plugin_id": [
+          "plug"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "csi_plugins.list",
+      "method": "GET",
+      "path": "/v1/plugins",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ],
+        "type": [
+          "csi"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "csi_plugins.info",
+      "method": "GET",
+      "path": "/v1/plugin/csi/plug",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "host_volumes.create",
+      "method": "PUT",
+      "path": "/v1/volume/host/create",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "PolicyOverride": true,
+        "Volume": {
+          "CapacityBytes": 0,
+          "CreateIndex": 0,
+          "CreateTime": 0,
+          "HostPath": "",
+          "ID": "",
+          "ModifyIndex": 0,
+          "ModifyTime": 0,
+          "Name": "hv",
+          "Namespace": "",
+          "NodeID": "",
+          "NodePool": "default",
+          "Parameters": {
+            "mode": "0700"
+          },
+          "PluginID": "mkdir",
+          "RequestedCapabilities": [
+            {
+              "AccessMode": "single-node-writer",
+              "AttachmentMode": "file-system"
+            }
+          ],
+          "RequestedCapacityMaxBytes": 0,
+          "RequestedCapacityMinBytes": 0,
+          "State": ""
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "host_volumes.register",
+      "method": "PUT",
+      "path": "/v1/volume/host/register",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "PolicyOverride": false,
+        "Volume": {
+          "CapacityBytes": 2048,
+          "CreateIndex": 0,
+          "CreateTime": 0,
+          "HostPath": "/tmp/hv",
+          "ID": "",
+          "ModifyIndex": 0,
+          "ModifyTime": 0,
+          "Name": "hv",
+          "Namespace": "",
+          "NodeID": "n1",
+          "NodePool": "",
+          "PluginID": "",
+          "RequestedCapabilities": null,
+          "RequestedCapacityMaxBytes": 0,
+          "RequestedCapacityMinBytes": 0,
+          "State": ""
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "host_volumes.get",
+      "method": "GET",
+      "path": "/v1/volume/host/hv 1",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "host_volumes.list",
+      "method": "GET",
+      "path": "/v1/volumes",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "node_id": [
+          "n1"
+        ],
+        "node_pool": [
+          "default"
+        ],
+        "region": [
+          "r0"
+        ],
+        "type": [
+          "host"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "host_volumes.list_all",
+      "method": "GET",
+      "path": "/v1/volumes",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ],
+        "type": [
+          "host"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "host_volumes.delete",
+      "method": "DELETE",
+      "path": "/v1/volume/host/hv 1",
+      "query": {
+        "force": [
+          "true"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "task_group_host_volume_claims.list",
+      "method": "GET",
+      "path": "/v1/volumes/claims",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "job_id": [
+          "j1"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "task_group": [
+          "g"
+        ],
+        "volume_name": [
+          "hv"
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "task_group_host_volume_claims.delete",
+      "method": "DELETE",
+      "path": "/v1/volumes/claim/c 1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
       "op": "namespaces.list",
       "method": "GET",
       "path": "/v1/namespaces",

@@ -1476,7 +1476,11 @@
           "name": "ACLBindingRuleBindTypeManagement",
           "value": "\"management\""
         }
-      ]
+      ],
+      "types": {
+        "OIDCClientAssertionKeyIDHeader": "string",
+        "OIDCClientAssertionKeySource": "string"
+      }
     },
     "agent.go": {
       "methods": [
@@ -2153,7 +2157,10 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {
+        "AgentMembersNameSort": "[]*AgentMember"
+      }
     },
     "allocations.go": {
       "methods": [
@@ -3319,12 +3326,16 @@
           "name": "AllocRestartReasonWithinPolicy",
           "value": "\"Restart within policy\""
         }
-      ]
+      ],
+      "types": {
+        "AllocIndexSort": "[]*AllocationListStub"
+      }
     },
     "allocations_exec.go": {
       "methods": [],
       "structs": {},
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "api.go": {
       "methods": [
@@ -3746,7 +3757,8 @@
           "name": "ResultPaginatorErrorContent",
           "value": "\"failed to create result paginator\""
         }
-      ]
+      ],
+      "types": {}
     },
     "constraint.go": {
       "methods": [],
@@ -3812,7 +3824,8 @@
           "name": "ConstraintAttributeIsNotSet",
           "value": "\"is_not_set\""
         }
-      ]
+      ],
+      "types": {}
     },
     "consul.go": {
       "methods": [
@@ -4640,7 +4653,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "csi.go": {
       "methods": [
@@ -5818,7 +5832,16 @@
           "name": "CSIVolumeTypeCSI",
           "value": "\"csi\""
         }
-      ]
+      ],
+      "types": {
+        "CSIPluginIndexSort": "[]*CSIPluginListStub",
+        "CSISecrets": "map[string]string",
+        "CSISnapshotSort": "[]*CSISnapshot",
+        "CSIVolumeAccessMode": "string",
+        "CSIVolumeAttachmentMode": "string",
+        "CSIVolumeExternalStubSort": "[]*CSIVolumeExternalStub",
+        "CSIVolumeIndexSort": "[]*CSIVolumeListStub"
+      }
     },
     "deployments.go": {
       "methods": [
@@ -6327,7 +6350,10 @@
           "name": "DeploymentStatusUnblocking",
           "value": "\"unblocking\""
         }
-      ]
+      ],
+      "types": {
+        "DeploymentIndexSort": "[]*Deployment"
+      }
     },
     "error_unexpected_response.go": {
       "methods": [
@@ -6441,7 +6467,8 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "evaluations.go": {
       "methods": [
@@ -6892,7 +6919,10 @@
           "name": "EvalStatusCancelled",
           "value": "\"canceled\""
         }
-      ]
+      ],
+      "types": {
+        "EvalIndexSort": "[]*Evaluation"
+      }
     },
     "event_stream.go": {
       "methods": [
@@ -7099,7 +7129,10 @@
           "name": "TopicAll",
           "value": "\"*\""
         }
-      ]
+      ],
+      "types": {
+        "Topic": "string"
+      }
     },
     "fs.go": {
       "methods": [
@@ -7332,7 +7365,8 @@
           "name": "FSLogNameStderr",
           "value": "\"stderr\""
         }
-      ]
+      ],
+      "types": {}
     },
     "host_volume_claims.go": {
       "methods": [
@@ -7443,7 +7477,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "host_volumes.go": {
       "methods": [
@@ -7838,7 +7873,12 @@
           "name": "HostVolumeAccessModeSingleNodeMultiWriter",
           "value": "\"single-node-multi-writer\""
         }
-      ]
+      ],
+      "types": {
+        "HostVolumeAccessMode": "string",
+        "HostVolumeAttachmentMode": "string",
+        "HostVolumeState": "string"
+      }
     },
     "ioutil.go": {
       "methods": [
@@ -7863,7 +7903,8 @@
         }
       ],
       "structs": {},
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "jobs.go": {
       "methods": [
@@ -10183,7 +10224,10 @@
           "name": "JobDispatchLaunchSuffix",
           "value": "\"/dispatch-\""
         }
-      ]
+      ],
+      "types": {
+        "JobIDSort": "[]*JobListStub"
+      }
     },
     "keyring.go": {
       "methods": [
@@ -10335,7 +10379,11 @@
           "name": "RootKeyStatePrepublished",
           "value": "\"prepublished\""
         }
-      ]
+      ],
+      "types": {
+        "EncryptionAlgorithm": "string",
+        "RootKeyState": "string"
+      }
     },
     "locks.go": {
       "methods": [
@@ -10444,7 +10492,12 @@
           "name": "DefaultLockDelay",
           "value": "15 * time.Second"
         }
-      ]
+      ],
+      "types": {
+        "LockLeaserOption": "func(l *LockLeaser)",
+        "Locker": "interface{Acquire(ctx context.Context) (string, error); Release(ctx context.Context) error; Renew(ctx context.Context) error; LockTTL() time.Duration}",
+        "LocksOption": "func(l *Locks)"
+      }
     },
     "namespace.go": {
       "methods": [
@@ -10711,7 +10764,10 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {
+        "NamespaceIndexSort": "[]*Namespace"
+      }
     },
     "node_identity.go": {
       "methods": [
@@ -10783,7 +10839,8 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "node_meta.go": {
       "methods": [
@@ -10858,7 +10915,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "node_pools.go": {
       "methods": [
@@ -11045,7 +11103,8 @@
           "name": "NodePoolDefault",
           "value": "\"default\""
         }
-      ]
+      ],
+      "types": {}
     },
     "nodes.go": {
       "methods": [
@@ -12523,7 +12582,13 @@
           "name": "NodeEventSubsystemCluster",
           "value": "\"Cluster\""
         }
-      ]
+      ],
+      "types": {
+        "AllocationSort": "[]*Allocation",
+        "DrainStatus": "string",
+        "MonitorMsgLevel": "int",
+        "NodeIndexSort": "[]*NodeListStub"
+      }
     },
     "operator.go": {
       "methods": [
@@ -13082,7 +13147,10 @@
           "name": "SchedulerAlgorithmSpread",
           "value": "\"spread\""
         }
-      ]
+      ],
+      "types": {
+        "SchedulerAlgorithm": "string"
+      }
     },
     "operator_autopilot.go": {
       "methods": [
@@ -13439,7 +13507,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "operator_metrics.go": {
       "methods": [
@@ -13604,7 +13673,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "quota.go": {
       "methods": [
@@ -13995,7 +14065,12 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {
+        "QuotaLimitSort": "[]*QuotaLimit",
+        "QuotaSpecIndexSort": "[]*QuotaSpec",
+        "QuotaUsageIndexSort": "[]*QuotaUsage"
+      }
     },
     "raw.go": {
       "methods": [
@@ -14076,7 +14151,8 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "recommendations.go": {
       "methods": [
@@ -14343,7 +14419,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "regions.go": {
       "methods": [
@@ -14370,7 +14447,8 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "resources.go": {
       "methods": [
@@ -14747,12 +14825,14 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "retry.go": {
       "methods": [],
       "structs": {},
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "scaling.go": {
       "methods": [
@@ -15053,7 +15133,8 @@
           "name": "ScalingPolicyTypeHorizontal",
           "value": "\"horizontal\""
         }
-      ]
+      ],
+      "types": {}
     },
     "search.go": {
       "methods": [
@@ -15194,7 +15275,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "sentinel.go": {
       "methods": [
@@ -15347,7 +15429,8 @@
           "name": "SentinelScopeSubmitCSIVolume",
           "value": "\"submit-csi-volume\""
         }
-      ]
+      ],
+      "types": {}
     },
     "services.go": {
       "methods": [
@@ -15828,7 +15911,8 @@
           "name": "ServiceProviderConsul",
           "value": "\"consul\""
         }
-      ]
+      ],
+      "types": {}
     },
     "status.go": {
       "methods": [
@@ -15875,7 +15959,8 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "system.go": {
       "methods": [
@@ -15909,7 +15994,8 @@
           "fields": []
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "task_sched.go": {
       "methods": [],
@@ -15943,7 +16029,8 @@
           ]
         }
       },
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "tasks.go": {
       "methods": [
@@ -17705,12 +17792,18 @@
           "name": "CSIPluginTypeMonolith",
           "value": "\"monolith\""
         }
-      ]
+      ],
+      "types": {
+        "AllocCheckStatuses": "map[string]AllocCheckStatus",
+        "CSIPluginType": "string",
+        "ReconcileOption": "string"
+      }
     },
     "utils.go": {
       "methods": [],
       "structs": {},
-      "consts": []
+      "consts": [],
+      "types": {}
     },
     "variables.go": {
       "methods": [
@@ -18100,7 +18193,10 @@
           "name": "ErrVariableNotFound",
           "value": "\"variable not found\""
         }
-      ]
+      ],
+      "types": {
+        "VariableItems": "map[string]string"
+      }
     }
   }
 }

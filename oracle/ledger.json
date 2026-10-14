@@ -2,11 +2,8 @@
   "_": "Every deliberate gap between the pinned Go api surface and nomadpy, with its reason. tests/test_drift.py fails on any gap not listed here and on any entry that is no longer a gap.",
   "files": {
     "allocations_exec.go": "pn-k6m",
-    "csi.go": "pn-8nl",
     "event_stream.go": "pn-gq4",
     "fs.go": "pn-09z",
-    "host_volume_claims.go": "pn-8nl",
-    "host_volumes.go": "pn-8nl",
     "ioutil.go": "internal io helpers",
     "locks.go": "client-side lease orchestration over the variables lock endpoints, which are ported; out of scope by decision on 2026-10-14",
     "raw.go": "raw queries, not ported with the foundation",
@@ -72,7 +69,8 @@
     "Service": "job-spec builder and canonicalize helpers; the server canonicalises on register",
     "ServiceWeights": "job-spec builder and canonicalize helpers; the server canonicalises on register",
     "Services": "job-spec builder and canonicalize helpers; the server canonicalises on register",
-    "StatValue": "String is a display formatter"
+    "StatValue": "String is a display formatter",
+    "CSIMountOptions": "Merge is a job-spec helper"
   },
   "methods": {
     "Client.Close": "urllib opens a connection per request; nothing to close",
@@ -125,7 +123,21 @@
     },
     "Operator.LicenseGet": {
       "folded": "license_get"
-    }
+    },
+    "CSIVolumes.RegisterOpts": {
+      "folded": "register"
+    },
+    "CSIVolumes.CreateOpts": {
+      "folded": "create"
+    },
+    "CSIVolumes.DeleteOpts": {
+      "folded": "delete"
+    },
+    "CSIVolumes.ListSnapshotsOpts": {
+      "folded": "list_snapshots"
+    },
+    "QueryOptions.SetHeadersFromCSISecrets": "secrets keyword arguments on the CSI methods set the header",
+    "WriteOptions.SetHeadersFromCSISecrets": "secrets keyword arguments on the CSI methods set the header"
   },
   "structs": {
     "api.go": {
@@ -180,6 +192,9 @@
     "operator_metrics.go": {
       "AggregateSample": "flattened into SampledValue by encoding/json",
       "Label": "only behind json:\"-\" fields"
+    },
+    "host_volumes.go": {
+      "HostVolumeDeleteResponse": "empty; delete returns WriteMeta"
     }
   },
   "consts": {

@@ -207,8 +207,11 @@ class Client:
         self.acl_tokens = ACLTokens(self)
         self.agent = Agent(self)
         self.allocations = Allocations(self)
+        self.csi_plugins = CSIPlugins(self)
+        self.csi_volumes = CSIVolumes(self)
         self.deployments = Deployments(self)
         self.evaluations = Evaluations(self)
+        self.host_volumes = HostVolumes(self)
         self.jobs = Jobs(self)
         self.operator = Operator(self)
         self.keyring = Keyring(self)
@@ -224,6 +227,7 @@ class Client:
         self.services = Services(self)
         self.status = Status(self)
         self.system = System(self)
+        self.task_group_host_volume_claims = TaskGroupHostVolumeClaims(self)
         self.variables = Variables(self)
 
     def address(self) -> str:
@@ -381,7 +385,10 @@ def _decode(raw: bytes) -> Any:
 from .agent import Agent  # noqa: E402
 from .acl import ACLAuth, ACLAuthMethods, ACLBindingRules, ACLIdentity, ACLPolicies, ACLRoles, ACLTokens  # noqa: E402
 from .allocations import Allocations  # noqa: E402
+from .csi import CSIPlugins, CSIVolumes  # noqa: E402
 from .deployments import Deployments  # noqa: E402
+from .host_volume_claims import TaskGroupHostVolumeClaims  # noqa: E402
+from .host_volumes import HostVolumes  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
 from .jobs import Jobs  # noqa: E402
 from .keyring import Keyring  # noqa: E402

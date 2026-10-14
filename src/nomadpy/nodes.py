@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+from . import csi as _csi
 from .models import Model
 from . import allocations as _allocations
 from .node_identity import NodeIdentity
@@ -396,9 +397,9 @@ class Nodes:
         allocs.sort(key=lambda a: a.create_index, reverse=True)
         return allocs, qm
 
-    def csi_volumes(self, node_id: str, q: QueryOptions | None = None) -> list[dict[str, Any]]:
+    def csi_volumes(self, node_id: str, q: QueryOptions | None = None) -> list[_csi.CSIVolumeListStub]:
         resp, _ = self._client.query(f"/v1/volumes?type=csi&node_id={node_id}", q)
-        return resp
+        return [_csi.CSIVolumeListStub.from_json(v) for v in resp]
 
     def force_evaluate(self, node_id: str, w: WriteOptions | None = None) -> tuple[str, WriteMeta]:
         resp, wm = self._client.put(f"/v1/node/{node_id}/evaluate", None, w)

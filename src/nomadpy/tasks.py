@@ -6,6 +6,7 @@ from typing import Any
 from .models import Model
 from . import constraint as _constraint
 from . import consul as _consul
+from . import csi as _csi
 from . import jobs as _jobs
 from . import nodes as _nodes
 from . import resources as _resources
@@ -48,6 +49,8 @@ TASK_CLIENT_RECONNECTED = "Reconnected"
 CSI_PLUGIN_TYPE_NODE = "node"
 CSI_PLUGIN_TYPE_CONTROLLER = "controller"
 CSI_PLUGIN_TYPE_MONOLITH = "monolith"
+CSI_PLUGIN_TYPE_MONOLITH = "monolith"
+
 
 
 @dataclass
@@ -389,7 +392,7 @@ class VolumeRequest(Model):
     sticky: bool = False
     access_mode: str = ""
     attachment_mode: str = ""
-    mount_options: dict[str, Any] | None = None
+    mount_options: _csi.CSIMountOptions | None = None
     per_alloc: bool = False
 
 
@@ -411,4 +414,3 @@ class WorkloadIdentity(Model):
     service_name: str = ""
     ttl: int = field(default=0, metadata={'json': 'TTL'})
     extra_claims: list[str] | None = None
-

@@ -60,6 +60,9 @@ from .api import (
     WriteOptions,
     default_config,
 )
+from .csi import CSIPlugin, CSIPluginListStub, CSISnapshot, CSIVolume, CSIVolumeCapability, CSIVolumeListStub
+from .host_volume_claims import TaskGroupHostVolumeClaim
+from .host_volumes import HostVolume, HostVolumeCapability, HostVolumeStub
 from .deployments import Deployment, DeploymentState, DeploymentUpdateResponse
 from .error_unexpected_response import UnexpectedResponseError
 from .evaluations import Evaluation, EvaluationStub
@@ -206,6 +209,12 @@ __all__ = [
     "Client",
     "Config",
     "Constraint",
+    "CSIPlugin",
+    "CSIPluginListStub",
+    "CSISnapshot",
+    "CSIVolume",
+    "CSIVolumeCapability",
+    "CSIVolumeListStub",
     "default_config",
     "Deployment",
     "DeploymentState",
@@ -224,6 +233,9 @@ __all__ = [
     "HostData",
     "HostDataResponse",
     "HostStats",
+    "HostVolume",
+    "HostVolumeCapability",
+    "HostVolumeStub",
     "HttpBasicAuth",
     "Job",
     "JobACL",
@@ -315,6 +327,7 @@ __all__ = [
     "Task",
     "TaskEvent",
     "TaskGroup",
+    "TaskGroupHostVolumeClaim",
     "TaskGroupScaleStatus",
     "TaskGroupSummary",
     "TaskState",

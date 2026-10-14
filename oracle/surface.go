@@ -23,6 +23,8 @@ type File struct {
 	Methods []Method          `json:"methods"`
 	Structs map[string]Struct `json:"structs"`
 	Consts  []Const           `json:"consts"`
+	// Types are the exported non-struct type declarations and their underlying types (CSISecrets: map[string]string).
+	Types map[string]string `json:"types"`
 }
 
 type Method struct {
@@ -69,7 +71,7 @@ func surface() (any, error) {
 }
 
 func fileSurface(f *ast.File) File {
-	out := File{Methods: []Method{}, Structs: map[string]Struct{}, Consts: []Const{}}
+	out := File{Methods: []Method{}, Structs: map[string]Struct{}, Consts: []Const{}, Types: map[string]string{}}
 	for _, decl := range f.Decls {
 		switch d := decl.(type) {
 		case *ast.FuncDecl:
@@ -89,6 +91,8 @@ func fileSurface(f *ast.File) File {
 					st, ok := sp.Type.(*ast.StructType)
 					if ok && sp.Name.IsExported() {
 						out.Structs[sp.Name.Name] = structSurface(st)
+					} else if !ok && sp.Name.IsExported() {
+						out.Types[sp.Name.Name] = types.ExprString(sp.Type)
 					}
 				case *ast.ValueSpec:
 					if d.Tok != token.CONST {

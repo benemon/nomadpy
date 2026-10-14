@@ -11,6 +11,7 @@ serialises as "0001-01-01T00:00:00Z" and counts as a zero value.
 """
 
 import json
+import urllib.parse
 from datetime import timedelta
 from pathlib import Path
 
@@ -27,8 +28,13 @@ from nomadpy import (
     ACLTokenRoleLink,
     AutopilotConfiguration,
     Client,
+    CSISnapshot,
+    CSIVolume,
+    CSIVolumeCapability,
     Config,
     DrainSpec,
+    HostVolume,
+    HostVolumeCapability,
     Job,
     JobACL,
     Namespace,
@@ -70,6 +76,11 @@ QUERY_OPTS = QueryOptions(region="r1", namespace="ns1", allow_stale=True, wait_i
                           params={"x": "y"}, headers={"H": "v"}, auth_token="tok1")
 WRITE_OPTS = WriteOptions(region="r1", namespace="ns1", auth_token="tok1", idempotency_token="idem", headers={"H": "v"})
 JOB = Job(id="j1", name="j1")
+
+
+def qopts():
+    """A fresh copy, as the Go op table makes: methods that add headers or a prefix must not leak into later ops."""
+    return QueryOptions(**{**QUERY_OPTS.__dict__, "params": dict(QUERY_OPTS.params), "headers": dict(QUERY_OPTS.headers)})
 
 OPS = {
     "status.leader": lambda c: c.status.leader(),
@@ -157,19 +168,19 @@ OPS = {
     "allocations.list": lambda c: c.allocations.list(),
     "allocations.prefix_list": lambda c: c.allocations.prefix_list("pre"),
     "allocations.info": lambda c: c.allocations.info("a1"),
-    "allocations.stats": lambda c: c.allocations.stats("a1", QueryOptions(**QUERY_OPTS.__dict__)),
+    "allocations.stats": lambda c: c.allocations.stats("a1", qopts()),
     "allocations.checks": lambda c: c.allocations.checks("a1"),
-    "allocations.gc": lambda c: c.allocations.gc("a1", QueryOptions(**QUERY_OPTS.__dict__)),
+    "allocations.gc": lambda c: c.allocations.gc("a1", qopts()),
     "allocations.restart": lambda c: c.allocations.restart("a1", "t"),
     "allocations.restart_all_tasks": lambda c: c.allocations.restart_all_tasks("a1"),
-    "allocations.stop": lambda c: c.allocations.stop("a1", QueryOptions(**QUERY_OPTS.__dict__)),
+    "allocations.stop": lambda c: c.allocations.stop("a1", qopts()),
     "allocations.signal": lambda c: c.allocations.signal("a1", "t", "SIGHUP"),
     "allocations.set_pause_state": lambda c: c.allocations.set_pause_state("a1", "t", "pause"),
     "allocations.get_pause_state": lambda c: c.allocations.get_pause_state("a1", "t"),
     "allocations.services": lambda c: c.allocations.services("a1"),
 
     "node_pools.list": lambda c: c.node_pools.list(),
-    "node_pools.prefix_list": lambda c: c.node_pools.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),
+    "node_pools.prefix_list": lambda c: c.node_pools.prefix_list("pre", qopts()),
     "node_pools.info": lambda c: c.node_pools.info("p 1"),
     "node_pools.register": lambda c: c.node_pools.register(NodePool(
         name="p1", description="d", meta={"k": "v"}, node_identity_ttl=HOUR,
@@ -177,10 +188,10 @@ OPS = {
     "node_pools.register_minimal": lambda c: c.node_pools.register(NodePool(name="p2")),
     "node_pools.delete": lambda c: c.node_pools.delete("p1", WRITE_OPTS),
     "node_pools.list_jobs": lambda c: c.node_pools.list_jobs("p1"),
-    "node_pools.list_nodes": lambda c: c.node_pools.list_nodes("p1", QueryOptions(**QUERY_OPTS.__dict__)),
+    "node_pools.list_nodes": lambda c: c.node_pools.list_nodes("p1", qopts()),
 
     "nodes.list": lambda c: c.nodes.list(),
-    "nodes.prefix_list": lambda c: c.nodes.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),
+    "nodes.prefix_list": lambda c: c.nodes.prefix_list("pre", qopts()),
     "nodes.info": lambda c: c.nodes.info("n1"),
     "nodes.update_drain": lambda c: c.nodes.update_drain("n1", DrainSpec(deadline=HOUR, ignore_system_jobs=True), True, WRITE_OPTS, meta={"k": "v"}),
     "nodes.update_drain_stop": lambda c: c.nodes.update_drain("n1", None, True),
@@ -199,7 +210,7 @@ OPS = {
 
     "variables.create": lambda c: c.variables.create(Variable(path="/nomadpy/v1/", namespace="ns1", items={"k": "v"}), WRITE_OPTS),
     "variables.checked_create": lambda c: c.variables.checked_create(Variable(path="nomadpy/v1", items={"k": "v"})),
-    "variables.read": lambda c: c.variables.read(" nomadpy/v1 ", QueryOptions(**QUERY_OPTS.__dict__)),
+    "variables.read": lambda c: c.variables.read(" nomadpy/v1 ", qopts()),
     "variables.peek": lambda c: c.variables.peek("nomadpy/v1"),
     "variables.update": lambda c: c.variables.update(Variable(path="nomadpy/v1", modify_index=9, items={"k": "v2"}, lock=VariableLock(id="lid"))),
     "variables.checked_update": lambda c: c.variables.checked_update(Variable(path="nomadpy/v1", modify_index=9, items={"k": "v2"})),
@@ -214,7 +225,7 @@ OPS = {
 
     "agent.self": lambda c: c.agent.self(),
     "agent.join": lambda c: c.agent.join("10.0.0.1:4648", "10.0.0.2:4648"),
-    "agent.members": lambda c: c.agent.members(QueryOptions(**QUERY_OPTS.__dict__)),
+    "agent.members": lambda c: c.agent.members(qopts()),
     "agent.force_leave": lambda c: c.agent.force_leave("n1", prune=True),
     "agent.servers": lambda c: c.agent.servers(),
     "agent.set_servers": lambda c: c.agent.set_servers(["10.0.0.1:4647", "10.0.0.2:4647"]),
@@ -228,7 +239,7 @@ OPS = {
     "agent.get_scheduler_worker_config": lambda c: c.agent.get_scheduler_worker_config(),
     "agent.set_scheduler_worker_config": lambda c: c.agent.set_scheduler_worker_config(SchedulerWorkerPoolArgs(2, ["service", "batch"]), WRITE_OPTS),
     "agent.get_scheduler_workers_info": lambda c: c.agent.get_scheduler_workers_info(),
-    "operator.raft_get_configuration": lambda c: c.operator.raft_get_configuration(QueryOptions(**QUERY_OPTS.__dict__)),
+    "operator.raft_get_configuration": lambda c: c.operator.raft_get_configuration(qopts()),
     "operator.raft_remove_peer_by_address": lambda c: c.operator.raft_remove_peer_by_address("10.0.0.1:4647", WRITE_OPTS),
     "operator.raft_remove_peer_by_id": lambda c: c.operator.raft_remove_peer_by_id("id1"),
     "operator.raft_transfer_leadership_by_address": lambda c: c.operator.raft_transfer_leadership_by_address("10.0.0.1:4647"),
@@ -238,7 +249,7 @@ OPS = {
         scheduler_algorithm="spread", preemption_config=PreemptionConfig(service_scheduler_enabled=True), pause_eval_broker=True, modify_index=3)),
     "operator.scheduler_cas_configuration": lambda c: c.operator.scheduler_cas_configuration(SchedulerConfiguration(scheduler_algorithm="binpack", modify_index=3), WRITE_OPTS),
     "operator.apply_license": lambda c: c.operator.apply_license("02MV4UU43BK5", WRITE_OPTS, force=True),
-    "operator.license_get": lambda c: c.operator.license_get(QueryOptions(**QUERY_OPTS.__dict__)),
+    "operator.license_get": lambda c: c.operator.license_get(qopts()),
     "operator.upgrade_check_vault_workload_identity": lambda c: c.operator.upgrade_check_vault_workload_identity(),
     "operator.utilization": lambda c: c.operator.utilization(WRITE_OPTS, today_only=True),
     "operator.autopilot_get_configuration": lambda c: c.operator.autopilot_get_configuration(),
@@ -250,25 +261,25 @@ OPS = {
     "operator.metrics": lambda c: c.operator.metrics(QueryOptions(**{**QUERY_OPTS.__dict__, "params": {"x": "y", "format": "prometheus"}})),
     "operator.metrics_summary": lambda c: c.operator.metrics_summary(),
 
-    "services.list": lambda c: c.services.list(QueryOptions(**QUERY_OPTS.__dict__)),
+    "services.list": lambda c: c.services.list(qopts()),
     "services.get": lambda c: c.services.get("web app"),
     "services.delete": lambda c: c.services.delete("web", "id/1", WRITE_OPTS),
-    "search.prefix_search": lambda c: c.search.prefix_search("nom", "jobs", QueryOptions(**QUERY_OPTS.__dict__)),
+    "search.prefix_search": lambda c: c.search.prefix_search("nom", "jobs", qopts()),
     "search.fuzzy_search": lambda c: c.search.fuzzy_search("nomad", "all"),
     "system.garbage_collect": lambda c: c.system.garbage_collect(),
     "system.reconcile_summaries": lambda c: c.system.reconcile_summaries(),
 
     "jobs.scale_with_request": lambda c: c.jobs.scale_with_request("j1", ScalingRequest(count=3, target={"Job": "j1", "Group": "g"}, message="m", policy_override=True, job_modify_index=7), WRITE_OPTS),
-    "scaling.list_policies": lambda c: c.scaling.list_policies(QueryOptions(**QUERY_OPTS.__dict__)),
+    "scaling.list_policies": lambda c: c.scaling.list_policies(qopts()),
     "scaling.get_policy": lambda c: c.scaling.get_policy("sp1"),
-    "recommendations.list": lambda c: c.recommendations.list(QueryOptions(**QUERY_OPTS.__dict__)),
+    "recommendations.list": lambda c: c.recommendations.list(qopts()),
     "recommendations.info": lambda c: c.recommendations.info("r1"),
     "recommendations.upsert": lambda c: c.recommendations.upsert(Recommendation(
         job_id="j1", group="g", task="t", resource="CPU", value=200, meta={"k": "v"}, stats={"mean": 1.5}, enforce_version=True), WRITE_OPTS),
     "recommendations.delete": lambda c: c.recommendations.delete(["r1", "r2"], WRITE_OPTS),
     "recommendations.apply": lambda c: c.recommendations.apply(["r1"], True),
 
-    "keyring.list": lambda c: c.keyring.list(QueryOptions(**QUERY_OPTS.__dict__)),
+    "keyring.list": lambda c: c.keyring.list(qopts()),
     "keyring.delete": lambda c: c.keyring.delete("k 1", WRITE_OPTS, force=True),
     "keyring.rotate": lambda c: c.keyring.rotate(WRITE_OPTS, full=True, algorithm="aes256-gcm", publish_time=1700000000000000000),
     "keyring.rotate_default": lambda c: c.keyring.rotate(),
@@ -276,7 +287,7 @@ OPS = {
     "quotas.list": lambda c: c.quotas.list(),
     "quotas.prefix_list": lambda c: c.quotas.prefix_list("pre"),
     "quotas.list_usage": lambda c: c.quotas.list_usage(),
-    "quotas.prefix_list_usage": lambda c: c.quotas.prefix_list_usage("pre", QueryOptions(**QUERY_OPTS.__dict__)),
+    "quotas.prefix_list_usage": lambda c: c.quotas.prefix_list_usage("pre", qopts()),
     "quotas.info": lambda c: c.quotas.info("q1"),
     "quotas.usage": lambda c: c.quotas.usage("q1"),
     "quotas.register": lambda c: c.quotas.register(QuotaSpec(name="q1", description="d", limits=[QuotaLimit(
@@ -290,8 +301,36 @@ OPS = {
     "sentinel_policies.delete": lambda c: c.sentinel_policies.delete("s1"),
     "sentinel_policies.info": lambda c: c.sentinel_policies.info("s1"),
 
+    "csi_volumes.list": lambda c: c.csi_volumes.list(qopts()),
+    "csi_volumes.list_external": lambda c: c.csi_volumes.list_external("plug", qopts()),
+    "csi_volumes.plugin_list": lambda c: c.csi_volumes.plugin_list("plug"),
+    "csi_volumes.info": lambda c: c.csi_volumes.info("v1"),
+    "csi_volumes.register": lambda c: c.csi_volumes.register(CSIVolume(
+        id="v1", name="vol", external_id="ext", plugin_id="plug",
+        requested_capabilities=[CSIVolumeCapability(access_mode="single-node-writer", attachment_mode="file-system")], secrets={"k": "v"}), WRITE_OPTS),
+    "csi_volumes.deregister": lambda c: c.csi_volumes.deregister("v 1", True, WRITE_OPTS),
+    "csi_volumes.create": lambda c: c.csi_volumes.create(CSIVolume(id="v1", name="vol", plugin_id="plug", requested_capacity_min=1024)),
+    "csi_volumes.delete": lambda c: c.csi_volumes.delete("ext 1", WRITE_OPTS, secrets={"k": "v"}),
+    "csi_volumes.detach": lambda c: c.csi_volumes.detach("v1", "n1"),
+    "csi_volumes.create_snapshot": lambda c: c.csi_volumes.create_snapshot(CSISnapshot(name="snap", plugin_id="plug", source_volume_id="v1", secrets={"k": "v"})),
+    "csi_volumes.delete_snapshot": lambda c: c.csi_volumes.delete_snapshot(CSISnapshot(id="s1", plugin_id="plug", secrets={"k": "v"}), WRITE_OPTS),
+    "csi_volumes.list_snapshots": lambda c: c.csi_volumes.list_snapshots("plug", qopts()),
+    "csi_volumes.list_snapshots_opts": lambda c: c.csi_volumes.list_snapshots("plug", qopts(), secrets={"k": "v"}),
+    "csi_plugins.list": lambda c: c.csi_plugins.list(),
+    "csi_plugins.info": lambda c: c.csi_plugins.info("plug", qopts()),
+    "host_volumes.create": lambda c: c.host_volumes.create(HostVolume(
+        name="hv", plugin_id="mkdir", node_pool="default", parameters={"mode": "0700"},
+        requested_capabilities=[HostVolumeCapability(attachment_mode="file-system", access_mode="single-node-writer")]), WRITE_OPTS, policy_override=True),
+    "host_volumes.register": lambda c: c.host_volumes.register(HostVolume(name="hv", node_id="n1", host_path="/tmp/hv", capacity_bytes=2048)),
+    "host_volumes.get": lambda c: c.host_volumes.get("hv 1", qopts()),
+    "host_volumes.list": lambda c: c.host_volumes.list(node_id="n1", node_pool="default"),
+    "host_volumes.list_all": lambda c: c.host_volumes.list(),
+    "host_volumes.delete": lambda c: c.host_volumes.delete("hv 1", WRITE_OPTS, force=True),
+    "task_group_host_volume_claims.list": lambda c: c.task_group_host_volume_claims.list(qopts(), job_id="j1", task_group="g", volume_name="hv"),
+    "task_group_host_volume_claims.delete": lambda c: c.task_group_host_volume_claims.delete("c 1", WRITE_OPTS),
+
     "namespaces.list": lambda c: c.namespaces.list(),
-    "namespaces.prefix_list": lambda c: c.namespaces.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),
+    "namespaces.prefix_list": lambda c: c.namespaces.prefix_list("pre", qopts()),
     "namespaces.info": lambda c: c.namespaces.info("n1"),
     "namespaces.register": lambda c: c.namespaces.register(Namespace(
         name="n1", description="d", quota="q", meta={"k": "v"},
@@ -366,6 +405,10 @@ def test_wire(recorder, expected):
     client = Client(Config(address=recorder.address, region="r0", namespace="ns0", secret_id="tok0", headers={"X-Custom": "1"}))
     OPS[expected["op"]](client)
     got = recorder.last
+    # Credentials travel in headers or bodies only; the recorder sees the full request line.
+    for secret in ("tok0", "tok1", "sec", "ott", "secret", "jwt", "02MV4UU43BK5"):
+        assert secret not in got["path"], f"{secret!r} in path"
+        assert secret not in urllib.parse.urlencode(got["query"], doseq=True), f"{secret!r} in query"
     assert got["method"] == expected["method"]
     assert got["path"] == expected["path"]
     assert got["query"] == expected["query"]
