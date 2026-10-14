@@ -1,0 +1,3 @@
+# nomadpy.allocations
+
+::: nomadpy.allocations

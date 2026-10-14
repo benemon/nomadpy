@@ -1,0 +1,3 @@
+# nomadpy.jobs
+
+::: nomadpy.jobs

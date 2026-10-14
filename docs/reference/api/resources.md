@@ -1,0 +1,3 @@
+# nomadpy.resources
+
+::: nomadpy.resources

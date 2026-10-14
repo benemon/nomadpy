@@ -1,0 +1,3 @@
+# nomadpy.status
+
+::: nomadpy.status

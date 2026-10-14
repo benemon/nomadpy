@@ -1,0 +1,3 @@
+# nomadpy.consul
+
+::: nomadpy.consul

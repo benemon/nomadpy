@@ -1,0 +1,3 @@
+# nomadpy.search
+
+::: nomadpy.search

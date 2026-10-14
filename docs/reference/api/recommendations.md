@@ -1,0 +1,3 @@
+# nomadpy.recommendations
+
+::: nomadpy.recommendations

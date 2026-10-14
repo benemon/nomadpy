@@ -1,0 +1,3 @@
+# nomadpy.operator
+
+::: nomadpy.operator

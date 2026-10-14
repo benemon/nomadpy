@@ -1,0 +1,3 @@
+# nomadpy.variables
+
+::: nomadpy.variables

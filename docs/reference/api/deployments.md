@@ -1,0 +1,3 @@
+# nomadpy.deployments
+
+::: nomadpy.deployments

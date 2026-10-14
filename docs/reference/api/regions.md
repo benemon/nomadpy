@@ -1,0 +1,3 @@
+# nomadpy.regions
+
+::: nomadpy.regions

@@ -1,0 +1,3 @@
+# nomadpy.scaling
+
+::: nomadpy.scaling

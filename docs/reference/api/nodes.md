@@ -1,0 +1,3 @@
+# nomadpy.nodes
+
+::: nomadpy.nodes

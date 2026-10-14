@@ -1,0 +1,3 @@
+# nomadpy.csi
+
+::: nomadpy.csi

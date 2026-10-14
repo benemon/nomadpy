@@ -1,0 +1,3 @@
+# nomadpy.constraint
+
+::: nomadpy.constraint

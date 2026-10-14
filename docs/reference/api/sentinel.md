@@ -1,0 +1,3 @@
+# nomadpy.sentinel
+
+::: nomadpy.sentinel

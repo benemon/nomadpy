@@ -1,0 +1,39 @@
+site_name: nomadpy
+site_url: https://benemon.github.io/nomadpy/
+repo_url: https://github.com/benemon/nomadpy
+site_description: Python client for the HashiCorp Nomad HTTP API
+
+theme:
+  name: material
+  features:
+    - navigation.indexes
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Home: index.md
+  - Configuration: configuration.md
+  - Queries and writes: queries.md
+  - Errors and editions: errors.md
+  - Contributing: contributing.md
+  - Reference:
+      - API: reference/api/
+      - Go and HTTP mapping: reference/mapping/
+
+plugins:
+  - search
+  - literate-nav:
+      implicit_index: true
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            members_order: source
+            show_root_toc_entry: false
+            show_source: false
+            show_if_no_docstring: true

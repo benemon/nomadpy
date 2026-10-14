@@ -1,0 +1,3 @@
+# nomadpy.models
+
+::: nomadpy.models

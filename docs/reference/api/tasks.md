@@ -1,0 +1,3 @@
+# nomadpy.tasks
+
+::: nomadpy.tasks
