@@ -9,7 +9,7 @@ Rules that need no ledger entry:
 - Len/Less/Swap on *Sort receivers, MarshalJSON/UnmarshalJSON, and methods on unexported receivers, are Go-only;
 - methods on structs the ledger lists as dicts are Go-only;
 - a Go `Foo`/`FooOpts` pair maps to one Python method `foo`;
-- structs named *Request, *Options and *Opts are request bodies or keyword arguments, not models;
+- structs named *Request, *Options and *Opts are request bodies or keyword arguments, not models, unless a Model exists for one;
 - a receiver's Python class may live in another module when Go spreads its methods over several files;
 - a Go struct whose Python class is not a Model (services, Client, options, the exception) is not field-compared;
 - embedded QueryMeta, WriteMeta and WriteRequest are not model fields; other embedded structs are flattened as encoding/json does;
@@ -188,9 +188,10 @@ def test_structs(go_file):
     ledger = LEDGER["structs"].get(go_file, {})
     problems = []
     for name, st in go_structs.items():
-        if name.endswith(("Request", "Options", "Opts")):
-            continue
         cls = getattr(module, name, None)
+        # Request bodies and option bundles are keyword arguments, unless a Model exists for one (VolumeRequest is a spec block).
+        if name.endswith(("Request", "Options", "Opts")) and not is_model(cls):
+            continue
         if name in ledger:
             if is_model(cls):
                 problems.append(f"{name} is a Model now; remove its ledger entry")

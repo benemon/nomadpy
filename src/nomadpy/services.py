@@ -60,3 +60,77 @@ class Services:
     def delete(self, service_name: str, service_id: str, w: WriteOptions | None = None) -> WriteMeta:
         _, wm = self._client.delete(f"/v1/service/{quote(service_name, safe='')}/{quote(service_id, safe='')}", None, w)
         return wm
+
+
+# The specification models below reference tasks and consul, which import jobs, which imports this module;
+# importing them here, after ServiceRegistration exists, keeps that cycle importable in any order.
+from . import consul as _consul  # noqa: E402
+from . import tasks as _tasks  # noqa: E402
+
+
+@dataclass
+class CheckRestart(Model):
+    limit: int = 0
+    grace: int | None = None
+    ignore_warnings: bool = False
+
+
+@dataclass
+class Service(Model):
+    name: str = ""
+    tags: list[str] | None = None
+    canary_tags: list[str] | None = None
+    enable_tag_override: bool = False
+    port_label: str = ""
+    address_mode: str = ""
+    address: str = ""
+    checks: list[ServiceCheck] | None = None
+    check_restart: CheckRestart | None = None
+    connect: _consul.ConsulConnect | None = None
+    meta: dict[str, str] | None = None
+    canary_meta: dict[str, str] | None = None
+    tagged_addresses: dict[str, str] | None = None
+    task_name: str = ""
+    on_update: str = ""
+    identity: _tasks.WorkloadIdentity | None = None
+    weights: ServiceWeights | None = None
+    provider: str = ""
+    cluster: str = ""
+    kind: str = ""
+
+
+@dataclass
+class ServiceCheck(Model):
+    name: str = ""
+    type: str = ""
+    command: str = ""
+    args: list[str] | None = None
+    path: str = ""
+    protocol: str = ""
+    port_label: str = ""
+    expose: bool = False
+    address_mode: str = ""
+    advertise: str = ""
+    interval: int = 0
+    timeout: int = 0
+    initial_status: str = ""
+    notes: str = ""
+    tls_server_name: str = field(default="", metadata={'json': 'TLSServerName'})
+    tls_skip_verify: bool = field(default=False, metadata={'json': 'TLSSkipVerify'})
+    header: dict[str, list[str]] | None = None
+    method: str = ""
+    check_restart: CheckRestart | None = None
+    grpc_service: str = field(default="", metadata={'json': 'GRPCService'})
+    grpc_use_tls: bool = field(default=False, metadata={'json': 'GRPCUseTLS'})
+    task_name: str = ""
+    success_before_passing: int = 0
+    failures_before_critical: int = 0
+    failures_before_warning: int = 0
+    body: str = ""
+    on_update: str = ""
+
+
+@dataclass
+class ServiceWeights(Model):
+    passing: int = 0
+    warning: int = 0

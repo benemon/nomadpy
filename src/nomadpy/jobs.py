@@ -5,6 +5,9 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
 
+from . import allocations as _allocations
+from . import constraint as _constraint
+from . import tasks as _tasks
 from .deployments import Deployment, _deployments
 from .evaluations import Evaluation
 from .models import Model
@@ -14,9 +17,6 @@ from .services import ServiceRegistration
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
 
-# The job itself is a plain dict in the shape the HTTP API documents; the
-# typed Job struct is a separate piece of work.
-Job = dict[str, Any]
 
 JOB_TYPE_SERVICE = "service"
 JOB_TYPE_BATCH = "batch"
@@ -28,6 +28,193 @@ DEFAULT_NAMESPACE = "default"
 GLOBAL_REGION = "global"
 JOB_PERIODIC_LAUNCH_SUFFIX = "/periodic-"
 JOB_DISPATCH_LAUNCH_SUFFIX = "/dispatch-"
+
+
+@dataclass
+class DesiredUpdates(Model):
+    ignore: int = 0
+    place: int = 0
+    migrate: int = 0
+    stop: int = 0
+    in_place_update: int = 0
+    destructive_update: int = 0
+    canary: int = 0
+    preemptions: int = 0
+    disconnect: int = 0
+    reconnect: int = 0
+    reschedule_now: int = 0
+    reschedule_later: int = 0
+
+
+@dataclass
+class FieldDiff(Model):
+    type: str = ""
+    name: str = ""
+    old: str = ""
+    new: str = ""
+    annotations: list[str] | None = None
+
+
+@dataclass
+class Job(Model):
+    region: str | None = None
+    namespace: str | None = None
+    id: str | None = field(default=None, metadata={'json': 'ID'})
+    name: str | None = None
+    type: str | None = None
+    priority: int | None = None
+    all_at_once: bool | None = None
+    datacenters: list[str] | None = None
+    node_pool: str | None = None
+    constraints: list[_constraint.Constraint] | None = None
+    affinities: list[_tasks.Affinity] | None = None
+    task_groups: list[_tasks.TaskGroup] | None = None
+    update: UpdateStrategy | None = None
+    multiregion: Multiregion | None = None
+    spreads: list[_tasks.Spread] | None = None
+    periodic: PeriodicConfig | None = None
+    parameterized_job: ParameterizedJobConfig | None = None
+    reschedule: _tasks.ReschedulePolicy | None = None
+    migrate: _tasks.MigrateStrategy | None = None
+    meta: dict[str, str] | None = None
+    ui: JobUIConfig | None = field(default=None, metadata={'json': 'UI'})
+    stop: bool | None = None
+    parent_id: str | None = field(default=None, metadata={'json': 'ParentID'})
+    dispatched: bool = False
+    dispatch_idempotency_token: str | None = None
+    payload: str | None = None
+    consul_namespace: str | None = None
+    vault_namespace: str | None = None
+    nomad_token_id: str | None = field(default=None, metadata={'json': 'NomadTokenID'})
+    status: str | None = None
+    status_description: str | None = None
+    stable: bool | None = None
+    version: int | None = None
+    submit_time: int | None = None
+    create_index: int | None = None
+    modify_index: int | None = None
+    job_modify_index: int | None = None
+    version_tag: JobVersionTag | None = None
+
+
+@dataclass
+class JobDiff(Model):
+    type: str = ""
+    id: str = field(default="", metadata={'json': 'ID'})
+    fields: list[FieldDiff] | None = None
+    objects: list[ObjectDiff] | None = None
+    task_groups: list[TaskGroupDiff] | None = None
+
+
+@dataclass
+class JobSubmission(Model):
+    source: str = ""
+    format: str = ""
+    variable_flags: dict[str, str] | None = None
+    variables: str = ""
+
+
+@dataclass
+class JobUIConfig(Model):
+    description: str = ""
+    links: list[JobUILink] | None = None
+
+
+@dataclass
+class JobUILink(Model):
+    label: str = ""
+    url: str = field(default="", metadata={'json': 'URL'})
+
+
+@dataclass
+class JobVersionTag(Model):
+    name: str = ""
+    description: str = ""
+    tagged_time: int = 0
+
+
+@dataclass
+class Multiregion(Model):
+    strategy: MultiregionStrategy | None = None
+    regions: list[MultiregionRegion] | None = None
+
+
+@dataclass
+class MultiregionRegion(Model):
+    name: str = ""
+    count: int | None = None
+    datacenters: list[str] | None = None
+    node_pool: str = ""
+    meta: dict[str, str] | None = None
+
+
+@dataclass
+class MultiregionStrategy(Model):
+    max_parallel: int | None = None
+    on_failure: str | None = None
+
+
+@dataclass
+class ObjectDiff(Model):
+    type: str = ""
+    name: str = ""
+    fields: list[FieldDiff] | None = None
+    objects: list[ObjectDiff] | None = None
+
+
+@dataclass
+class ParameterizedJobConfig(Model):
+    payload: str = ""
+    meta_required: list[str] | None = None
+    meta_optional: list[str] | None = None
+
+
+@dataclass
+class PeriodicConfig(Model):
+    enabled: bool | None = None
+    spec: str | None = None
+    specs: list[str] | None = None
+    spec_type: str | None = None
+    prohibit_overlap: bool | None = None
+    time_zone: str | None = None
+
+
+@dataclass
+class PlanAnnotations(Model):
+    desired_tg_updates: dict[str, DesiredUpdates] | None = field(default=None, metadata={'json': 'DesiredTGUpdates'})
+    preempted_allocs: list[_allocations.AllocationListStub] | None = None
+
+
+@dataclass
+class TaskDiff(Model):
+    type: str = ""
+    name: str = ""
+    fields: list[FieldDiff] | None = None
+    objects: list[ObjectDiff] | None = None
+    annotations: list[str] | None = None
+
+
+@dataclass
+class TaskGroupDiff(Model):
+    type: str = ""
+    name: str = ""
+    fields: list[FieldDiff] | None = None
+    objects: list[ObjectDiff] | None = None
+    tasks: list[TaskDiff] | None = None
+    updates: dict[str, int] | None = None
+
+
+@dataclass
+class UpdateStrategy(Model):
+    stagger: int | None = None
+    max_parallel: int | None = None
+    health_check: str | None = None
+    min_healthy_time: int | None = None
+    healthy_deadline: int | None = None
+    progress_deadline: int | None = None
+    canary: int | None = None
+    auto_revert: bool | None = None
+    auto_promote: bool | None = None
 
 
 @dataclass
@@ -103,8 +290,8 @@ class JobRegisterResponse(Model):
 class JobPlanResponse(Model):
     job_modify_index: int = 0
     created_evals: list[Evaluation] | None = None
-    diff: dict[str, Any] | None = None
-    annotations: dict[str, Any] | None = None
+    diff: JobDiff | None = None
+    annotations: PlanAnnotations | None = None
     failed_tg_allocs: dict[str, Any] | None = field(default=None, metadata={"json": "FailedTGAllocs"})
     next_periodic_launch: str = field(default="", metadata={"time": True})
     warnings: str = ""
@@ -127,6 +314,10 @@ def _path(job_id: str) -> str:
     return "/v1/job/" + quote(job_id, safe="")
 
 
+def _job_json(job: Model | dict[str, Any]) -> dict[str, Any]:
+    return job.to_json() if isinstance(job, Model) else job
+
+
 class Jobs:
     """Jobs queries the job endpoints."""
 
@@ -134,22 +325,23 @@ class Jobs:
         self._client = client
 
     def parse_hcl(self, job_hcl: str, canonicalize: bool = False, *, variables: str = "") -> Job:
-        """parse_hcl converts an HCL job specification to its JSON form using the server."""
+        """parse_hcl converts an HCL job specification to a Job using the server."""
         req = {"JobHCL": job_hcl, "Canonicalize": canonicalize, "Variables": variables}
         resp, _ = self._client.put("/v1/jobs/parse", req)
-        return resp
+        return Job.from_json(resp)
 
-    def validate(self, job: Job, w: WriteOptions | None = None) -> tuple[JobValidateResponse, WriteMeta]:
-        req: dict[str, Any] = {"Job": job}
+    def validate(self, job: Job | dict[str, Any], w: WriteOptions | None = None) -> tuple[JobValidateResponse, WriteMeta]:
+        req: dict[str, Any] = {"Job": _job_json(job)}
         if w is not None and w.region:
             req["Region"] = w.region
         resp, wm = self._client.put("/v1/validate/job", req, w)
         return JobValidateResponse.from_json(resp), wm
 
-    def register(self, job: Job, w: WriteOptions | None = None, *, enforce_index: bool = False, modify_index: int = 0,
+    def register(self, job: Job | dict[str, Any], w: WriteOptions | None = None, *, enforce_index: bool = False, modify_index: int = 0,
                  policy_override: bool = False, preserve_counts: bool = False, preserve_resources: bool = False,
-                 eval_priority: int = 0, submission: dict[str, Any] | None = None) -> tuple[JobRegisterResponse, WriteMeta]:
-        req: dict[str, Any] = {"Job": job}
+                 eval_priority: int = 0, submission: JobSubmission | dict[str, Any] | None = None) -> tuple[JobRegisterResponse, WriteMeta]:
+        """register submits a Job, or a dict in the JSON shape the API documents."""
+        req: dict[str, Any] = {"Job": _job_json(job)}
         if enforce_index:
             req["EnforceIndex"] = True
             req["JobModifyIndex"] = modify_index
@@ -162,7 +354,7 @@ class Jobs:
         if eval_priority:
             req["EvalPriority"] = eval_priority
         if submission is not None:
-            req["Submission"] = submission
+            req["Submission"] = _job_json(submission)
         resp, wm = self._client.put("/v1/jobs", req, w)
         return JobRegisterResponse.from_json(resp), wm
 
@@ -179,7 +371,8 @@ class Jobs:
         return self.list(QueryOptions(prefix=prefix))
 
     def info(self, job_id: str, q: QueryOptions | None = None) -> tuple[Job, QueryMeta]:
-        return self._client.query(_path(job_id), q)
+        resp, qm = self._client.query(_path(job_id), q)
+        return Job.from_json(resp), qm
 
     def scale(self, job_id: str, group: str, count: int | None = None, message: str = "", error: bool = False,
               meta: dict[str, Any] | None = None, w: WriteOptions | None = None) -> tuple[JobRegisterResponse, WriteMeta]:
@@ -195,24 +388,27 @@ class Jobs:
         return JobScaleStatusResponse.from_json(resp), qm
 
     def versions(self, job_id: str, diffs: bool = False, q: QueryOptions | None = None, *, diff_tag: str = "",
-                 diff_version: int | None = None) -> tuple[list[Job], list[dict[str, Any]], QueryMeta]:
+                 diff_version: int | None = None) -> tuple[list[Job], list[JobDiff], QueryMeta]:
         endpoint = _path(job_id) + f"/versions?diffs={str(diffs).lower()}"
         if diff_tag:
             endpoint += "&diff_tag=" + quote(diff_tag, safe="")
         if diff_version is not None:
             endpoint += f"&diff_version={diff_version}"
         resp, qm = self._client.query(endpoint, q)
-        return resp["Versions"], resp.get("Diffs") or [], qm
+        versions = [Job.from_json(v) for v in resp["Versions"]]
+        diffs = [JobDiff.from_json(d) for d in resp.get("Diffs") or []]
+        return versions, diffs, qm
 
     def version_by_tag(self, job_id: str, tag: str, q: QueryOptions | None = None) -> tuple[Job, QueryMeta]:
         versions, _, qm = self.versions(job_id, False, q)
         for version in versions:
-            if (version.get("VersionTag") or {}).get("Name") == tag:
+            if version.version_tag is not None and version.version_tag.name == tag:
                 return version, qm
         raise LookupError(f"version tag {tag} not found for job {job_id}")
 
-    def submission(self, job_id: str, version: int, q: QueryOptions | None = None) -> tuple[dict[str, Any], QueryMeta]:
-        return self._client.query(_path(job_id) + f"/submission?version={version}", q)
+    def submission(self, job_id: str, version: int, q: QueryOptions | None = None) -> tuple[JobSubmission, QueryMeta]:
+        resp, qm = self._client.query(_path(job_id) + f"/submission?version={version}", q)
+        return JobSubmission.from_json(resp), qm
 
     def allocations(self, job_id: str, all_allocs: bool = False, q: QueryOptions | None = None) -> tuple[list[dict[str, Any]], QueryMeta]:
         resp, qm = self._client.query(_path(job_id) + f"/allocations?all={str(all_allocs).lower()}", q)
@@ -249,11 +445,12 @@ class Jobs:
         resp, wm = self._client.put(_path(job_id) + "/periodic/force", None, w)
         return resp["EvalID"], wm
 
-    def plan(self, job: Job, diff: bool = False, w: WriteOptions | None = None, *, policy_override: bool = False) -> tuple[JobPlanResponse, WriteMeta]:
-        if not job.get("ID"):
+    def plan(self, job: Job | dict[str, Any], diff: bool = False, w: WriteOptions | None = None, *, policy_override: bool = False) -> tuple[JobPlanResponse, WriteMeta]:
+        body = _job_json(job)
+        if not body.get("ID"):
             raise ValueError("job is missing ID")
-        req = {"Job": job, "Diff": diff, "PolicyOverride": policy_override}
-        resp, wm = self._client.put(_path(job["ID"]) + "/plan", req, w)
+        req = {"Job": body, "Diff": diff, "PolicyOverride": policy_override}
+        resp, wm = self._client.put(_path(body["ID"]) + "/plan", req, w)
         return JobPlanResponse.from_json(resp), wm
 
     def summary(self, job_id: str, q: QueryOptions | None = None) -> tuple[JobSummary, QueryMeta]:

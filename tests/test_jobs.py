@@ -9,17 +9,17 @@ from jobspecs import batch_job, register_and_wait, service_job, wait_for_eval, w
 
 def test_parse_hcl(client):
     job = client.jobs.parse_hcl(service_job("nomadpy-parse"))
-    assert job["ID"] == "nomadpy-parse"
-    assert job["TaskGroups"][0]["Tasks"][0]["Driver"] == "raw_exec"
-    assert job["Namespace"] is None
+    assert job.id == "nomadpy-parse"
+    assert job.task_groups[0].tasks[0].driver == "raw_exec"
+    assert job.namespace is None
     canonical = client.jobs.parse_hcl(service_job("nomadpy-parse"), canonicalize=True)
-    assert canonical["Namespace"] == "default"
+    assert canonical.namespace == "default"
 
 
 def test_parse_hcl_variables(client):
     hcl = 'variable "n" { type = number }\n' + service_job("nomadpy-vars", count="var.n")
     job = client.jobs.parse_hcl(hcl, variables="n = 3")
-    assert job["TaskGroups"][0]["Count"] == 3
+    assert job.task_groups[0].count == 3
 
 
 def test_validate(client):
@@ -27,7 +27,7 @@ def test_validate(client):
     resp, wm = client.jobs.validate(job)
     assert resp.error == ""
     assert resp.validation_errors is None
-    job["TaskGroups"][0]["Tasks"][0]["Driver"] = ""
+    job.task_groups[0].tasks[0].driver = ""
     resp, _ = client.jobs.validate(job)
     assert resp.validation_errors
 
@@ -44,8 +44,8 @@ def test_register_deploy_inspect_deregister(client):
     assert qm.last_index > 0
 
     info, _ = client.jobs.info(job_id)
-    assert info["Status"] == "running"
-    assert info["Version"] == 0
+    assert info.status == "running"
+    assert info.version == 0
 
     jobs, _ = client.jobs.list()
     assert [j.id for j in jobs if j.id == job_id] == [job_id]
@@ -92,12 +92,12 @@ def test_versions_revert_stable_tags(client):
     assert wait_for_deployment(client, dep.id).status == DEPLOYMENT_STATUS_SUCCESSFUL
     register_and_wait(client, job_id, sleep=601)
     versions, diffs, _ = client.jobs.versions(job_id, diffs=True)
-    assert [v["Version"] for v in versions] == [1, 0]
-    assert diffs[0]["Type"] == "Edited"
+    assert [v.version for v in versions] == [1, 0]
+    assert diffs[0].type == "Edited"
 
     client.jobs.tag_version(job_id, "golden", version=0, description="first")
     tagged, _ = client.jobs.version_by_tag(job_id, "golden")
-    assert tagged["Version"] == 0
+    assert tagged.version == 0
     client.jobs.untag_version(job_id, "golden")
     with pytest.raises(LookupError):
         client.jobs.version_by_tag(job_id, "golden")
@@ -105,16 +105,16 @@ def test_versions_revert_stable_tags(client):
     _, wm = client.jobs.stable(job_id, 1, True)
     assert wm.last_index > 0
     info, _ = client.jobs.info(job_id)
-    assert info["Stable"] is True
+    assert info.stable is True
 
     resp, _ = client.jobs.revert(job_id, 0)
     assert wait_for_eval(client, resp.eval_id).status == EVAL_STATUS_COMPLETE
     info, _ = client.jobs.info(job_id)
-    assert info["Version"] == 2
-    assert info["TaskGroups"][0]["Tasks"][0]["Config"]["args"][-1] == "sleep 600"
+    assert info.version == 2
+    assert info.task_groups[0].tasks[0].config["args"][-1] == "sleep 600"
 
     sub, _ = client.jobs.submission(job_id, 0)
-    assert sub["Format"] == "hcl2" and sub["Source"] == hcl
+    assert sub.format == "hcl2" and sub.source == hcl
     client.jobs.deregister(job_id, purge=True)
 
 
@@ -123,8 +123,8 @@ def test_plan(client):
     register_and_wait(client, job_id)
     job = client.jobs.parse_hcl(service_job(job_id, count=3))
     plan, wm = client.jobs.plan(job, diff=True)
-    assert plan.diff["Type"] == "Edited"
-    assert plan.annotations["DesiredTGUpdates"]["g"]["Place"] == 2
+    assert plan.diff.type == "Edited"
+    assert plan.annotations.desired_tg_updates["g"].place == 2
     assert plan.job_modify_index > 0
     with pytest.raises(ValueError):
         client.jobs.plan({"Name": "no-id"})
@@ -153,25 +153,34 @@ def test_dispatch(client):
     assert resp.dispatched_job_id.startswith(job_id + "/dispatch-pfx-")
     assert wait_for_eval(client, resp.eval_id).status == EVAL_STATUS_COMPLETE
     child, _ = client.jobs.info(resp.dispatched_job_id)
-    assert child["Meta"] == {"key": "v"}
-    assert child["Payload"] == "AGhlbGxv"
+    assert child.meta == {"key": "v"}
+    assert child.payload == "AGhlbGxv"
     client.jobs.deregister(job_id, purge=True)
 
 
 def test_namespace_scoping(client):
     client.put("/v1/namespace/nomadpy-jobs-ns", {"Name": "nomadpy-jobs-ns"})
     job = client.jobs.parse_hcl(service_job("nomadpy-ns"))
-    job["Namespace"] = "nomadpy-jobs-ns"
+    job.namespace = "nomadpy-jobs-ns"
     resp, _ = client.jobs.register(job, WriteOptions(namespace="nomadpy-jobs-ns"))
     assert wait_for_eval(client, resp.eval_id).status == EVAL_STATUS_COMPLETE
     with pytest.raises(UnexpectedResponseError):
         client.jobs.info("nomadpy-ns")
     info, _ = client.jobs.info("nomadpy-ns", QueryOptions(namespace="nomadpy-jobs-ns"))
-    assert info["Namespace"] == "nomadpy-jobs-ns"
+    assert info.namespace == "nomadpy-jobs-ns"
     jobs, _ = client.jobs.list(QueryOptions(namespace="*"))
     assert any(j.id == "nomadpy-ns" and j.namespace == "nomadpy-jobs-ns" for j in jobs)
     client.jobs.deregister("nomadpy-ns", purge=True, w=WriteOptions(namespace="nomadpy-jobs-ns"))
     client.delete("/v1/namespace/nomadpy-jobs-ns")
+
+
+def test_register_from_dict(client):
+    resp, _ = client.jobs.register({"ID": "nomadpy-dict", "Name": "nomadpy-dict", "Datacenters": ["dc1"], "Type": "batch",
+                                    "TaskGroups": [{"Name": "g", "Tasks": [{"Name": "t", "Driver": "raw_exec", "Config": {"command": "/bin/sh", "args": ["-c", "exit 0"]}}]}]})
+    assert wait_for_eval(client, resp.eval_id).status == EVAL_STATUS_COMPLETE
+    info, _ = client.jobs.info("nomadpy-dict")
+    assert info.type == "batch" and info.task_groups[0].tasks[0].config["command"] == "/bin/sh"
+    client.jobs.deregister("nomadpy-dict", purge=True)
 
 
 def test_services_empty(client):

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 from .models import Model
 from .services import ServiceRegistration
+from .tasks import AllocCheckStatus, AllocResourceUsage, TaskState
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta
@@ -111,7 +112,7 @@ class AllocationListStub(Model):
     desired_description: str = ""
     client_status: str = ""
     client_description: str = ""
-    task_states: dict[str, dict[str, Any]] | None = None
+    task_states: dict[str, TaskState] | None = None
     deployment_status: AllocDeploymentStatus | None = None
     followup_eval_id: str = field(default="", metadata={"json": "FollowupEvalID"})
     next_allocation: str = ""
@@ -153,13 +154,13 @@ class Allocations:
     def info(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[Allocation, QueryMeta]:
         return self._client.query(f"/v1/allocation/{alloc_id}", q)
 
-    def stats(self, alloc_id: str, q: QueryOptions | None = None) -> dict[str, Any]:
+    def stats(self, alloc_id: str, q: QueryOptions | None = None) -> AllocResourceUsage:
         resp, _ = self._client.query(f"/v1/client/allocation/{alloc_id}/stats", q)
-        return resp
+        return AllocResourceUsage.from_json(resp)
 
-    def checks(self, alloc_id: str, q: QueryOptions | None = None) -> dict[str, dict[str, Any]]:
+    def checks(self, alloc_id: str, q: QueryOptions | None = None) -> dict[str, AllocCheckStatus]:
         resp, _ = self._client.query(f"/v1/client/allocation/{alloc_id}/checks", q)
-        return resp or {}
+        return {k: AllocCheckStatus.from_json(v) for k, v in (resp or {}).items()}
 
     def gc(self, alloc_id: str, q: QueryOptions | None = None) -> None:
         self._client.query(f"/v1/client/allocation/{alloc_id}/gc")

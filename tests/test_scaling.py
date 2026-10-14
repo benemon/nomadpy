@@ -66,6 +66,6 @@ def test_recommendations_on_enterprise(ent_client):
         assert applied.errors == [] and applied.updated_jobs[0].job_id == "nomadpy-recs"
         assert applied.updated_jobs[0].recommendations == [rec.id]
         job, _ = c.jobs.info("nomadpy-recs")
-        assert job["TaskGroups"][0]["Tasks"][0]["Resources"]["CPU"] == 20
+        assert job.task_groups[0].tasks[0].resources.cpu == 20
     finally:
         c.jobs.deregister("nomadpy-recs", purge=True)

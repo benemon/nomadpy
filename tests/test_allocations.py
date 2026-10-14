@@ -28,7 +28,7 @@ def test_list_info_stats_checks_services(client):
         stub = mine[0]
         assert stub.client_status == ALLOC_CLIENT_STATUS_RUNNING and stub.task_group == "g"
         assert stub.deployment_status.healthy is True
-        assert stub.task_states["t"]["State"] == "running"
+        assert stub.task_states["t"].state == "running"
         assert stub.allocated_resources is None
         assert [a.create_index for a in stubs] == sorted((a.create_index for a in stubs), reverse=True)
 
@@ -38,7 +38,7 @@ def test_list_info_stats_checks_services(client):
         alloc, _ = client.allocations.info(stub.id)
         assert alloc["ID"] == stub.id and alloc["Job"]["ID"] == "nomadpy-allocs"
         stats = client.allocations.stats(stub.id)
-        assert "ResourceUsage" in stats and "Tasks" in stats
+        assert stats.resource_usage.memory_stats.rss >= 0 and "t" in stats.tasks and stats.timestamp > 0
         assert client.allocations.checks(stub.id) == {}
         services, _ = client.allocations.services(stub.id)
         assert services == []

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 from .models import Model
 from .node_identity import NodeIdentity
 from .node_meta import NodeMeta
+from . import resources as _resources
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
@@ -28,8 +29,6 @@ MONITOR_MSG_LEVEL_INFO = 1
 MONITOR_MSG_LEVEL_WARN = 2
 MONITOR_MSG_LEVEL_ERROR = 3
 
-# The full Node and its host statistics stay dicts; see the ledger.
-Node = dict[str, Any]
 
 
 @dataclass
@@ -129,6 +128,188 @@ class NodeListStub(Model):
 
 
 @dataclass
+class CSIControllerInfo(Model):
+    supports_create_delete: bool = False
+    supports_attach_detach: bool = False
+    supports_list_volumes: bool = False
+    supports_get_capacity: bool = False
+    supports_create_delete_snapshot: bool = False
+    supports_list_snapshots: bool = False
+    supports_clone: bool = False
+    supports_read_only_attach: bool = False
+    supports_expand: bool = False
+    supports_list_volumes_attached_nodes: bool = False
+    supports_condition: bool = False
+    supports_get: bool = False
+
+
+@dataclass
+class CSIInfo(Model):
+    plugin_id: str = field(default="", metadata={'json': 'PluginID'})
+    alloc_id: str = field(default="", metadata={'json': 'AllocID'})
+    healthy: bool = False
+    health_description: str = ""
+    update_time: str = field(default="", metadata={'time': True})
+    requires_controller_plugin: bool = False
+    requires_topologies: bool = False
+    controller_info: CSIControllerInfo | None = field(default=None, metadata={'omitempty': True})
+    node_info: CSINodeInfo | None = field(default=None, metadata={'omitempty': True})
+
+
+@dataclass
+class CSINodeInfo(Model):
+    id: str = field(default="", metadata={'json': 'ID'})
+    max_volumes: int = 0
+    accessible_topology: CSITopology | None = None
+    requires_node_stage_volume: bool = False
+    supports_stats: bool = False
+    supports_expand: bool = False
+    supports_condition: bool = False
+
+
+@dataclass
+class CSITopology(Model):
+    segments: dict[str, str] | None = None
+
+
+@dataclass
+class CSITopologyRequest(Model):
+    required: list[CSITopology] | None = None
+    preferred: list[CSITopology] | None = None
+
+
+@dataclass
+class DeviceGroupStats(Model):
+    vendor: str = ""
+    type: str = ""
+    name: str = ""
+    instance_stats: dict[str, DeviceStats] | None = None
+
+
+@dataclass
+class DeviceStats(Model):
+    summary: StatValue | None = None
+    stats: StatObject | None = None
+    timestamp: str = field(default="", metadata={'time': True})
+
+
+@dataclass
+class HostCPUStats(Model):
+    cpu: str = field(default="", metadata={'json': 'CPU'})
+    user: float = 0.0
+    system: float = 0.0
+    idle: float = 0.0
+
+
+@dataclass
+class HostDiskStats(Model):
+    device: str = ""
+    mountpoint: str = ""
+    size: int = 0
+    used: int = 0
+    available: int = 0
+    used_percent: float = 0.0
+    inodes_used_percent: float = 0.0
+
+
+@dataclass
+class HostMemoryStats(Model):
+    total: int = 0
+    available: int = 0
+    used: int = 0
+    free: int = 0
+
+
+@dataclass
+class HostNetworkInfo(Model):
+    name: str = ""
+    cidr: str = field(default="", metadata={'json': 'CIDR'})
+    interface: str = ""
+    reserved_ports: str = ""
+
+
+@dataclass
+class HostStats(Model):
+    memory: HostMemoryStats | None = None
+    cpu: list[HostCPUStats] | None = field(default=None, metadata={'json': 'CPU'})
+    disk_stats: list[HostDiskStats] | None = None
+    alloc_dir_stats: HostDiskStats | None = None
+    device_stats: list[DeviceGroupStats] | None = None
+    uptime: int = 0
+    cpu_ticks_consumed: float = field(default=0.0, metadata={'json': 'CPUTicksConsumed'})
+
+
+@dataclass
+class HostVolumeInfo(Model):
+    path: str = ""
+    read_only: bool = False
+    id: str = field(default="", metadata={'json': 'ID'})
+
+
+@dataclass
+class Node(Model):
+    id: str = field(default="", metadata={'json': 'ID'})
+    datacenter: str = ""
+    name: str = ""
+    http_addr: str = field(default="", metadata={'json': 'HTTPAddr'})
+    tls_enabled: bool = field(default=False, metadata={'json': 'TLSEnabled'})
+    attributes: dict[str, str] | None = None
+    resources: _resources.Resources | None = None
+    reserved: _resources.Resources | None = None
+    node_resources: NodeResources | None = None
+    reserved_resources: NodeReservedResources | None = None
+    links: dict[str, str] | None = None
+    meta: dict[str, str] | None = None
+    node_class: str = ""
+    node_pool: str = ""
+    cgroup_parent: str = ""
+    drain: bool = False
+    drain_strategy: DrainStrategy | None = None
+    scheduling_eligibility: str = ""
+    status: str = ""
+    status_description: str = ""
+    status_updated_at: int = 0
+    events: list[NodeEvent] | None = None
+    drivers: dict[str, DriverInfo] | None = None
+    host_volumes: dict[str, HostVolumeInfo] | None = None
+    gc_volumes_on_node_gc: bool = field(default=False, metadata={'json': 'GCVolumesOnNodeGC'})
+    host_networks: dict[str, HostNetworkInfo] | None = None
+    csi_controller_plugins: dict[str, CSIInfo] | None = field(default=None, metadata={'json': 'CSIControllerPlugins'})
+    csi_node_plugins: dict[str, CSIInfo] | None = field(default=None, metadata={'json': 'CSINodePlugins'})
+    last_drain: DrainMetadata | None = None
+    create_index: int = 0
+    modify_index: int = 0
+    node_max_allocs: int = 0
+
+
+@dataclass
+class NodeEvent(Model):
+    message: str = ""
+    subsystem: str = ""
+    details: dict[str, str] | None = None
+    timestamp: str = field(default="", metadata={'time': True})
+    create_index: int = 0
+
+
+@dataclass
+class StatObject(Model):
+    nested: dict[str, StatObject] | None = None
+    attributes: dict[str, StatValue] | None = None
+
+
+@dataclass
+class StatValue(Model):
+    float_numerator_val: float | None = field(default=None, metadata={'omitempty': True})
+    float_denominator_val: float | None = field(default=None, metadata={'omitempty': True})
+    int_numerator_val: int | None = field(default=None, metadata={'omitempty': True})
+    int_denominator_val: int | None = field(default=None, metadata={'omitempty': True})
+    string_val: str | None = field(default=None, metadata={'omitempty': True})
+    bool_val: bool | None = field(default=None, metadata={'omitempty': True})
+    unit: str = field(default="", metadata={'omitempty': True})
+    desc: str = field(default="", metadata={'omitempty': True})
+
+
+@dataclass
 class DrainSpec(Model):
     """DrainSpec describes a drain; deadline is nanoseconds, and a negative value means no deadline."""
 
@@ -193,7 +374,8 @@ class Nodes:
         return self.list(q)
 
     def info(self, node_id: str, q: QueryOptions | None = None) -> tuple[Node, QueryMeta]:
-        return self._client.query(f"/v1/node/{node_id}", q)
+        resp, qm = self._client.query(f"/v1/node/{node_id}", q)
+        return Node.from_json(resp), qm
 
     def update_drain(self, node_id: str, spec: DrainSpec | None, mark_eligible: bool = False, w: WriteOptions | None = None,
                      *, meta: dict[str, str] | None = None) -> tuple[NodeDrainUpdateResponse, WriteMeta]:
@@ -221,9 +403,9 @@ class Nodes:
         # The server answers with EvalIDs, not EvalID; Go decodes that as an empty string and so does this.
         return resp.get("EvalID", ""), wm
 
-    def stats(self, node_id: str, q: QueryOptions | None = None) -> dict[str, Any]:
+    def stats(self, node_id: str, q: QueryOptions | None = None) -> HostStats:
         resp, _ = self._client.query(f"/v1/client/stats?node_id={node_id}", q)
-        return resp
+        return HostStats.from_json(resp)
 
     def gc(self, node_id: str, q: QueryOptions | None = None) -> None:
         self._client.query(f"/v1/client/gc?node_id={node_id}", q)

@@ -31,7 +31,7 @@ def test_list_and_info(client):
     by_prefix, qm = client.nodes.prefix_list(node.id[:8], QueryOptions(allow_stale=True))
     assert [n.id for n in by_prefix] == [node.id] and qm.last_index > 0
     info, _ = client.nodes.info(node.id)
-    assert info["ID"] == node.id and info["Drivers"]["raw_exec"]["Detected"] is True
+    assert info.id == node.id and info.drivers["raw_exec"].detected is True
 
 
 def test_drain_and_eligibility(client):
@@ -42,10 +42,10 @@ def test_drain_and_eligibility(client):
         resp, wm = client.nodes.update_drain(node.id, DrainSpec(deadline=60_000_000_000, ignore_system_jobs=True), meta={"reason": "nomadpy"})
         assert resp.node_modify_index > 0 and wm.last_index > 0
         info, _ = client.nodes.info(node.id)
-        assert info["DrainStrategy"]["IgnoreSystemJobs"] is True
-        assert info["LastDrain"]["Status"] == DRAIN_STATUS_DRAINING
-        assert info["LastDrain"]["Meta"] == {"reason": "nomadpy"}
-        assert info["SchedulingEligibility"] == NODE_SCHEDULING_INELIGIBLE
+        assert info.drain_strategy.ignore_system_jobs is True
+        assert info.last_drain.status == DRAIN_STATUS_DRAINING
+        assert info.last_drain.meta == {"reason": "nomadpy"}
+        assert info.scheduling_eligibility == NODE_SCHEDULING_INELIGIBLE
 
         resp, _ = client.nodes.update_drain(node.id, None, mark_eligible=True)
         assert resp.node_modify_index > 0
@@ -76,7 +76,7 @@ def test_allocations_evaluate_stats_gc(client):
         assert isinstance(eval_id, str) and wm.last_index > 0
 
         stats = client.nodes.stats(node.id)
-        assert stats["Uptime"] > 0 and stats["CPU"]
+        assert stats.uptime > 0 and stats.cpu and stats.memory.total > 0
         client.nodes.gc(node.id)
     finally:
         client.jobs.deregister("nomadpy-node-alloc", purge=True)

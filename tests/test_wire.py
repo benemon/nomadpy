@@ -29,6 +29,7 @@ from nomadpy import (
     Client,
     Config,
     DrainSpec,
+    Job,
     JobACL,
     Namespace,
     NamespaceCapabilities,
@@ -68,7 +69,7 @@ QUERY_OPTS = QueryOptions(region="r1", namespace="ns1", allow_stale=True, wait_i
                           prefix="p", filter="f == 1", per_page=5, next_token="nt", reverse=True,
                           params={"x": "y"}, headers={"H": "v"}, auth_token="tok1")
 WRITE_OPTS = WriteOptions(region="r1", namespace="ns1", auth_token="tok1", idempotency_token="idem", headers={"H": "v"})
-JOB = {"ID": "j1", "Name": "j1"}
+JOB = Job(id="j1", name="j1")
 
 OPS = {
     "status.leader": lambda c: c.status.leader(),
