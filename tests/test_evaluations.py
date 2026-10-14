@@ -1,9 +1,8 @@
 import pytest
+from jobspecs import register_and_wait
 
 from nomadpy import UnexpectedResponseError
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
-
-from jobspecs import register_and_wait
 
 
 def test_list_info_count_allocations(client):

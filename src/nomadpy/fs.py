@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import base64
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
+from collections.abc import Iterator
 from urllib.parse import urlencode
 
 from .models import Model

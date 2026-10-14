@@ -11,7 +11,8 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import timedelta
-from typing import Any, Iterator
+from typing import Any
+from collections.abc import Iterator
 
 from .error_unexpected_response import UnexpectedResponseError
 

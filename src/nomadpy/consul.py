@@ -121,6 +121,11 @@ class ConsulLinkedService(Model):
 
 
 @dataclass
+class ConsulMeshConfigEntry(Model):
+    pass
+
+
+@dataclass
 class ConsulMeshGateway(Model):
     mode: str = ""
 

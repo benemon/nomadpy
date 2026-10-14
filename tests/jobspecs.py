@@ -4,8 +4,8 @@ import time
 from datetime import timedelta
 
 from nomadpy import QueryOptions
-from nomadpy.deployments import DEPLOYMENT_STATUS_RUNNING, DEPLOYMENT_STATUS_PENDING
-from nomadpy.evaluations import EVAL_STATUS_COMPLETE, EVAL_STATUS_FAILED, EVAL_STATUS_CANCELLED
+from nomadpy.deployments import DEPLOYMENT_STATUS_PENDING, DEPLOYMENT_STATUS_RUNNING
+from nomadpy.evaluations import EVAL_STATUS_CANCELLED, EVAL_STATUS_COMPLETE, EVAL_STATUS_FAILED
 
 WAIT = timedelta(seconds=10)
 DEADLINE = 90

@@ -198,9 +198,6 @@
     },
     "fs.go": {
       "FrameReader": "io.Reader adapter over frame channels; Python callers iterate frames"
-    },
-    "consul.go": {
-      "ConsulMeshConfigEntry": "empty struct"
     }
   },
   "consts": {

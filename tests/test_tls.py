@@ -5,10 +5,9 @@ import tempfile
 import urllib.error
 
 import pytest
+from conftest import start_agent, stop_agent
 
 from nomadpy import Client, Config, TLSConfig
-
-from conftest import start_agent, stop_agent
 
 
 @pytest.fixture(scope="module")

@@ -1,6 +1,7 @@
 import time
 
 import pytest
+from jobspecs import DEADLINE, WAIT, register_and_wait, service_job, wait_for_deployment, wait_for_eval
 
 from nomadpy import QueryOptions, UnexpectedResponseError
 from nomadpy.deployments import (
@@ -10,8 +11,6 @@ from nomadpy.deployments import (
     DEPLOYMENT_STATUS_SUCCESSFUL,
 )
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
-
-from jobspecs import DEADLINE, WAIT, register_and_wait, service_job, wait_for_deployment, wait_for_eval
 
 
 def _second_version(client, job_id, **spec):

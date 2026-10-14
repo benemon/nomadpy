@@ -1,7 +1,10 @@
-.PHONY: test oracle bump models docs
+.PHONY: test lint oracle bump models docs
 
 test:
 	.venv/bin/pytest
+
+lint:
+	.venv/bin/ruff check src tests oracle
 
 oracle:
 	cd oracle && go mod download && go run . surface fixtures/surface.json && go run . wire fixtures/wire.json

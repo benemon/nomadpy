@@ -65,7 +65,7 @@ class Generator:
     def is_model(self, name, st):
         """Request bodies, option bundles and services are not models; a spec struct another struct embeds as a field is."""
         if not st["fields"]:
-            return False
+            return name in self.referenced
         if name.endswith(("Request", "Options", "Opts")):
             return name in self.referenced
         return True
@@ -135,7 +135,7 @@ class Generator:
             else:
                 body.append(f"    {py}: {ann} = {default}")
         bases = f"{self.mixins[name]}, Model" if name in self.mixins else "Model"
-        return f"@dataclass\nclass {name}({bases}):\n" + "\n".join(body) + "\n"
+        return f"@dataclass\nclass {name}({bases}):\n" + "\n".join(body or ["    pass"]) + "\n"
 
     def value_deps(self, st):
         return {f["type"] for f in st["fields"] if not f.get("embedded") and f["type"] in self.file["structs"]}

@@ -1,9 +1,7 @@
-import pytest
-
-from nomadpy import UnexpectedResponseError
-from nomadpy.search import CONTEXT_ALL, CONTEXT_JOBS, CONTEXT_NODES
 
 from jobspecs import register_and_wait
+
+from nomadpy.search import CONTEXT_ALL, CONTEXT_JOBS, CONTEXT_NODES
 
 
 def test_service_registrations(client):

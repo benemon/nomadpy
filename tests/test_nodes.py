@@ -1,12 +1,11 @@
 import time
 
 import pytest
+from jobspecs import DEADLINE, WAIT, batch_job, register_and_wait, wait_for_eval
 
 from nomadpy import DrainSpec, QueryOptions, UnexpectedResponseError
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
 from nomadpy.nodes import DRAIN_STATUS_CANCELED, DRAIN_STATUS_DRAINING, NODE_SCHEDULING_ELIGIBLE, NODE_SCHEDULING_INELIGIBLE, NODE_STATUS_READY
-
-from jobspecs import DEADLINE, WAIT, batch_job, register_and_wait, wait_for_eval
 
 
 def _node(client):
