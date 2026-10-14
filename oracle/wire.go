@@ -460,6 +460,24 @@ var ops = []op{
 	{"system.garbage_collect", `{}`, func(c *api.Client) error { return c.System().GarbageCollect() }},
 	{"system.reconcile_summaries", `{}`, func(c *api.Client) error { return c.System().ReconcileSummaries() }},
 
+	{"jobs.scale_with_request", `{}`, func(c *api.Client) error {
+		_, _, err := c.Jobs().ScaleWithRequest("j1", &api.ScalingRequest{Count: new(int64(3)), Target: map[string]string{"Job": "j1", "Group": "g"}, Message: "m", PolicyOverride: true, JobModifyIndex: 7}, writeOpts)
+		return err
+	}},
+	{"scaling.list_policies", `[]`, func(c *api.Client) error { _, _, err := c.Scaling().ListPolicies(queryOpts()); return err }},
+	{"scaling.get_policy", `{}`, func(c *api.Client) error { _, _, err := c.Scaling().GetPolicy("sp1", nil); return err }},
+	{"recommendations.list", `[]`, func(c *api.Client) error { _, _, err := c.Recommendations().List(queryOpts()); return err }},
+	{"recommendations.info", `{}`, func(c *api.Client) error { _, _, err := c.Recommendations().Info("r1", nil); return err }},
+	{"recommendations.upsert", `{}`, func(c *api.Client) error {
+		_, _, err := c.Recommendations().Upsert(&api.Recommendation{JobID: "j1", Group: "g", Task: "t", Resource: "CPU", Value: 200, Meta: map[string]any{"k": "v"}, Stats: map[string]float64{"mean": 1.5}, EnforceVersion: true}, writeOpts)
+		return err
+	}},
+	{"recommendations.delete", `{}`, func(c *api.Client) error {
+		_, err := c.Recommendations().Delete([]string{"r1", "r2"}, writeOpts)
+		return err
+	}},
+	{"recommendations.apply", `{}`, func(c *api.Client) error { _, _, err := c.Recommendations().Apply([]string{"r1"}, true); return err }},
+
 	{"quotas.list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().List(nil); return err }},
 	{"quotas.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().PrefixList("pre", nil); return err }},
 	{"quotas.list_usage", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().ListUsage(nil); return err }},

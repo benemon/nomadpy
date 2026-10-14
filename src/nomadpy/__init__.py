@@ -106,6 +106,20 @@ from .operator_autopilot import (
     ServerHealth,
 )
 from .operator_metrics import GaugeValue, MetricsSummary, PointValue, SampledValue
+from .recommendations import (
+    Recommendation,
+    RecommendationApplyResponse,
+    SingleRecommendationApplyError,
+    SingleRecommendationApplyResult,
+)
+from .scaling import (
+    JobScaleStatusResponse,
+    ScalingEvent,
+    ScalingPolicy,
+    ScalingPolicyListStub,
+    ScalingRequest,
+    TaskGroupScaleStatus,
+)
 from .quota import NodePoolLimit, QuotaLimit, QuotaResources, QuotaSpec, QuotaStorageResources, QuotaUsage
 from .search import FuzzyMatch, FuzzySearchResponse, SearchResponse
 from .sentinel import SentinelPolicy, SentinelPolicyListStub
@@ -184,6 +198,7 @@ __all__ = [
     "JobListStub",
     "JobPlanResponse",
     "JobRegisterResponse",
+    "JobScaleStatusResponse",
     "JobStabilityResponse",
     "JobSummary",
     "JobValidateResponse",
@@ -226,9 +241,15 @@ __all__ = [
     "QuotaUsage",
     "RaftConfiguration",
     "RaftServer",
+    "Recommendation",
+    "RecommendationApplyResponse",
     "RescheduleEvent",
     "RescheduleTracker",
     "SampledValue",
+    "ScalingEvent",
+    "ScalingPolicy",
+    "ScalingPolicyListStub",
+    "ScalingRequest",
     "SchedulerConfiguration",
     "SchedulerConfigurationResponse",
     "SchedulerSetConfigurationResponse",
@@ -241,6 +262,9 @@ __all__ = [
     "ServiceRegistration",
     "ServiceRegistrationListStub",
     "ServiceRegistrationStub",
+    "SingleRecommendationApplyError",
+    "SingleRecommendationApplyResult",
+    "TaskGroupScaleStatus",
     "TaskGroupSummary",
     "TLSConfig",
     "UnexpectedResponseError",

@@ -79,7 +79,7 @@ def test_scale_and_scale_status(client):
     dep, _ = client.jobs.latest_deployment(job_id)
     assert wait_for_deployment(client, dep.id).task_groups["g"].desired_total == 2
     status, _ = client.jobs.scale_status(job_id)
-    assert status["TaskGroups"]["g"]["Desired"] == 2
+    assert status.task_groups["g"].desired == 2
     client.jobs.deregister(job_id, purge=True)
 
 

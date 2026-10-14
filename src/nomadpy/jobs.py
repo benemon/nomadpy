@@ -8,6 +8,7 @@ from urllib.parse import quote
 from .deployments import Deployment, _deployments
 from .evaluations import Evaluation
 from .models import Model
+from .scaling import JobScaleStatusResponse, ScalingRequest
 from .services import ServiceRegistration
 
 if TYPE_CHECKING:
@@ -182,12 +183,16 @@ class Jobs:
 
     def scale(self, job_id: str, group: str, count: int | None = None, message: str = "", error: bool = False,
               meta: dict[str, Any] | None = None, w: WriteOptions | None = None) -> tuple[JobRegisterResponse, WriteMeta]:
-        req = {"Count": count, "Target": {"Job": job_id, "Group": group}, "Error": error, "Message": message, "Meta": meta}
-        resp, wm = self._client.put(_path(job_id) + "/scale", req, w)
+        req = ScalingRequest(count=count, target={"Job": job_id, "Group": group}, error=error, message=message, meta=meta)
+        return self.scale_with_request(job_id, req, w)
+
+    def scale_with_request(self, job_id: str, req: ScalingRequest, w: WriteOptions | None = None) -> tuple[JobRegisterResponse, WriteMeta]:
+        resp, wm = self._client.put(_path(job_id) + "/scale", req.to_json(), w)
         return JobRegisterResponse.from_json(resp), wm
 
-    def scale_status(self, job_id: str, q: QueryOptions | None = None) -> tuple[dict[str, Any], QueryMeta]:
-        return self._client.query(_path(job_id) + "/scale", q)
+    def scale_status(self, job_id: str, q: QueryOptions | None = None) -> tuple[JobScaleStatusResponse, QueryMeta]:
+        resp, qm = self._client.query(_path(job_id) + "/scale", q)
+        return JobScaleStatusResponse.from_json(resp), qm
 
     def versions(self, job_id: str, diffs: bool = False, q: QueryOptions | None = None, *, diff_tag: str = "",
                  diff_version: int | None = None) -> tuple[list[Job], list[dict[str, Any]], QueryMeta]:

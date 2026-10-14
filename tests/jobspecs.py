@@ -11,10 +11,21 @@ WAIT = timedelta(seconds=10)
 DEADLINE = 90
 
 
-def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False):
+def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False, scaling=False):
     service = ""
+    if scaling:
+        service += """
+    scaling {
+      min     = 1
+      max     = 3
+      enabled = true
+      policy {
+        cooldown = "1m"
+      }
+    }
+"""
     if nomad_service:
-        service = f"""
+        service += f"""
     network {{
       port "http" {{}}
     }}

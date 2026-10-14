@@ -13,10 +13,8 @@
     "keyring.go": "pn-9sw",
     "locks.go": "client-side lease orchestration over the variables lock endpoints, which are ported; out of scope by decision on 2026-10-14",
     "raw.go": "raw queries, not ported with the foundation",
-    "recommendations.go": "pn-9u3",
     "resources.go": "pn-txy",
     "retry.go": "client-side retry orchestration; out of scope by decision on 2026-10-14",
-    "scaling.go": "pn-9u3",
     "task_sched.go": "pn-txy",
     "tasks.go": "pn-txy",
     "utils.go": "internal helpers"
@@ -38,7 +36,6 @@
     "Jobs.ListOptions": {
       "folded": "list"
     },
-    "Jobs.ScaleWithRequest": "scale builds the ScalingRequest from its arguments; pn-9u3 revisits with scaling.go",
     "Client.ACLOIDC": "deprecated alias of ACLAuth",
     "Variables.GetVariableItems": {
       "folded": "get_items"

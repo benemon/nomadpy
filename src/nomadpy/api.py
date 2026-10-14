@@ -215,7 +215,9 @@ class Client:
         self.node_pools = NodePools(self)
         self.nodes = Nodes(self)
         self.quotas = Quotas(self)
+        self.recommendations = Recommendations(self)
         self.regions = Regions(self)
+        self.scaling = Scaling(self)
         self.search = Search(self)
         self.sentinel_policies = SentinelPolicies(self)
         self.services = Services(self)
@@ -386,7 +388,9 @@ from .node_pools import NodePools  # noqa: E402
 from .nodes import Nodes  # noqa: E402
 from .operator import Operator  # noqa: E402
 from .quota import Quotas  # noqa: E402
+from .recommendations import Recommendations  # noqa: E402
 from .regions import Regions  # noqa: E402
+from .scaling import Scaling  # noqa: E402
 from .search import Search  # noqa: E402
 from .sentinel import SentinelPolicies  # noqa: E402
 from .services import Services  # noqa: E402

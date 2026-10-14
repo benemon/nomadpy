@@ -46,6 +46,8 @@ from nomadpy import (
     QuotaResources,
     QuotaSpec,
     QuotaStorageResources,
+    Recommendation,
+    ScalingRequest,
     SchedulerConfiguration,
     SchedulerWorkerPoolArgs,
     SentinelPolicy,
@@ -254,6 +256,16 @@ OPS = {
     "search.fuzzy_search": lambda c: c.search.fuzzy_search("nomad", "all"),
     "system.garbage_collect": lambda c: c.system.garbage_collect(),
     "system.reconcile_summaries": lambda c: c.system.reconcile_summaries(),
+
+    "jobs.scale_with_request": lambda c: c.jobs.scale_with_request("j1", ScalingRequest(count=3, target={"Job": "j1", "Group": "g"}, message="m", policy_override=True, job_modify_index=7), WRITE_OPTS),
+    "scaling.list_policies": lambda c: c.scaling.list_policies(QueryOptions(**QUERY_OPTS.__dict__)),
+    "scaling.get_policy": lambda c: c.scaling.get_policy("sp1"),
+    "recommendations.list": lambda c: c.recommendations.list(QueryOptions(**QUERY_OPTS.__dict__)),
+    "recommendations.info": lambda c: c.recommendations.info("r1"),
+    "recommendations.upsert": lambda c: c.recommendations.upsert(Recommendation(
+        job_id="j1", group="g", task="t", resource="CPU", value=200, meta={"k": "v"}, stats={"mean": 1.5}, enforce_version=True), WRITE_OPTS),
+    "recommendations.delete": lambda c: c.recommendations.delete(["r1", "r2"], WRITE_OPTS),
+    "recommendations.apply": lambda c: c.recommendations.apply(["r1"], True),
 
     "quotas.list": lambda c: c.quotas.list(),
     "quotas.prefix_list": lambda c: c.quotas.prefix_list("pre"),

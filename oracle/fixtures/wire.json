@@ -4296,6 +4296,269 @@
       "response": "{}"
     },
     {
+      "op": "jobs.scale_with_request",
+      "method": "PUT",
+      "path": "/v1/job/j1/scale",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "Count": 3,
+        "Error": false,
+        "JobModifyIndex": 7,
+        "Message": "m",
+        "Meta": null,
+        "Namespace": "",
+        "PolicyOverride": true,
+        "Region": "",
+        "SecretID": "",
+        "Target": {
+          "Group": "g",
+          "Job": "j1"
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "scaling.list_policies",
+      "method": "GET",
+      "path": "/v1/scaling/policies",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "scaling.get_policy",
+      "method": "GET",
+      "path": "/v1/scaling/policy/sp1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "recommendations.list",
+      "method": "GET",
+      "path": "/v1/recommendations",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "recommendations.info",
+      "method": "GET",
+      "path": "/v1/recommendation/r1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "recommendations.upsert",
+      "method": "PUT",
+      "path": "/v1/recommendation",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Current": 0,
+        "EnforceVersion": true,
+        "Group": "g",
+        "ID": "",
+        "JobID": "j1",
+        "JobVersion": 0,
+        "Meta": {
+          "k": "v"
+        },
+        "ModifyIndex": 0,
+        "Namespace": "",
+        "Region": "",
+        "Resource": "CPU",
+        "Stats": {
+          "mean": 1.5
+        },
+        "SubmitTime": 0,
+        "Task": "t",
+        "Value": 200
+      },
+      "response": "{}"
+    },
+    {
+      "op": "recommendations.delete",
+      "method": "PUT",
+      "path": "/v1/recommendations/apply",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "Apply": [],
+        "Dismiss": [
+          "r1",
+          "r2"
+        ],
+        "PolicyOverride": false
+      },
+      "response": "{}"
+    },
+    {
+      "op": "recommendations.apply",
+      "method": "PUT",
+      "path": "/v1/recommendations/apply",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "Apply": [
+          "r1"
+        ],
+        "Dismiss": null,
+        "PolicyOverride": true
+      },
+      "response": "{}"
+    },
+    {
       "op": "quotas.list",
       "method": "GET",
       "path": "/v1/quotas",
