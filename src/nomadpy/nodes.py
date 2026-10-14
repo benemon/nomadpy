@@ -309,7 +309,7 @@ class StatValue(Model):
 
 @dataclass
 class DrainSpec(Model):
-    """DrainSpec describes a drain; deadline is nanoseconds, and a negative value means no deadline."""
+    """DrainSpec describes a drain; deadline is nanoseconds, 0 means no deadline, and a negative value forces an immediate drain."""
 
     deadline: int = 0
     ignore_system_jobs: bool = False
