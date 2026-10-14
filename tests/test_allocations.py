@@ -36,7 +36,8 @@ def test_list_info_stats_checks_services(client):
         assert with_resources.id == stub.id
 
         alloc, _ = client.allocations.info(stub.id)
-        assert alloc["ID"] == stub.id and alloc["Job"]["ID"] == "nomadpy-allocs"
+        assert alloc.id == stub.id and alloc.job.id == "nomadpy-allocs"
+        assert alloc.stub().job_type == "service" and not alloc.client_terminal_status()
         stats = client.allocations.stats(stub.id)
         assert stats.resource_usage.memory_stats.rss >= 0 and "t" in stats.tasks and stats.timestamp > 0
         assert client.allocations.checks(stub.id) == {}
@@ -51,15 +52,15 @@ def test_restart_signal_pause_stop(client):
     try:
         (stub,), _ = client.allocations.list(QueryOptions(filter='JobID == "nomadpy-alloc-ops"'))
         before, _ = client.allocations.info(stub.id)
-        restarts = before["TaskStates"]["t"]["Restarts"]
+        restarts = before.task_states["t"].restarts
         client.allocations.restart(stub.id, "t")
-        restarted = _wait_for_alloc(client, stub.id, lambda a: a["TaskStates"]["t"]["Restarts"] >= restarts + 1)
-        assert restarted["TaskStates"]["t"]["StartedAt"] != before["TaskStates"]["t"]["StartedAt"]
+        restarted = _wait_for_alloc(client, stub.id, lambda a: a.task_states["t"].restarts >= restarts + 1)
+        assert restarted.task_states["t"].started_at != before.task_states["t"].started_at
         client.allocations.restart_all_tasks(stub.id)
-        _wait_for_alloc(client, stub.id, lambda a: a["TaskStates"]["t"]["Restarts"] >= restarts + 2)
+        _wait_for_alloc(client, stub.id, lambda a: a.task_states["t"].restarts >= restarts + 2)
 
         client.allocations.signal(stub.id, "t", "SIGUSR1")
-        _wait_for_alloc(client, stub.id, lambda a: any(e["Type"] == "Signaling" for e in a["TaskStates"]["t"]["Events"]))
+        _wait_for_alloc(client, stub.id, lambda a: any(e.type == "Signaling" for e in a.task_states["t"].events))
 
         # Task pause is Enterprise; Community answers 500.
         with pytest.raises(UnexpectedResponseError) as e:
@@ -72,8 +73,8 @@ def test_restart_signal_pause_stop(client):
         resp, qm = client.allocations.stop(stub.id)
         assert resp.eval_id and qm.last_index > 0
         assert wait_for_eval(client, resp.eval_id).status == EVAL_STATUS_COMPLETE
-        stopped = _wait_for_alloc(client, stub.id, lambda a: a["ClientStatus"] == ALLOC_CLIENT_STATUS_COMPLETE)
-        assert stopped["DesiredStatus"] == ALLOC_DESIRED_STATUS_STOP
+        stopped = _wait_for_alloc(client, stub.id, lambda a: a.client_status == ALLOC_CLIENT_STATUS_COMPLETE)
+        assert stopped.desired_status == ALLOC_DESIRED_STATUS_STOP and stopped.server_terminal_status()
         client.allocations.gc(stub.id)
     finally:
         client.jobs.deregister("nomadpy-alloc-ops", purge=True)

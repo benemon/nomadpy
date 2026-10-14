@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from .models import Model
+from . import allocations as _allocations
 from .node_identity import NodeIdentity
 from .node_meta import NodeMeta
 from . import resources as _resources
@@ -389,10 +390,11 @@ class Nodes:
         resp, wm = self._client.put(f"/v1/node/{node_id}/eligibility", req, w)
         return NodeEligibilityUpdateResponse.from_json(resp), wm
 
-    def allocations(self, node_id: str, q: QueryOptions | None = None) -> tuple[list[dict[str, Any]], QueryMeta]:
+    def allocations(self, node_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.Allocation], QueryMeta]:
         resp, qm = self._client.query(f"/v1/node/{node_id}/allocations", q)
-        resp.sort(key=lambda a: a["CreateIndex"], reverse=True)
-        return resp, qm
+        allocs = [_allocations.Allocation.from_json(a) for a in resp]
+        allocs.sort(key=lambda a: a.create_index, reverse=True)
+        return allocs, qm
 
     def csi_volumes(self, node_id: str, q: QueryOptions | None = None) -> list[dict[str, Any]]:
         resp, _ = self._client.query(f"/v1/volumes?type=csi&node_id={node_id}", q)

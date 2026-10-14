@@ -107,9 +107,6 @@
     "DrainStrategy.Equal": "dataclass equality",
     "DrainStrategy.String": "__str__",
     "Allocations.Exec": "pn-k6m",
-    "Allocation.Stub": "Allocation stays a dict; pn-cmv",
-    "Allocation.ServerTerminalStatus": "Allocation stays a dict; pn-cmv",
-    "Allocation.ClientTerminalStatus": "Allocation stays a dict; pn-cmv",
     "Agent.MembersOpts": {
       "folded": "members"
     },
@@ -166,11 +163,6 @@
       "MonitorMessage": "only produced by MonitorDrain"
     },
     "allocations.go": {
-      "Allocation": "Allocation stays a dict; pn-cmv",
-      "AllocationMetric": "Allocation stays a dict; pn-cmv",
-      "NodeScoreMeta": "Allocation stays a dict; pn-cmv",
-      "AllocNetworkStatus": "Allocation stays a dict; pn-cmv",
-      "DesiredTransition": "Allocation stays a dict; pn-cmv",
       "GenericResponse": "only WriteMeta, which the client returns separately",
       "ExecStreamingIOOperation": "pn-k6m",
       "TerminalSize": "pn-k6m",

@@ -35,8 +35,8 @@ def test_list_info_allocations(client):
     assert info.job_id == job_id and info.status == DEPLOYMENT_STATUS_SUCCESSFUL
     assert info.task_groups["g"].desired_total == 1
     allocs, _ = client.deployments.allocations(dep.id)
-    assert len(allocs) == 1 and allocs[0]["JobID"] == job_id
-    assert allocs[0]["DeploymentStatus"]["Healthy"] is True
+    assert len(allocs) == 1 and allocs[0].job_id == job_id
+    assert allocs[0].deployment_status.healthy is True
     client.jobs.deregister(job_id, purge=True)
 
 
@@ -99,7 +99,7 @@ def test_set_alloc_health(client):
     register_and_wait(client, job_id)
     dep = _second_version(client, job_id, sleep=601)
     allocs, _ = client.deployments.allocations(dep.id)
-    resp, _ = client.deployments.set_alloc_health(dep.id, [], [a["ID"] for a in allocs])
+    resp, _ = client.deployments.set_alloc_health(dep.id, [], [a.id for a in allocs])
     assert resp.deployment_modify_index > 0
     assert wait_for_deployment(client, dep.id).status == DEPLOYMENT_STATUS_FAILED
     client.jobs.deregister(job_id, purge=True)

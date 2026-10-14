@@ -58,7 +58,7 @@ def test_register_deploy_inspect_deregister(client):
     assert jobs == []
 
     allocs, _ = client.jobs.allocations(job_id)
-    assert len(allocs) == 1 and allocs[0]["ClientStatus"] == "running"
+    assert len(allocs) == 1 and allocs[0].client_status == "running"
     evals, _ = client.jobs.evaluations(job_id)
     assert evals and evals[0].status == EVAL_STATUS_COMPLETE
     deployments, _ = client.jobs.deployments(job_id)

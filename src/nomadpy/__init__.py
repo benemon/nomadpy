@@ -34,6 +34,8 @@ from .agent import (
     ServerMembers,
 )
 from .allocations import (
+    Allocation,
+    AllocationMetric,
     AllocatedCpuResources,
     AllocatedDeviceResource,
     AllocatedMemoryResources,
@@ -190,7 +192,9 @@ __all__ = [
     "AllocatedResources",
     "AllocatedSharedResources",
     "AllocatedTaskResources",
+    "Allocation",
     "AllocationListStub",
+    "AllocationMetric",
     "AllocCheckStatus",
     "AllocDeploymentStatus",
     "AllocResourceUsage",

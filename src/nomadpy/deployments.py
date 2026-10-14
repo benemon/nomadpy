@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from .models import Model
+from . import allocations as _allocations
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
@@ -84,10 +85,9 @@ class Deployments:
         resp, qm = self._client.query(f"/v1/deployment/{deployment_id}", q)
         return Deployment.from_json(resp), qm
 
-    def allocations(self, deployment_id: str, q: QueryOptions | None = None) -> tuple[list[dict[str, Any]], QueryMeta]:
+    def allocations(self, deployment_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
         resp, qm = self._client.query(f"/v1/deployment/allocations/{deployment_id}", q)
-        resp.sort(key=lambda a: a["CreateIndex"], reverse=True)
-        return resp, qm
+        return _allocations._stubs(resp), qm
 
     def fail(self, deployment_id: str, w: WriteOptions | None = None) -> tuple[DeploymentUpdateResponse, WriteMeta]:
         return self._update("fail", deployment_id, {"DeploymentID": deployment_id}, w)

@@ -21,7 +21,7 @@ def test_list_info_count_allocations(client):
     assert ev.deployment_id
 
     allocs, _ = client.evaluations.allocations(ev.id)
-    assert len(allocs) == 1 and allocs[0]["JobID"] == job_id
+    assert len(allocs) == 1 and allocs[0].job_id == job_id
 
     by_prefix, _ = client.evaluations.prefix_list(ev.id[:8])
     assert [e.id for e in by_prefix] == [ev.id]

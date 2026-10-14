@@ -410,10 +410,9 @@ class Jobs:
         resp, qm = self._client.query(_path(job_id) + f"/submission?version={version}", q)
         return JobSubmission.from_json(resp), qm
 
-    def allocations(self, job_id: str, all_allocs: bool = False, q: QueryOptions | None = None) -> tuple[list[dict[str, Any]], QueryMeta]:
+    def allocations(self, job_id: str, all_allocs: bool = False, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
         resp, qm = self._client.query(_path(job_id) + f"/allocations?all={str(all_allocs).lower()}", q)
-        resp.sort(key=lambda a: a["CreateIndex"], reverse=True)
-        return resp, qm
+        return _allocations._stubs(resp), qm
 
     def deployments(self, job_id: str, all: bool = False, q: QueryOptions | None = None) -> tuple[list[Deployment], QueryMeta]:
         resp, qm = self._client.query(_path(job_id) + f"/deployments?all={str(all).lower()}", q)

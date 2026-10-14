@@ -69,7 +69,7 @@ def test_allocations_evaluate_stats_gc(client):
     register_and_wait(client, "nomadpy-node-alloc")
     try:
         allocs, qm = client.nodes.allocations(node.id)
-        assert "nomadpy-node-alloc" in [a["JobID"] for a in allocs] and qm.last_index > 0
+        assert "nomadpy-node-alloc" in [a.job_id for a in allocs] and qm.last_index > 0
         assert client.nodes.csi_volumes(node.id) == []
 
         eval_id, wm = client.nodes.force_evaluate(node.id)
@@ -93,12 +93,12 @@ def test_gc_alloc(client):
     index, deadline = 0, time.monotonic() + DEADLINE
     while time.monotonic() < deadline:
         allocs, qm = client.jobs.allocations("nomadpy-node-gc", q=QueryOptions(wait_index=index, wait_time=WAIT))
-        if allocs[0]["ClientStatus"] == "complete":
+        if allocs[0].client_status == "complete":
             break
         index = qm.last_index
     try:
-        assert allocs[0]["ClientStatus"] == "complete"
-        client.nodes.gc_alloc(allocs[0]["ID"])
+        assert allocs[0].client_status == "complete"
+        client.nodes.gc_alloc(allocs[0].id)
     finally:
         client.jobs.deregister("nomadpy-node-gc", purge=True)
 
