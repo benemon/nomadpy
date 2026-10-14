@@ -211,6 +211,7 @@ class Client:
         self.evaluations = Evaluations(self)
         self.jobs = Jobs(self)
         self.operator = Operator(self)
+        self.keyring = Keyring(self)
         self.namespaces = Namespaces(self)
         self.node_pools = NodePools(self)
         self.nodes = Nodes(self)
@@ -383,6 +384,7 @@ from .allocations import Allocations  # noqa: E402
 from .deployments import Deployments  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
 from .jobs import Jobs  # noqa: E402
+from .keyring import Keyring  # noqa: E402
 from .namespace import Namespaces  # noqa: E402
 from .node_pools import NodePools  # noqa: E402
 from .nodes import Nodes  # noqa: E402

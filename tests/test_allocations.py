@@ -50,12 +50,13 @@ def test_restart_signal_pause_stop(client):
     register_and_wait(client, "nomadpy-alloc-ops")
     try:
         (stub,), _ = client.allocations.list(QueryOptions(filter='JobID == "nomadpy-alloc-ops"'))
-        started = stub.task_states["t"]["StartedAt"]
+        before, _ = client.allocations.info(stub.id)
+        restarts = before["TaskStates"]["t"]["Restarts"]
         client.allocations.restart(stub.id, "t")
-        restarted = _wait_for_alloc(client, stub.id, lambda a: a["TaskStates"]["t"]["Restarts"] == 1)
-        assert restarted["TaskStates"]["t"]["StartedAt"] != started
+        restarted = _wait_for_alloc(client, stub.id, lambda a: a["TaskStates"]["t"]["Restarts"] >= restarts + 1)
+        assert restarted["TaskStates"]["t"]["StartedAt"] != before["TaskStates"]["t"]["StartedAt"]
         client.allocations.restart_all_tasks(stub.id)
-        _wait_for_alloc(client, stub.id, lambda a: a["TaskStates"]["t"]["Restarts"] == 2)
+        _wait_for_alloc(client, stub.id, lambda a: a["TaskStates"]["t"]["Restarts"] >= restarts + 2)
 
         client.allocations.signal(stub.id, "t", "SIGUSR1")
         _wait_for_alloc(client, stub.id, lambda a: any(e["Type"] == "Signaling" for e in a["TaskStates"]["t"]["Events"]))

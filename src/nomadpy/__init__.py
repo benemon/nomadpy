@@ -61,6 +61,7 @@ from .api import (
 from .deployments import Deployment, DeploymentState, DeploymentUpdateResponse
 from .error_unexpected_response import UnexpectedResponseError
 from .evaluations import Evaluation, EvaluationStub
+from .keyring import RootKeyMeta
 from .namespace import (
     Namespace,
     NamespaceCapabilities,
@@ -245,6 +246,7 @@ __all__ = [
     "RecommendationApplyResponse",
     "RescheduleEvent",
     "RescheduleTracker",
+    "RootKeyMeta",
     "SampledValue",
     "ScalingEvent",
     "ScalingPolicy",

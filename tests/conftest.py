@@ -115,6 +115,15 @@ def client(nomad_agent):
     return Client(Config(address=nomad_agent))
 
 
+@pytest.fixture(scope="module")
+def disposable_client(nomad_bin):
+    """A client on an agent of its own, for tests that leave the server in a state other tests cannot share."""
+    proc, address, workdir = start_agent(nomad_bin)
+    yield Client(Config(address=address))
+    stop_agent(proc)
+    shutil.rmtree(workdir, ignore_errors=True)
+
+
 def leader_ready(address):
     with urllib.request.urlopen(f"{address}/v1/status/leader", timeout=2) as resp:
         return resp.status == 200 and resp.read() not in (b"", b'""')

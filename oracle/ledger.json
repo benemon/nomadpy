@@ -10,7 +10,6 @@
     "host_volume_claims.go": "pn-8nl",
     "host_volumes.go": "pn-8nl",
     "ioutil.go": "internal io helpers",
-    "keyring.go": "pn-9sw",
     "locks.go": "client-side lease orchestration over the variables lock endpoints, which are ported; out of scope by decision on 2026-10-14",
     "raw.go": "raw queries, not ported with the foundation",
     "resources.go": "pn-txy",

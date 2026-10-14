@@ -4559,6 +4559,127 @@
       "response": "{}"
     },
     {
+      "op": "keyring.list",
+      "method": "GET",
+      "path": "/v1/operator/keyring/keys",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "keyring.delete",
+      "method": "DELETE",
+      "path": "/v1/operator/keyring/key/k 1",
+      "query": {
+        "force": [
+          "true"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "keyring.rotate",
+      "method": "PUT",
+      "path": "/v1/operator/keyring/rotate",
+      "query": {
+        "algo": [
+          "aes256-gcm"
+        ],
+        "full": [
+          "true"
+        ],
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "publish_time": [
+          "1700000000000000000"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{\"Key\":{}}"
+    },
+    {
+      "op": "keyring.rotate_default",
+      "method": "PUT",
+      "path": "/v1/operator/keyring/rotate",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{\"Key\":{}}"
+    },
+    {
       "op": "quotas.list",
       "method": "GET",
       "path": "/v1/quotas",

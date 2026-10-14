@@ -478,6 +478,17 @@ var ops = []op{
 	}},
 	{"recommendations.apply", `{}`, func(c *api.Client) error { _, _, err := c.Recommendations().Apply([]string{"r1"}, true); return err }},
 
+	{"keyring.list", `[]`, func(c *api.Client) error { _, _, err := c.Keyring().List(queryOpts()); return err }},
+	{"keyring.delete", `{}`, func(c *api.Client) error {
+		_, err := c.Keyring().Delete(&api.KeyringDeleteOptions{KeyID: "k 1", Force: true}, writeOpts)
+		return err
+	}},
+	{"keyring.rotate", `{"Key":{}}`, func(c *api.Client) error {
+		_, _, err := c.Keyring().Rotate(&api.KeyringRotateOptions{Full: true, Algorithm: api.EncryptionAlgorithmAES256GCM, PublishTime: 1700000000000000000}, writeOpts)
+		return err
+	}},
+	{"keyring.rotate_default", `{"Key":{}}`, func(c *api.Client) error { _, _, err := c.Keyring().Rotate(nil, nil); return err }},
+
 	{"quotas.list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().List(nil); return err }},
 	{"quotas.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().PrefixList("pre", nil); return err }},
 	{"quotas.list_usage", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().ListUsage(nil); return err }},

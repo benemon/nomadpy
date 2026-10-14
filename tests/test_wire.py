@@ -267,6 +267,11 @@ OPS = {
     "recommendations.delete": lambda c: c.recommendations.delete(["r1", "r2"], WRITE_OPTS),
     "recommendations.apply": lambda c: c.recommendations.apply(["r1"], True),
 
+    "keyring.list": lambda c: c.keyring.list(QueryOptions(**QUERY_OPTS.__dict__)),
+    "keyring.delete": lambda c: c.keyring.delete("k 1", WRITE_OPTS, force=True),
+    "keyring.rotate": lambda c: c.keyring.rotate(WRITE_OPTS, full=True, algorithm="aes256-gcm", publish_time=1700000000000000000),
+    "keyring.rotate_default": lambda c: c.keyring.rotate(),
+
     "quotas.list": lambda c: c.quotas.list(),
     "quotas.prefix_list": lambda c: c.quotas.prefix_list("pre"),
     "quotas.list_usage": lambda c: c.quotas.list_usage(),
