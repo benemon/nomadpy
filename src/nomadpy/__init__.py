@@ -1,3 +1,15 @@
+# api first: it defines the option types the service modules import at module level, then imports them.
+from .api import (
+    Client,
+    Config,
+    HttpBasicAuth,
+    QueryMeta,
+    QueryOptions,
+    TLSConfig,
+    WriteMeta,
+    WriteOptions,
+    default_config,
+)
 from .acl import (
     ACLAuthMethod,
     ACLAuthMethodConfig,
@@ -48,17 +60,6 @@ from .allocations import (
     PortMapping,
     RescheduleEvent,
     RescheduleTracker,
-)
-from .api import (
-    Client,
-    Config,
-    HttpBasicAuth,
-    QueryMeta,
-    QueryOptions,
-    TLSConfig,
-    WriteMeta,
-    WriteOptions,
-    default_config,
 )
 from .csi import CSIPlugin, CSIPluginListStub, CSISnapshot, CSIVolume, CSIVolumeCapability, CSIVolumeListStub
 from .host_volume_claims import TaskGroupHostVolumeClaim

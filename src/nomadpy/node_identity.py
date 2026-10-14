@@ -3,10 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
+from .api import QueryOptions
 from .models import Model
 
 if TYPE_CHECKING:
-    from .api import Client, QueryOptions
+    from .api import Client
 
 
 @dataclass
@@ -26,8 +27,6 @@ class NodeIdentity:
         self._client = client
 
     def get(self, node_id: str = "", q: QueryOptions | None = None) -> NodeIdentityGetResponse:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         if node_id:

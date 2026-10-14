@@ -3,11 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+from .api import QueryOptions
 from .models import Model
 from .services import ServiceRegistration
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta
+    from .api import Client, QueryMeta, WriteMeta
 
 ALLOC_DESIRED_STATUS_RUN = "run"
 ALLOC_DESIRED_STATUS_STOP = "stop"
@@ -287,7 +288,8 @@ class Allocation(AllocationMethods, Model):
 # end generated
 
 
-def _stubs(resp: list[dict[str, Any]]) -> list[AllocationListStub]:
+def stubs(resp: list[dict[str, Any]]) -> list[AllocationListStub]:
+    """stubs decodes a list response into AllocationListStub, newest first."""
     stubs = [AllocationListStub.from_json(a) for a in resp]
     stubs.sort(key=lambda a: a.create_index, reverse=True)
     return stubs
@@ -301,11 +303,9 @@ class Allocations:
 
     def list(self, q: QueryOptions | None = None) -> tuple[list[AllocationListStub], QueryMeta]:
         resp, qm = self._client.query("/v1/allocations", q)
-        return _stubs(resp), qm
+        return stubs(resp), qm
 
     def prefix_list(self, prefix: str) -> tuple[list[AllocationListStub], QueryMeta]:
-        from .api import QueryOptions
-
         return self.list(QueryOptions(prefix=prefix))
 
     def info(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[Allocation, QueryMeta]:

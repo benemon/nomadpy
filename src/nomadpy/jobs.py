@@ -5,14 +5,15 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
 
-from .deployments import Deployment, _deployments
+from .deployments import Deployment, deployments
 from .evaluations import Evaluation
+from .api import QueryOptions
 from .models import Model
 from .scaling import JobScaleStatusResponse, ScalingRequest
 from .services import ServiceRegistration
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 
 JOB_TYPE_SERVICE = "service"
@@ -384,8 +385,6 @@ class Jobs:
         return jobs, qm
 
     def prefix_list(self, prefix: str) -> tuple[list[JobListStub], QueryMeta]:
-        from .api import QueryOptions
-
         return self.list(QueryOptions(prefix=prefix))
 
     def info(self, job_id: str, q: QueryOptions | None = None) -> tuple[Job, QueryMeta]:
@@ -430,11 +429,11 @@ class Jobs:
 
     def allocations(self, job_id: str, all_allocs: bool = False, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
         resp, qm = self._client.query(_path(job_id) + f"/allocations?all={str(all_allocs).lower()}", q)
-        return _allocations._stubs(resp), qm
+        return _allocations.stubs(resp), qm
 
     def deployments(self, job_id: str, all: bool = False, q: QueryOptions | None = None) -> tuple[list[Deployment], QueryMeta]:
         resp, qm = self._client.query(_path(job_id) + f"/deployments?all={str(all).lower()}", q)
-        return _deployments(resp), qm
+        return deployments(resp), qm
 
     def latest_deployment(self, job_id: str, q: QueryOptions | None = None) -> tuple[Deployment | None, QueryMeta]:
         resp, qm = self._client.query(_path(job_id) + "/deployment", q)

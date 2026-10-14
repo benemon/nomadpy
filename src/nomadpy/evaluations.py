@@ -3,11 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+from .api import QueryOptions
 from .models import Model
 from . import allocations as _allocations
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 EVAL_STATUS_BLOCKED = "blocked"
 EVAL_STATUS_PENDING = "pending"
@@ -86,8 +87,6 @@ class Evaluations:
         return evals, qm
 
     def prefix_list(self, prefix: str) -> tuple[list[Evaluation], QueryMeta]:
-        from .api import QueryOptions
-
         return self.list(QueryOptions(prefix=prefix))
 
     def count(self, q: QueryOptions | None = None) -> tuple[int, QueryMeta]:
@@ -108,4 +107,4 @@ class Evaluations:
 
     def allocations(self, eval_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
         resp, qm = self._client.query(f"/v1/evaluation/{eval_id}/allocations", q)
-        return _allocations._stubs(resp), qm
+        return _allocations.stubs(resp), qm

@@ -12,10 +12,11 @@ from . import jobs as _jobs
 from . import node_pools as _node_pools
 from . import nodes as _nodes
 from . import services as _services
+from .api import QueryOptions
 from .models import Model
 
 if TYPE_CHECKING:
-    from .api import Client, QueryOptions
+    from .api import Client
 
 TOPIC_DEPLOYMENT = "Deployment"
 TOPIC_EVALUATION = "Evaluation"
@@ -88,8 +89,6 @@ class EventStream:
         The subscription stays open until the generator is closed. `timeout`
         bounds each wait for the next batch; the server heartbeats when idle.
         """
-        from .api import QueryOptions
-
         params = []
         for topic, keys in topics.items():
             params += [("topic", f"{topic}:{k}") for k in keys] or [("topic", topic)]

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 from urllib.parse import quote, urlencode
 
+from .api import QueryOptions
 from .models import Model
 
 
@@ -235,8 +236,6 @@ class CSIVolumes:
         return out, qm
 
     def plugin_list(self, plugin_id: str) -> tuple[list[CSIVolumeListStub], QueryMeta]:
-        from .api import QueryOptions
-
         return self.list(QueryOptions(prefix=plugin_id))
 
     def info(self, id: str, q: QueryOptions | None = None) -> tuple[CSIVolume, QueryMeta]:

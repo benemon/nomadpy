@@ -3,10 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from .api import QueryOptions
 from .models import Model
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 ERR_VARIABLE_NOT_FOUND = "variable not found"
 
@@ -117,8 +118,6 @@ class Variables:
         return [VariableMetadata.from_json(v) for v in resp], qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[VariableMetadata], QueryMeta]:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         q.prefix = prefix

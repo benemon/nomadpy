@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING
 from urllib.parse import quote
 
 from .jobs import JobListStub
+from .api import QueryOptions
 from .models import Model
 from .nodes import NodeListStub
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 NODE_POOL_ALL = "all"
 NODE_POOL_DEFAULT = "default"
@@ -45,8 +46,6 @@ class NodePools:
         return [NodePool.from_json(p) for p in resp], qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[NodePool], QueryMeta]:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         q.prefix = prefix

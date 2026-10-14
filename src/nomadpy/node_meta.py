@@ -3,10 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from .api import QueryOptions
 from .models import Model
 
 if TYPE_CHECKING:
-    from .api import Client, QueryOptions
+    from .api import Client
 
 
 @dataclass
@@ -28,8 +29,6 @@ class NodeMeta:
         return NodeMetaResponse.from_json(resp)
 
     def read(self, node_id: str = "", q: QueryOptions | None = None) -> NodeMetaResponse:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         if node_id:

@@ -5,10 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+from .api import QueryOptions
 from .models import Model
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 
 @dataclass
@@ -81,8 +82,6 @@ class Quotas:
         return specs, qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[QuotaSpec], QueryMeta]:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         q.prefix = prefix
@@ -95,8 +94,6 @@ class Quotas:
         return usages, qm
 
     def prefix_list_usage(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[QuotaUsage], QueryMeta]:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         q.prefix = prefix

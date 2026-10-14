@@ -425,7 +425,8 @@ def _decode(raw: bytes) -> Any:
         return raw.decode(errors="replace").strip()
 
 
-# Service modules import the option types above, so they can only be imported once those exist.
+# Service modules import the option types above at module level, so they are imported only here, after those
+# exist, and the package __init__ imports this module before any of them.
 from .agent import Agent  # noqa: E402
 from .acl import ACLAuth, ACLAuthMethods, ACLBindingRules, ACLIdentity, ACLPolicies, ACLRoles, ACLTokens  # noqa: E402
 from .allocations import Allocations  # noqa: E402

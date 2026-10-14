@@ -4,10 +4,11 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlencode
 
+from .api import QueryOptions
 from .models import Model
 
 if TYPE_CHECKING:
-    from .api import Client, QueryOptions, WriteOptions
+    from .api import Client, WriteOptions
 
 
 @dataclass
@@ -181,8 +182,6 @@ class Agent:
         return AgentHealthResponse.from_json(resp)
 
     def host(self, server_id: str = "", node_id: str = "", q: QueryOptions | None = None) -> HostDataResponse:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         if server_id:

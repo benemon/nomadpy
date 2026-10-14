@@ -3,11 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+from .api import QueryOptions
 from .models import Model
 from . import allocations as _allocations
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 DEPLOYMENT_STATUS_RUNNING = "running"
 DEPLOYMENT_STATUS_PAUSED = "paused"
@@ -60,7 +61,8 @@ class DeploymentUpdateResponse(Model):
     reverted_job_version: int | None = None
 
 
-def _deployments(resp: list[dict[str, Any]]) -> list[Deployment]:
+def deployments(resp: list[dict[str, Any]]) -> list[Deployment]:
+    """deployments decodes a list response into Deployment, newest first."""
     deployments = [Deployment.from_json(d) for d in resp]
     deployments.sort(key=lambda d: d.create_index, reverse=True)
     return deployments
@@ -74,11 +76,9 @@ class Deployments:
 
     def list(self, q: QueryOptions | None = None) -> tuple[list[Deployment], QueryMeta]:
         resp, qm = self._client.query("/v1/deployments", q)
-        return _deployments(resp), qm
+        return deployments(resp), qm
 
     def prefix_list(self, prefix: str) -> tuple[list[Deployment], QueryMeta]:
-        from .api import QueryOptions
-
         return self.list(QueryOptions(prefix=prefix))
 
     def info(self, deployment_id: str, q: QueryOptions | None = None) -> tuple[Deployment, QueryMeta]:
@@ -87,7 +87,7 @@ class Deployments:
 
     def allocations(self, deployment_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
         resp, qm = self._client.query(f"/v1/deployment/allocations/{deployment_id}", q)
-        return _allocations._stubs(resp), qm
+        return _allocations.stubs(resp), qm
 
     def fail(self, deployment_id: str, w: WriteOptions | None = None) -> tuple[DeploymentUpdateResponse, WriteMeta]:
         return self._update("fail", deployment_id, {"DeploymentID": deployment_id}, w)

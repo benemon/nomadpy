@@ -4,13 +4,14 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from . import csi as _csi
+from .api import QueryOptions
 from .models import Model
 from . import allocations as _allocations
 from .node_identity import NodeIdentity
 from .node_meta import NodeMeta
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 NODE_STATUS_INIT = "initializing"
 NODE_STATUS_READY = "ready"
@@ -391,8 +392,6 @@ class Nodes:
         return nodes, qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[NodeListStub], QueryMeta]:
-        from .api import QueryOptions
-
         if q is None:
             q = QueryOptions()
         q.prefix = prefix
