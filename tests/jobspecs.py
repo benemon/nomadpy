@@ -11,7 +11,20 @@ WAIT = timedelta(seconds=10)
 DEADLINE = 90
 
 
-def service_job(job_id, count=1, canary=0, sleep=600):
+def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False):
+    service = ""
+    if nomad_service:
+        service = f"""
+    network {{
+      port "http" {{}}
+    }}
+    service {{
+      name     = "{job_id}-svc"
+      provider = "nomad"
+      port     = "http"
+      tags     = ["nomadpy"]
+    }}
+"""
     return f"""
 job "{job_id}" {{
   datacenters = ["dc1"]
@@ -19,6 +32,7 @@ job "{job_id}" {{
 
   group "g" {{
     count = {count}
+{service}
 
     update {{
       max_parallel     = 1

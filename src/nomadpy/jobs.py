@@ -8,6 +8,7 @@ from urllib.parse import quote
 from .deployments import Deployment, _deployments
 from .evaluations import Evaluation
 from .models import Model
+from .services import ServiceRegistration
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
@@ -278,8 +279,9 @@ class Jobs:
         resp, wm = self._client.put(_path(job_id) + "/stable", req, w)
         return JobStabilityResponse.from_json(resp), wm
 
-    def services(self, job_id: str, q: QueryOptions | None = None) -> tuple[list[dict[str, Any]], QueryMeta]:
-        return self._client.query(_path(job_id) + "/services", q)
+    def services(self, job_id: str, q: QueryOptions | None = None) -> tuple[list[ServiceRegistration], QueryMeta]:
+        resp, qm = self._client.query(_path(job_id) + "/services", q)
+        return [ServiceRegistration.from_json(s) for s in resp], qm
 
     def tag_version(self, job_id: str, name: str, version: int = 0, description: str = "",
                     w: WriteOptions | None = None, *, latest: bool = False) -> WriteMeta:

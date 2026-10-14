@@ -247,6 +247,14 @@ OPS = {
     "operator.metrics": lambda c: c.operator.metrics(QueryOptions(**{**QUERY_OPTS.__dict__, "params": {"x": "y", "format": "prometheus"}})),
     "operator.metrics_summary": lambda c: c.operator.metrics_summary(),
 
+    "services.list": lambda c: c.services.list(QueryOptions(**QUERY_OPTS.__dict__)),
+    "services.get": lambda c: c.services.get("web app"),
+    "services.delete": lambda c: c.services.delete("web", "id/1", WRITE_OPTS),
+    "search.prefix_search": lambda c: c.search.prefix_search("nom", "jobs", QueryOptions(**QUERY_OPTS.__dict__)),
+    "search.fuzzy_search": lambda c: c.search.fuzzy_search("nomad", "all"),
+    "system.garbage_collect": lambda c: c.system.garbage_collect(),
+    "system.reconcile_summaries": lambda c: c.system.reconcile_summaries(),
+
     "quotas.list": lambda c: c.quotas.list(),
     "quotas.prefix_list": lambda c: c.quotas.prefix_list("pre"),
     "quotas.list_usage": lambda c: c.quotas.list_usage(),

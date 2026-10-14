@@ -17,9 +17,6 @@
     "resources.go": "pn-txy",
     "retry.go": "client-side retry orchestration; out of scope by decision on 2026-10-14",
     "scaling.go": "pn-9u3",
-    "search.go": "pn-b54",
-    "services.go": "pn-b54",
-    "system.go": "pn-b54",
     "task_sched.go": "pn-txy",
     "tasks.go": "pn-txy",
     "utils.go": "internal helpers"
@@ -177,6 +174,12 @@
     "operator_metrics.go": {
       "AggregateSample": "flattened into SampledValue by encoding/json",
       "Label": "only behind json:\"-\" fields"
+    },
+    "services.go": {
+      "Service": "job specification block; pn-3q6",
+      "ServiceCheck": "job specification block; pn-3q6",
+      "CheckRestart": "job specification block; pn-3q6",
+      "ServiceWeights": "job specification block; pn-3q6"
     }
   },
   "consts": {

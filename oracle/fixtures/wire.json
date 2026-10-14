@@ -4075,6 +4075,227 @@
       "response": "{}"
     },
     {
+      "op": "services.list",
+      "method": "GET",
+      "path": "/v1/services",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "services.get",
+      "method": "GET",
+      "path": "/v1/service/web app",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "services.delete",
+      "method": "DELETE",
+      "path": "/v1/service/web/id/1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "search.prefix_search",
+      "method": "PUT",
+      "path": "/v1/search",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "AllowStale": false,
+        "AuthToken": "",
+        "Context": "jobs",
+        "Filter": "",
+        "Headers": null,
+        "Namespace": "",
+        "NextToken": "",
+        "Params": null,
+        "PerPage": 0,
+        "Prefix": "nom",
+        "Region": "",
+        "Reverse": false,
+        "WaitIndex": 0,
+        "WaitTime": 0
+      },
+      "response": "{}"
+    },
+    {
+      "op": "search.fuzzy_search",
+      "method": "PUT",
+      "path": "/v1/search/fuzzy",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "AllowStale": false,
+        "AuthToken": "",
+        "Context": "all",
+        "Filter": "",
+        "Headers": null,
+        "Namespace": "",
+        "NextToken": "",
+        "Params": null,
+        "PerPage": 0,
+        "Prefix": "",
+        "Region": "",
+        "Reverse": false,
+        "Text": "nomad",
+        "WaitIndex": 0,
+        "WaitTime": 0
+      },
+      "response": "{}"
+    },
+    {
+      "op": "system.garbage_collect",
+      "method": "PUT",
+      "path": "/v1/system/gc",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {},
+      "response": "{}"
+    },
+    {
+      "op": "system.reconcile_summaries",
+      "method": "PUT",
+      "path": "/v1/system/reconcile/summaries",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {},
+      "response": "{}"
+    },
+    {
       "op": "quotas.list",
       "method": "GET",
       "path": "/v1/quotas",

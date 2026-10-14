@@ -107,7 +107,9 @@ from .operator_autopilot import (
 )
 from .operator_metrics import GaugeValue, MetricsSummary, PointValue, SampledValue
 from .quota import NodePoolLimit, QuotaLimit, QuotaResources, QuotaSpec, QuotaStorageResources, QuotaUsage
+from .search import FuzzyMatch, FuzzySearchResponse, SearchResponse
 from .sentinel import SentinelPolicy, SentinelPolicyListStub
+from .services import ServiceRegistration, ServiceRegistrationListStub, ServiceRegistrationStub
 from .variables import ErrCASConflict, Variable, VariableLock, VariableMetadata
 from .jobs import (
     JobChildrenSummary,
@@ -170,6 +172,8 @@ __all__ = [
     "ErrCASConflict",
     "Evaluation",
     "EvaluationStub",
+    "FuzzyMatch",
+    "FuzzySearchResponse",
     "GaugeValue",
     "HostData",
     "HostDataResponse",
@@ -229,10 +233,14 @@ __all__ = [
     "SchedulerConfigurationResponse",
     "SchedulerSetConfigurationResponse",
     "SchedulerWorkerPoolArgs",
+    "SearchResponse",
     "SentinelPolicy",
     "SentinelPolicyListStub",
     "ServerHealth",
     "ServerMembers",
+    "ServiceRegistration",
+    "ServiceRegistrationListStub",
+    "ServiceRegistrationStub",
     "TaskGroupSummary",
     "TLSConfig",
     "UnexpectedResponseError",

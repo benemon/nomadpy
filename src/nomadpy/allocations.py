@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from .models import Model
+from .services import ServiceRegistration
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta
@@ -183,5 +184,6 @@ class Allocations:
         resp, qm = self._client.query(f"/v1/client/allocation/{alloc_id}/pause?task={task}", q)
         return resp.get("ScheduleState", ""), qm
 
-    def services(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[list[dict[str, Any]], QueryMeta]:
-        return self._client.query(f"/v1/allocation/{alloc_id}/services", q)
+    def services(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[list[ServiceRegistration], QueryMeta]:
+        resp, qm = self._client.query(f"/v1/allocation/{alloc_id}/services", q)
+        return [ServiceRegistration.from_json(s) for s in resp], qm

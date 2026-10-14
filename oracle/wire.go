@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/nomad/api"
+	"github.com/hashicorp/nomad/api/contexts"
 )
 
 // Request is one HTTP request as the Go client sent it. Only headers the
@@ -447,6 +448,17 @@ var ops = []op{
 		return err
 	}},
 	{"operator.metrics_summary", `{}`, func(c *api.Client) error { _, _, err := c.Operator().MetricsSummary(nil); return err }},
+
+	{"services.list", `[]`, func(c *api.Client) error { _, _, err := c.Services().List(queryOpts()); return err }},
+	{"services.get", `[]`, func(c *api.Client) error { _, _, err := c.Services().Get("web app", nil); return err }},
+	{"services.delete", `{}`, func(c *api.Client) error { _, err := c.Services().Delete("web", "id/1", writeOpts); return err }},
+	{"search.prefix_search", `{}`, func(c *api.Client) error {
+		_, _, err := c.Search().PrefixSearch("nom", contexts.Jobs, queryOpts())
+		return err
+	}},
+	{"search.fuzzy_search", `{}`, func(c *api.Client) error { _, _, err := c.Search().FuzzySearch("nomad", contexts.All, nil); return err }},
+	{"system.garbage_collect", `{}`, func(c *api.Client) error { return c.System().GarbageCollect() }},
+	{"system.reconcile_summaries", `{}`, func(c *api.Client) error { return c.System().ReconcileSummaries() }},
 
 	{"quotas.list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().List(nil); return err }},
 	{"quotas.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Quotas().PrefixList("pre", nil); return err }},

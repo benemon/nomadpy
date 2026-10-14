@@ -216,8 +216,11 @@ class Client:
         self.nodes = Nodes(self)
         self.quotas = Quotas(self)
         self.regions = Regions(self)
+        self.search = Search(self)
         self.sentinel_policies = SentinelPolicies(self)
+        self.services = Services(self)
         self.status = Status(self)
+        self.system = System(self)
         self.variables = Variables(self)
 
     def address(self) -> str:
@@ -384,6 +387,9 @@ from .nodes import Nodes  # noqa: E402
 from .operator import Operator  # noqa: E402
 from .quota import Quotas  # noqa: E402
 from .regions import Regions  # noqa: E402
+from .search import Search  # noqa: E402
 from .sentinel import SentinelPolicies  # noqa: E402
+from .services import Services  # noqa: E402
 from .status import Status  # noqa: E402
+from .system import System  # noqa: E402
 from .variables import Variables  # noqa: E402
