@@ -71,6 +71,7 @@ from .namespace import (
 )
 from .node_identity import NodeIdentityGetResponse, NodeIdentityRenewResponse
 from .node_meta import NodeMetaResponse
+from .node_pools import NodePool, NodePoolSchedulerConfiguration
 from .nodes import (
     DrainMetadata,
     DrainSpec,
@@ -198,7 +199,9 @@ __all__ = [
     "NodeIdentityRenewResponse",
     "NodeListStub",
     "NodeMetaResponse",
+    "NodePool",
     "NodePoolLimit",
+    "NodePoolSchedulerConfiguration",
     "NodePurgeResponse",
     "NodeReservedResources",
     "NodeResources",

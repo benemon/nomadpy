@@ -2152,6 +2152,239 @@
       "response": "[]"
     },
     {
+      "op": "node_pools.list",
+      "method": "GET",
+      "path": "/v1/node/pools",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "node_pools.prefix_list",
+      "method": "GET",
+      "path": "/v1/node/pools",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "pre"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "node_pools.info",
+      "method": "GET",
+      "path": "/v1/node/pool/p 1",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "node_pools.register",
+      "method": "PUT",
+      "path": "/v1/node/pools",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "d",
+        "Meta": {
+          "k": "v"
+        },
+        "ModifyIndex": 0,
+        "Name": "p1",
+        "NodeIdentityTTL": "1h0m0s",
+        "SchedulerConfiguration": {
+          "MemoryOversubscriptionEnabled": true,
+          "SchedulerAlgorithm": "spread"
+        }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "node_pools.register_minimal",
+      "method": "PUT",
+      "path": "/v1/node/pools",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "CreateIndex": 0,
+        "Description": "",
+        "Meta": null,
+        "ModifyIndex": 0,
+        "Name": "p2",
+        "NodeIdentityTTL": "",
+        "SchedulerConfiguration": null
+      },
+      "response": "{}"
+    },
+    {
+      "op": "node_pools.delete",
+      "method": "DELETE",
+      "path": "/v1/node/pool/p1",
+      "query": {
+        "idempotency_token": [
+          "idem"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "region": [
+          "r1"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{}"
+    },
+    {
+      "op": "node_pools.list_jobs",
+      "method": "GET",
+      "path": "/v1/node/pool/p1/jobs",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
+      "op": "node_pools.list_nodes",
+      "method": "GET",
+      "path": "/v1/node/pool/p1/nodes",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "[]"
+    },
+    {
       "op": "nodes.list",
       "method": "GET",
       "path": "/v1/nodes",

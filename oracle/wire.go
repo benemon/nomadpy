@@ -300,6 +300,22 @@ var ops = []op{
 	}},
 	{"allocations.services", `[]`, func(c *api.Client) error { _, _, err := c.Allocations().Services("a1", nil); return err }},
 
+	{"node_pools.list", `[]`, func(c *api.Client) error { _, _, err := c.NodePools().List(nil); return err }},
+	{"node_pools.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.NodePools().PrefixList("pre", queryOpts()); return err }},
+	{"node_pools.info", `{}`, func(c *api.Client) error { _, _, err := c.NodePools().Info("p 1", nil); return err }},
+	{"node_pools.register", `{}`, func(c *api.Client) error {
+		_, err := c.NodePools().Register(&api.NodePool{Name: "p1", Description: "d", Meta: map[string]string{"k": "v"}, NodeIdentityTTL: time.Hour,
+			SchedulerConfiguration: &api.NodePoolSchedulerConfiguration{SchedulerAlgorithm: api.SchedulerAlgorithmSpread, MemoryOversubscriptionEnabled: new(true)}}, writeOpts)
+		return err
+	}},
+	{"node_pools.register_minimal", `{}`, func(c *api.Client) error {
+		_, err := c.NodePools().Register(&api.NodePool{Name: "p2"}, nil)
+		return err
+	}},
+	{"node_pools.delete", `{}`, func(c *api.Client) error { _, err := c.NodePools().Delete("p1", writeOpts); return err }},
+	{"node_pools.list_jobs", `[]`, func(c *api.Client) error { _, _, err := c.NodePools().ListJobs("p1", nil); return err }},
+	{"node_pools.list_nodes", `[]`, func(c *api.Client) error { _, _, err := c.NodePools().ListNodes("p1", queryOpts()); return err }},
+
 	{"nodes.list", `[]`, func(c *api.Client) error { _, _, err := c.Nodes().List(nil); return err }},
 	{"nodes.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.Nodes().PrefixListOpts("pre", queryOpts()); return err }},
 	{"nodes.info", `{}`, func(c *api.Client) error { _, _, err := c.Nodes().Info("n1", nil); return err }},

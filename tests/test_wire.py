@@ -35,7 +35,9 @@ from nomadpy import (
     NamespaceConsulConfiguration,
     NamespaceNodePoolConfiguration,
     NamespaceVaultConfiguration,
+    NodePool,
     NodePoolLimit,
+    NodePoolSchedulerConfiguration,
     OIDCClientAssertion,
     OIDCClientAssertionKey,
     PreemptionConfig,
@@ -162,6 +164,17 @@ OPS = {
     "allocations.set_pause_state": lambda c: c.allocations.set_pause_state("a1", "t", "pause"),
     "allocations.get_pause_state": lambda c: c.allocations.get_pause_state("a1", "t"),
     "allocations.services": lambda c: c.allocations.services("a1"),
+
+    "node_pools.list": lambda c: c.node_pools.list(),
+    "node_pools.prefix_list": lambda c: c.node_pools.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),
+    "node_pools.info": lambda c: c.node_pools.info("p 1"),
+    "node_pools.register": lambda c: c.node_pools.register(NodePool(
+        name="p1", description="d", meta={"k": "v"}, node_identity_ttl=HOUR,
+        scheduler_configuration=NodePoolSchedulerConfiguration(scheduler_algorithm="spread", memory_oversubscription_enabled=True)), WRITE_OPTS),
+    "node_pools.register_minimal": lambda c: c.node_pools.register(NodePool(name="p2")),
+    "node_pools.delete": lambda c: c.node_pools.delete("p1", WRITE_OPTS),
+    "node_pools.list_jobs": lambda c: c.node_pools.list_jobs("p1"),
+    "node_pools.list_nodes": lambda c: c.node_pools.list_nodes("p1", QueryOptions(**QUERY_OPTS.__dict__)),
 
     "nodes.list": lambda c: c.nodes.list(),
     "nodes.prefix_list": lambda c: c.nodes.prefix_list("pre", QueryOptions(**QUERY_OPTS.__dict__)),

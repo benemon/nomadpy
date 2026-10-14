@@ -212,6 +212,7 @@ class Client:
         self.jobs = Jobs(self)
         self.operator = Operator(self)
         self.namespaces = Namespaces(self)
+        self.node_pools = NodePools(self)
         self.nodes = Nodes(self)
         self.quotas = Quotas(self)
         self.regions = Regions(self)
@@ -378,6 +379,7 @@ from .deployments import Deployments  # noqa: E402
 from .evaluations import Evaluations  # noqa: E402
 from .jobs import Jobs  # noqa: E402
 from .namespace import Namespaces  # noqa: E402
+from .node_pools import NodePools  # noqa: E402
 from .nodes import Nodes  # noqa: E402
 from .operator import Operator  # noqa: E402
 from .quota import Quotas  # noqa: E402
