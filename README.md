@@ -57,7 +57,7 @@ constants of every Go file, and `wire.json`, the HTTP requests the real Go
 client sends for a fixed table of calls. `tests/test_drift.py` holds the
 Python package to the surface, and `tests/test_wire.py` replays the calls
 and compares the requests. Every declared gap is listed in
-`oracle/ledger.json` with a reason or a bead id. A few shapes are exempt by
+`oracle/ledger.json` with a reason. A few shapes are exempt by
 rule rather than by ledger; the docstring of `tests/test_drift.py` lists
 them. Anything else that differs is drift and fails.
 
