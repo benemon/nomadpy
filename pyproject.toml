@@ -20,7 +20,7 @@ classifiers = [
 Homepage = "https://github.com/benemon/nomadpy"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.14"]
+dev = ["pytest>=8", "pytest-xdist>=3", "ruff>=0.14"]
 docs = ["mkdocs-material>=9", "mkdocstrings[python]>=1", "mkdocs-literate-nav>=0.6"]
 
 [tool.setuptools.packages.find]
