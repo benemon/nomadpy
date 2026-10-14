@@ -4,7 +4,7 @@
     "allocations_exec.go": "pn-k6m",
     "ioutil.go": "internal io helpers",
     "locks.go": "client-side lease orchestration over the variables lock endpoints, which are ported; out of scope by decision on 2026-10-14",
-    "raw.go": "raw queries, not ported with the foundation",
+    "raw.go": "Raw.Query/Write/Delete are the untyped request form; Client.request and raw_query cover it",
     "retry.go": "client-side retry orchestration; out of scope by decision on 2026-10-14",
     "utils.go": "internal helpers"
   },
@@ -73,8 +73,8 @@
   },
   "methods": {
     "Client.Close": "urllib opens a connection per request; nothing to close",
-    "Client.GetNodeClient": "node clients, not ported with the foundation",
-    "Client.GetNodeClientWithTimeout": "node clients, not ported with the foundation",
+    "Client.GetNodeClient": "the Python client always goes through the server; see the alloc_fs capture rule in wire.go",
+    "Client.GetNodeClientWithTimeout": "the Python client always goes through the server; see the alloc_fs capture rule in wire.go",
     "Jobs.ActionExec": "pn-k6m",
     "Jobs.EnforceRegister": {
       "folded": "register"
@@ -112,11 +112,11 @@
     },
     "Agent.Monitor": "streaming log monitor; deferred with pn-gq4",
     "Agent.MonitorExport": "streaming log monitor; deferred with pn-gq4",
-    "Agent.CPUProfile": "pprof profiles are raw bytes; post-MVP",
-    "Agent.Trace": "pprof profiles are raw bytes; post-MVP",
-    "Agent.Lookup": "pprof profiles are raw bytes; post-MVP",
-    "Operator.Snapshot": "raft snapshot streams with digest validation; post-MVP",
-    "Operator.SnapshotRestore": "raft snapshot streams; post-MVP",
+    "Agent.CPUProfile": "pn-8se",
+    "Agent.Trace": "pn-8se",
+    "Agent.Lookup": "pn-8se",
+    "Operator.Snapshot": "pn-8se",
+    "Operator.SnapshotRestore": "pn-8se",
     "Operator.LicensePut": {
       "folded": "apply_license"
     },
@@ -141,14 +141,14 @@
   },
   "structs": {
     "api.go": {
-      "Client": "hand-mapped foundation",
-      "Config": "hand-mapped foundation",
-      "HttpBasicAuth": "hand-mapped foundation",
-      "QueryMeta": "hand-mapped foundation",
-      "QueryOptions": "hand-mapped foundation",
-      "TLSConfig": "hand-mapped foundation",
-      "WriteMeta": "hand-mapped foundation",
-      "WriteOptions": "hand-mapped foundation"
+      "Client": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "Config": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "HttpBasicAuth": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "QueryMeta": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "QueryOptions": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "TLSConfig": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "WriteMeta": "hand-written in api.py; options and metadata are not decoded from JSON",
+      "WriteOptions": "hand-written in api.py; options and metadata are not decoded from JSON"
     },
     "jobs.go": {
       "JobDeregisterResponse": "flattened to the eval id",

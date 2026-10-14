@@ -414,8 +414,8 @@ class Jobs:
             endpoint += f"&diff_version={diff_version}"
         resp, qm = self._client.query(endpoint, q)
         versions = [Job.from_json(v) for v in resp["Versions"]]
-        diffs = [JobDiff.from_json(d) for d in resp.get("Diffs") or []]
-        return versions, diffs, qm
+        job_diffs = [JobDiff.from_json(d) for d in resp.get("Diffs") or []]
+        return versions, job_diffs, qm
 
     def version_by_tag(self, job_id: str, tag: str, q: QueryOptions | None = None) -> tuple[Job, QueryMeta]:
         versions, _, qm = self.versions(job_id, False, q)

@@ -13,12 +13,14 @@ import (
 	"strings"
 )
 
+// Surface is the surface fixture for the pinned module.
 type Surface struct {
 	Module  string          `json:"module"`
 	Version string          `json:"version"`
 	Files   map[string]File `json:"files"`
 }
 
+// File is the exported surface of one Go source file.
 type File struct {
 	Methods []Method          `json:"methods"`
 	Structs map[string]Struct `json:"structs"`
@@ -27,6 +29,7 @@ type File struct {
 	Types map[string]string `json:"types"`
 }
 
+// Method is an exported method and its signature types.
 type Method struct {
 	Receiver string   `json:"receiver"`
 	Name     string   `json:"name"`
@@ -34,10 +37,12 @@ type Method struct {
 	Results  []string `json:"results"`
 }
 
+// Struct is a struct's exported fields.
 type Struct struct {
 	Fields []Field `json:"fields"`
 }
 
+// Field is one struct field with its JSON name.
 type Field struct {
 	Name      string `json:"name"`
 	JSON      string `json:"json"`
@@ -46,6 +51,7 @@ type Field struct {
 	OmitEmpty bool   `json:"omitempty,omitempty"`
 }
 
+// Const is an exported constant and its literal value.
 type Const struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`

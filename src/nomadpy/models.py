@@ -70,7 +70,6 @@ def _convert(hint: Any, value: Any) -> Any:
         for arg in typing.get_args(hint):
             if arg is not type(None):
                 return _convert(arg, value)
-        return value
     if origin is list:
         (item,) = typing.get_args(hint)
         return [_convert(item, v) for v in value]

@@ -28,15 +28,14 @@ type Request struct {
 	Response string `json:"response"`
 }
 
+// Wire is the wire fixture: every request the op table produced.
 type Wire struct {
 	Module   string    `json:"module"`
 	Version  string    `json:"version"`
 	Requests []Request `json:"requests"`
 }
 
-// op is one Go client call. response is the body the recorder answers with,
-// which only has to decode into the method's result type; it is empty for
-// calls that decode nothing.
+// op is one Go client call; response is empty for calls that decode nothing.
 type op struct {
 	name     string
 	response string

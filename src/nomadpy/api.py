@@ -70,6 +70,8 @@ class WriteMeta:
 
 @dataclass
 class HttpBasicAuth:
+    """HttpBasicAuth is sent as the Authorization header on every request."""
+
     username: str
     password: str = ""
 
@@ -177,7 +179,7 @@ def _parse_index(headers, name: str) -> int:
 
 
 class Client:
-    """Client provides a client to the Nomad API."""
+    """Client talks to one Nomad address. With no config it reads the NOMAD_* environment; an empty address falls back to NOMAD_ADDR, then 127.0.0.1:4646."""
 
     def __init__(self, config: Config | None = None):
         if config is None:
@@ -264,7 +266,7 @@ class Client:
 
     def raw_query(self, endpoint: str, q: QueryOptions | None = None) -> tuple[bytes, QueryMeta]:
         """raw_query returns the undecoded response body."""
-        status, raw, qm = self._query("GET", endpoint, None, q, (200,), decode=False)
+        _, raw, qm = self._query("GET", endpoint, None, q, decode=False)
         return raw, qm
 
     def request(self, method: str, endpoint: str, body: Any = None, opts: QueryOptions | WriteOptions | None = None,
@@ -277,10 +279,10 @@ class Client:
     def stream_json(self, endpoint: str, q: QueryOptions | None = None, timeout: float | None = None) -> Iterator[Any]:
         """stream_json yields each JSON value of a streaming response as it arrives.
 
-        Values are decoded from the byte stream as they complete, with no
-        reliance on newlines: the filesystem stream sends frames without them.
-        The response stays open until the server ends it or the generator is
-        closed; `timeout` bounds each wait for more bytes, as a socket timeout.
+        The filesystem stream sends frames without newlines, so values are
+        decoded from the byte stream as they complete. `timeout` bounds each
+        wait for more bytes, as a socket timeout; close the generator to end
+        the subscription.
         """
         params, headers, token = self._base_request(endpoint)
         token = self._apply_query_options(q, params, headers, token)
@@ -388,7 +390,6 @@ class Client:
 
     def _open(self, method: str, endpoint: str, params: dict[str, list[str]], headers: dict[str, str], token: str, body: Any,
               expected: tuple[int, ...], timeout: float | None = None):
-        """Sends the request and returns the open response once its status is one of `expected`."""
         path = urllib.parse.urlsplit(endpoint).path
         url = urllib.parse.urlunsplit((self._url.scheme, self._netloc, path, urllib.parse.urlencode(params, doseq=True), ""))
         if self._url.username is not None:

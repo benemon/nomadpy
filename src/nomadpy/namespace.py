@@ -46,7 +46,7 @@ class NamespaceConsulConfiguration(Model):
 
 @dataclass
 class Namespace(Model):
-    """Namespace is a namespace. Quota, NodePoolConfiguration, VaultConfiguration and ConsulConfiguration are Enterprise."""
+    """Namespace; Quota, NodePoolConfiguration, VaultConfiguration and ConsulConfiguration are Enterprise."""
 
     name: str = ""
     description: str = ""
