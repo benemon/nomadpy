@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Iterator
 from urllib.parse import urlencode
@@ -87,8 +88,6 @@ class EventStream:
         The subscription stays open until the generator is closed. `timeout`
         bounds each wait for the next batch; the server heartbeats when idle.
         """
-        import dataclasses
-
         from .api import QueryOptions
 
         params = []

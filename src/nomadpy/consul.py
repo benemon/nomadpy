@@ -1,3 +1,5 @@
+# generated from surface.json: file=consul.go
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -119,11 +121,6 @@ class ConsulLinkedService(Model):
 
 
 @dataclass
-class ConsulMeshConfigEntry(Model):
-    pass
-
-
-@dataclass
 class ConsulMeshGateway(Model):
     mode: str = ""
 
@@ -159,8 +156,8 @@ class ConsulTransparentProxy(Model):
     outbound_port: int = 0
     exclude_inbound_ports: list[str] | None = None
     exclude_outbound_ports: list[int] | None = None
-    exclude_outbound_cid_rs: list[str] | None = field(default=None, metadata={'json': 'ExcludeOutboundCIDRs'})
-    exclude_ui_ds: list[str] | None = field(default=None, metadata={'json': 'ExcludeUIDs'})
+    exclude_outbound_cidrs: list[str] | None = field(default=None, metadata={'json': 'ExcludeOutboundCIDRs'})
+    exclude_uids: list[str] | None = field(default=None, metadata={'json': 'ExcludeUIDs'})
     no_dns: bool = field(default=False, metadata={'json': 'NoDNS'})
 
 
@@ -196,3 +193,4 @@ class SidecarTask(Model):
     volume_mounts: list[_tasks.VolumeMount] | None = None
     identities: list[_tasks.WorkloadIdentity] | None = None
 
+# end generated

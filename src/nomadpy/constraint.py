@@ -1,9 +1,11 @@
+# generated from surface.json: file=constraint.go
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 from .models import Model
+
 
 CONSTRAINT_DISTINCT_PROPERTY = "distinct_property"
 CONSTRAINT_DISTINCT_HOSTS = "distinct_hosts"
@@ -23,3 +25,4 @@ class Constraint(Model):
     r_target: str = ""
     operand: str = ""
 
+# end generated

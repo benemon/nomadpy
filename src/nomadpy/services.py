@@ -68,6 +68,16 @@ from . import consul as _consul  # noqa: E402
 from . import tasks as _tasks  # noqa: E402
 
 
+# generated from surface.json: file=services.go only=Service,ServiceCheck,CheckRestart,ServiceWeights
+from . import consul as _consul  # noqa: E402
+from . import tasks as _tasks  # noqa: E402
+
+ON_UPDATE_REQUIRE_HEALTHY = "require_healthy"
+ON_UPDATE_IGNORE_WARN = "ignore_warnings"
+ON_UPDATE_IGNORE = "ignore"
+SERVICE_PROVIDER_CONSUL = "consul"
+
+
 @dataclass
 class CheckRestart(Model):
     limit: int = 0
@@ -134,3 +144,8 @@ class ServiceCheck(Model):
 class ServiceWeights(Model):
     passing: int = 0
     warning: int = 0
+
+
+# end generated
+
+

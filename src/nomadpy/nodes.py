@@ -8,7 +8,6 @@ from .models import Model
 from . import allocations as _allocations
 from .node_identity import NodeIdentity
 from .node_meta import NodeMeta
-from . import resources as _resources
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
@@ -30,7 +29,6 @@ MONITOR_MSG_LEVEL_NORMAL = 0
 MONITOR_MSG_LEVEL_INFO = 1
 MONITOR_MSG_LEVEL_WARN = 2
 MONITOR_MSG_LEVEL_ERROR = 3
-
 
 
 @dataclass
@@ -127,6 +125,28 @@ class NodeListStub(Model):
     last_drain: DrainMetadata | None = None
     create_index: int = 0
     modify_index: int = 0
+
+
+# generated from surface.json: file=nodes.go only=Node,HostVolumeInfo,HostNetworkInfo,NodeEvent,CSITopologyRequest,CSITopology,CSINodeInfo,CSIControllerInfo,CSIInfo,HostStats,HostMemoryStats,HostCPUStats,HostDiskStats,DeviceGroupStats,DeviceStats,StatObject,StatValue
+from . import resources as _resources  # noqa: E402
+
+NODE_STATUS_INIT = "initializing"
+NODE_STATUS_READY = "ready"
+NODE_STATUS_DOWN = "down"
+NODE_STATUS_DISCONNECTED = "disconnected"
+NODE_SCHEDULING_ELIGIBLE = "eligible"
+NODE_SCHEDULING_INELIGIBLE = "ineligible"
+DRAIN_STATUS_DRAINING = "draining"
+DRAIN_STATUS_COMPLETE = "complete"
+DRAIN_STATUS_CANCELED = "canceled"
+MONITOR_MSG_LEVEL_NORMAL = 0
+MONITOR_MSG_LEVEL_INFO = 1
+MONITOR_MSG_LEVEL_WARN = 2
+MONITOR_MSG_LEVEL_ERROR = 3
+NODE_EVENT_SUBSYSTEM_DRAIN = "Drain"
+NODE_EVENT_SUBSYSTEM_DRIVER = "Driver"
+NODE_EVENT_SUBSYSTEM_HEARTBEAT = "Heartbeat"
+NODE_EVENT_SUBSYSTEM_CLUSTER = "Cluster"
 
 
 @dataclass
@@ -309,6 +329,9 @@ class StatValue(Model):
     bool_val: bool | None = field(default=None, metadata={'omitempty': True})
     unit: str = field(default="", metadata={'omitempty': True})
     desc: str = field(default="", metadata={'omitempty': True})
+
+
+# end generated
 
 
 @dataclass

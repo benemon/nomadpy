@@ -198,15 +198,15 @@
     },
     "fs.go": {
       "FrameReader": "io.Reader adapter over frame channels; Python callers iterate frames"
+    },
+    "consul.go": {
+      "ConsulMeshConfigEntry": "empty struct"
     }
   },
   "consts": {
     "api.go": {
       "PermissionDeniedErrorContent": "no Python caller inspects error text",
       "ResultPaginatorErrorContent": "no Python caller inspects error text"
-    },
-    "jobs.go": {
-      "RegisterEnforceIndexErrPrefix": "no Python caller inspects error text"
     }
   }
 }

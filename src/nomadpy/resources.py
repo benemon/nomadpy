@@ -1,7 +1,8 @@
+# generated from surface.json: file=resources.go
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from .models import Model
 from . import constraint as _constraint
@@ -45,7 +46,7 @@ class NetworkResource(Model):
     reserved_ports: list[Port] | None = None
     dynamic_ports: list[Port] | None = None
     hostname: str = ""
-    m_bits: int | None = None
+    mbits: int | None = field(default=None, metadata={'json': 'MBits'})
     cni: CNIConfig | None = field(default=None, metadata={'json': 'CNI'})
 
 
@@ -101,3 +102,4 @@ class Resources(Model):
     secrets_mb: int | None = field(default=None, metadata={'json': 'SecretsMB'})
     iops: int | None = field(default=None, metadata={'json': 'IOPS'})
 
+# end generated

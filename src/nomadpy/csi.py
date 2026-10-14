@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from urllib.parse import quote, urlencode
 
 from .models import Model
+
+
+# generated from surface.json: file=csi.go
+from . import allocations as _allocations  # noqa: E402
+from . import nodes as _nodes  # noqa: E402
 
 CSI_VOLUME_ATTACHMENT_MODE_UNKNOWN = ""
 CSI_VOLUME_ATTACHMENT_MODE_BLOCK_DEVICE = "block-device"
@@ -17,13 +23,6 @@ CSI_VOLUME_ACCESS_MODE_MULTI_NODE_SINGLE_WRITER = "multi-node-single-writer"
 CSI_VOLUME_ACCESS_MODE_MULTI_NODE_MULTI_WRITER = "multi-node-multi-writer"
 CSI_VOLUME_TYPE_HOST = "host"
 CSI_VOLUME_TYPE_CSI = "csi"
-
-if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
-from . import allocations as _allocations
-from . import nodes as _nodes
-CSI_VOLUME_TYPE_CSI = "csi"
-
 
 
 @dataclass
@@ -147,7 +146,7 @@ class CSIVolumeExternalStub(Model):
     volume_context: dict[str, str] | None = None
     clone_id: str = field(default="", metadata={'json': 'CloneID'})
     snapshot_id: str = field(default="", metadata={'json': 'SnapshotID'})
-    published_external_node_i_ds: list[str] | None = None
+    published_external_node_ids: list[str] | None = field(default=None, metadata={'json': 'PublishedExternalNodeIDs'})
     is_abnormal: bool = False
     status: str = ""
 
@@ -190,11 +189,25 @@ class CSIVolumeRegisterResponse(Model):
     warnings: str = ""
 
 
+# end generated
+
+
 def _secrets_header(secrets: dict[str, str] | None) -> dict[str, str]:
-    """CSI secrets travel in the X-Nomad-CSI-Secrets header as k=v pairs, never in the URL."""
+    """_secrets_header encodes CSI secrets as the X-Nomad-CSI-Secrets header, comma-separated k=v pairs."""
     if not secrets:
         return {}
     return {"X-Nomad-CSI-Secrets": ",".join(f"{k}={v}" for k, v in sorted(secrets.items()))}
+
+
+def _headers(opts, headers, query=False):
+    """_headers returns opts with the extra headers added, as a copy."""
+    from .api import QueryOptions, WriteOptions
+
+    if not headers:
+        return opts
+    if opts is None:
+        opts = QueryOptions() if query else WriteOptions()
+    return dataclasses.replace(opts, headers={**opts.headers, **headers})
 
 
 class CSIVolumes:
@@ -269,19 +282,6 @@ class CSIVolumes:
         if out.snapshots:
             out.snapshots.sort(key=lambda s: s.create_time, reverse=True)
         return out, qm
-
-
-def _headers(opts, headers, query=False):
-    """Returns a copy of opts carrying the extra headers, so the caller's options are never mutated."""
-    import dataclasses
-
-    from .api import QueryOptions, WriteOptions
-
-    if not headers:
-        return opts
-    if opts is None:
-        opts = QueryOptions() if query else WriteOptions()
-    return dataclasses.replace(opts, headers={**opts.headers, **headers})
 
 
 class CSIPlugins:

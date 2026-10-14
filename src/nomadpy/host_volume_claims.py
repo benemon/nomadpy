@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from urllib.parse import quote, urlencode
 
 from .models import Model
@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
 
 
+# generated from surface.json: file=host_volume_claims.go
 
 @dataclass
 class TaskGroupHostVolumeClaim(Model):
@@ -24,11 +25,7 @@ class TaskGroupHostVolumeClaim(Model):
     modify_index: int = 0
 
 
-@dataclass
-class TaskGroupHostVolumeClaimsListRequest(Model):
-    job_id: str = field(default="", metadata={'json': 'JobID'})
-    task_group: str = ""
-    volume_name: str = ""
+# end generated
 
 
 class TaskGroupHostVolumeClaims:

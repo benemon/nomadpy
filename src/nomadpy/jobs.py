@@ -5,9 +5,6 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
 
-from . import allocations as _allocations
-from . import constraint as _constraint
-from . import tasks as _tasks
 from .deployments import Deployment, _deployments
 from .evaluations import Evaluation
 from .models import Model
@@ -26,6 +23,24 @@ JOB_DEFAULT_PRIORITY = 50
 PERIODIC_SPEC_CRON = "cron"
 DEFAULT_NAMESPACE = "default"
 GLOBAL_REGION = "global"
+JOB_PERIODIC_LAUNCH_SUFFIX = "/periodic-"
+JOB_DISPATCH_LAUNCH_SUFFIX = "/dispatch-"
+
+
+# generated from surface.json: file=jobs.go only=Job,UpdateStrategy,Multiregion,MultiregionStrategy,MultiregionRegion,PeriodicConfig,ParameterizedJobConfig,JobSubmission,JobUIConfig,JobUILink,JobVersionTag,JobDiff,TaskGroupDiff,TaskDiff,FieldDiff,ObjectDiff,PlanAnnotations,DesiredUpdates
+from . import allocations as _allocations  # noqa: E402
+from . import constraint as _constraint  # noqa: E402
+from . import tasks as _tasks  # noqa: E402
+
+JOB_TYPE_SERVICE = "service"
+JOB_TYPE_BATCH = "batch"
+JOB_TYPE_SYSTEM = "system"
+JOB_TYPE_SYSBATCH = "sysbatch"
+JOB_DEFAULT_PRIORITY = 50
+PERIODIC_SPEC_CRON = "cron"
+DEFAULT_NAMESPACE = "default"
+GLOBAL_REGION = "global"
+REGISTER_ENFORCE_INDEX_ERR_PREFIX = "Enforcing job modify index"
 JOB_PERIODIC_LAUNCH_SUFFIX = "/periodic-"
 JOB_DISPATCH_LAUNCH_SUFFIX = "/dispatch-"
 
@@ -215,6 +230,9 @@ class UpdateStrategy(Model):
     canary: int | None = None
     auto_revert: bool | None = None
     auto_promote: bool | None = None
+
+
+# end generated
 
 
 @dataclass

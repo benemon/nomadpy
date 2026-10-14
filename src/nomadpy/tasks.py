@@ -1,3 +1,5 @@
+# generated from surface.json: file=tasks.go
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -13,6 +15,7 @@ from . import resources as _resources
 from . import scaling as _scaling
 from . import services as _services
 from . import task_sched as _task_sched
+
 
 RESTART_POLICY_MODE_DELAY = "delay"
 RESTART_POLICY_MODE_FAIL = "fail"
@@ -49,8 +52,6 @@ TASK_CLIENT_RECONNECTED = "Reconnected"
 CSI_PLUGIN_TYPE_NODE = "node"
 CSI_PLUGIN_TYPE_CONTROLLER = "controller"
 CSI_PLUGIN_TYPE_MONOLITH = "monolith"
-CSI_PLUGIN_TYPE_MONOLITH = "monolith"
-
 
 
 @dataclass
@@ -414,3 +415,5 @@ class WorkloadIdentity(Model):
     service_name: str = ""
     ttl: int = field(default=0, metadata={'json': 'TTL'})
     extra_claims: list[str] | None = None
+
+# end generated

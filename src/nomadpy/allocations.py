@@ -4,11 +4,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from .models import Model
-from . import jobs as _jobs
-from . import resources as _resources
-from . import tasks as _tasks
 from .services import ServiceRegistration
-from .tasks import AllocCheckStatus, AllocResourceUsage, TaskState
 
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta
@@ -23,7 +19,6 @@ ALLOC_CLIENT_STATUS_FAILED = "failed"
 ALLOC_CLIENT_STATUS_LOST = "lost"
 ALLOC_CLIENT_STATUS_UNKNOWN = "unknown"
 ALLOC_RESTART_REASON_WITHIN_POLICY = "Restart within policy"
-
 
 
 @dataclass
@@ -113,7 +108,7 @@ class AllocationListStub(Model):
     desired_description: str = ""
     client_status: str = ""
     client_description: str = ""
-    task_states: dict[str, TaskState] | None = None
+    task_states: dict[str, _tasks.TaskState] | None = None
     deployment_status: AllocDeploymentStatus | None = None
     followup_eval_id: str = field(default="", metadata={"json": "FollowupEvalID"})
     next_allocation: str = ""
@@ -131,42 +126,7 @@ class AllocStopResponse(Model):
     eval_id: str = field(default="", metadata={"json": "EvalID"})
 
 
-@dataclass
-class AllocNetworkStatus(Model):
-    interface_name: str = ""
-    address: str = ""
-    address_i_pv6: str = ""
-    dns: _resources.DNSConfig | None = field(default=None, metadata={'json': 'DNS'})
-
-
-@dataclass
-class AllocationMetric(Model):
-    nodes_evaluated: int = 0
-    nodes_filtered: int = 0
-    nodes_in_pool: int = 0
-    node_pool: str = ""
-    nodes_available: dict[str, int] | None = None
-    class_filtered: dict[str, int] | None = None
-    constraint_filtered: dict[str, int] | None = None
-    nodes_exhausted: int = 0
-    class_exhausted: dict[str, int] | None = None
-    dimension_exhausted: dict[str, int] | None = None
-    quota_exhausted: list[str] | None = None
-    resources_exhausted: dict[str, _resources.Resources] | None = None
-    scores: dict[str, float] | None = None
-    allocation_time: int = 0
-    coalesced_failures: int = 0
-    score_meta_data: list[NodeScoreMeta] | None = None
-
-
-@dataclass
-class DesiredTransition(Model):
-    migrate: bool | None = None
-    reschedule: bool | None = None
-    force_reschedule: bool | None = None
-    no_shutdown_delay: bool | None = None
-    migrate_disable_placement: bool | None = None
-
+class DesiredTransitionMethods:
     def should_migrate(self) -> bool:
         return bool(self.migrate)
 
@@ -183,50 +143,7 @@ class DesiredTransition(Model):
         return bool(self.migrate_disable_placement)
 
 
-@dataclass
-class NodeScoreMeta(Model):
-    node_id: str = field(default="", metadata={'json': 'NodeID'})
-    scores: dict[str, float] | None = None
-    norm_score: float = 0.0
-
-
-@dataclass
-class Allocation(Model):
-    id: str = field(default="", metadata={'json': 'ID'})
-    namespace: str = ""
-    eval_id: str = field(default="", metadata={'json': 'EvalID'})
-    name: str = ""
-    node_id: str = field(default="", metadata={'json': 'NodeID'})
-    node_name: str = ""
-    job_id: str = field(default="", metadata={'json': 'JobID'})
-    job: _jobs.Job | None = None
-    task_group: str = ""
-    resources: _resources.Resources | None = None
-    task_resources: dict[str, _resources.Resources] | None = None
-    allocated_resources: AllocatedResources | None = None
-    services: dict[str, str] | None = None
-    metrics: AllocationMetric | None = None
-    desired_status: str = ""
-    desired_description: str = ""
-    desired_transition: DesiredTransition = field(default_factory=DesiredTransition)
-    client_status: str = ""
-    client_description: str = ""
-    task_states: dict[str, _tasks.TaskState] | None = None
-    deployment_id: str = field(default="", metadata={'json': 'DeploymentID'})
-    deployment_status: AllocDeploymentStatus | None = None
-    followup_eval_id: str = field(default="", metadata={'json': 'FollowupEvalID'})
-    previous_allocation: str = ""
-    next_allocation: str = ""
-    reschedule_tracker: RescheduleTracker | None = None
-    network_status: AllocNetworkStatus | None = None
-    preempted_allocations: list[str] | None = None
-    preempted_by_allocation: str = ""
-    create_index: int = 0
-    modify_index: int = 0
-    alloc_modify_index: int = 0
-    create_time: int = 0
-    modify_time: int = 0
-
+class AllocationMethods:
     def stub(self) -> AllocationListStub:
         stub = AllocationListStub(
             id=self.id, eval_id=self.eval_id, name=self.name, namespace=self.namespace, node_id=self.node_id, node_name=self.node_name,
@@ -268,6 +185,108 @@ class Allocation(Model):
         return self.client_status in (ALLOC_CLIENT_STATUS_COMPLETE, ALLOC_CLIENT_STATUS_FAILED, ALLOC_CLIENT_STATUS_LOST)
 
 
+# generated from surface.json: file=allocations.go only=Allocation,AllocationMetric,NodeScoreMeta,AllocNetworkStatus,DesiredTransition mixins=Allocation:AllocationMethods,DesiredTransition:DesiredTransitionMethods
+from . import jobs as _jobs  # noqa: E402
+from . import resources as _resources  # noqa: E402
+from . import tasks as _tasks  # noqa: E402
+
+ALLOC_DESIRED_STATUS_RUN = "run"
+ALLOC_DESIRED_STATUS_STOP = "stop"
+ALLOC_DESIRED_STATUS_EVICT = "evict"
+ALLOC_CLIENT_STATUS_PENDING = "pending"
+ALLOC_CLIENT_STATUS_RUNNING = "running"
+ALLOC_CLIENT_STATUS_COMPLETE = "complete"
+ALLOC_CLIENT_STATUS_FAILED = "failed"
+ALLOC_CLIENT_STATUS_LOST = "lost"
+ALLOC_CLIENT_STATUS_UNKNOWN = "unknown"
+ALLOC_RESTART_REASON_WITHIN_POLICY = "Restart within policy"
+
+
+@dataclass
+class AllocNetworkStatus(Model):
+    interface_name: str = ""
+    address: str = ""
+    address_i_pv6: str = ""
+    dns: _resources.DNSConfig | None = field(default=None, metadata={'json': 'DNS'})
+
+
+@dataclass
+class AllocationMetric(Model):
+    nodes_evaluated: int = 0
+    nodes_filtered: int = 0
+    nodes_in_pool: int = 0
+    node_pool: str = ""
+    nodes_available: dict[str, int] | None = None
+    class_filtered: dict[str, int] | None = None
+    constraint_filtered: dict[str, int] | None = None
+    nodes_exhausted: int = 0
+    class_exhausted: dict[str, int] | None = None
+    dimension_exhausted: dict[str, int] | None = None
+    quota_exhausted: list[str] | None = None
+    resources_exhausted: dict[str, _resources.Resources] | None = None
+    scores: dict[str, float] | None = None
+    allocation_time: int = 0
+    coalesced_failures: int = 0
+    score_meta_data: list[NodeScoreMeta] | None = None
+
+
+@dataclass
+class DesiredTransition(DesiredTransitionMethods, Model):
+    migrate: bool | None = None
+    reschedule: bool | None = None
+    force_reschedule: bool | None = None
+    no_shutdown_delay: bool | None = None
+    migrate_disable_placement: bool | None = None
+
+
+@dataclass
+class NodeScoreMeta(Model):
+    node_id: str = field(default="", metadata={'json': 'NodeID'})
+    scores: dict[str, float] | None = None
+    norm_score: float = 0.0
+
+
+@dataclass
+class Allocation(AllocationMethods, Model):
+    id: str = field(default="", metadata={'json': 'ID'})
+    namespace: str = ""
+    eval_id: str = field(default="", metadata={'json': 'EvalID'})
+    name: str = ""
+    node_id: str = field(default="", metadata={'json': 'NodeID'})
+    node_name: str = ""
+    job_id: str = field(default="", metadata={'json': 'JobID'})
+    job: _jobs.Job | None = None
+    task_group: str = ""
+    resources: _resources.Resources | None = None
+    task_resources: dict[str, _resources.Resources] | None = None
+    allocated_resources: AllocatedResources | None = None
+    services: dict[str, str] | None = None
+    metrics: AllocationMetric | None = None
+    desired_status: str = ""
+    desired_description: str = ""
+    desired_transition: DesiredTransition = field(default_factory=DesiredTransition)
+    client_status: str = ""
+    client_description: str = ""
+    task_states: dict[str, _tasks.TaskState] | None = None
+    deployment_id: str = field(default="", metadata={'json': 'DeploymentID'})
+    deployment_status: AllocDeploymentStatus | None = None
+    followup_eval_id: str = field(default="", metadata={'json': 'FollowupEvalID'})
+    previous_allocation: str = ""
+    next_allocation: str = ""
+    reschedule_tracker: RescheduleTracker | None = None
+    network_status: AllocNetworkStatus | None = None
+    preempted_allocations: list[str] | None = None
+    preempted_by_allocation: str = ""
+    create_index: int = 0
+    modify_index: int = 0
+    alloc_modify_index: int = 0
+    create_time: int = 0
+    modify_time: int = 0
+
+
+# end generated
+
+
 def _stubs(resp: list[dict[str, Any]]) -> list[AllocationListStub]:
     stubs = [AllocationListStub.from_json(a) for a in resp]
     stubs.sort(key=lambda a: a.create_index, reverse=True)
@@ -293,13 +312,13 @@ class Allocations:
         resp, qm = self._client.query(f"/v1/allocation/{alloc_id}", q)
         return Allocation.from_json(resp), qm
 
-    def stats(self, alloc_id: str, q: QueryOptions | None = None) -> AllocResourceUsage:
+    def stats(self, alloc_id: str, q: QueryOptions | None = None) -> _tasks.AllocResourceUsage:
         resp, _ = self._client.query(f"/v1/client/allocation/{alloc_id}/stats", q)
-        return AllocResourceUsage.from_json(resp)
+        return _tasks.AllocResourceUsage.from_json(resp)
 
-    def checks(self, alloc_id: str, q: QueryOptions | None = None) -> dict[str, AllocCheckStatus]:
+    def checks(self, alloc_id: str, q: QueryOptions | None = None) -> dict[str, _tasks.AllocCheckStatus]:
         resp, _ = self._client.query(f"/v1/client/allocation/{alloc_id}/checks", q)
-        return {k: AllocCheckStatus.from_json(v) for k, v in (resp or {}).items()}
+        return {k: _tasks.AllocCheckStatus.from_json(v) for k, v in (resp or {}).items()}
 
     def gc(self, alloc_id: str, q: QueryOptions | None = None) -> None:
         self._client.query(f"/v1/client/allocation/{alloc_id}/gc")

@@ -1,9 +1,8 @@
-.PHONY: test oracle bump
+.PHONY: test oracle bump models
 
 test:
 	.venv/bin/pytest
 
-# Regenerate the Go oracle fixtures from the pinned github.com/hashicorp/nomad/api.
 oracle:
 	cd oracle && go mod download && go run . surface fixtures/surface.json && go run . wire fixtures/wire.json
 
@@ -12,3 +11,7 @@ oracle:
 bump:
 	cd oracle && go get github.com/hashicorp/nomad/api@main && go mod tidy
 	$(MAKE) oracle
+
+# Regenerate the model dataclasses from the surface fixture in every module that carries a generation marker.
+models:
+	python3 oracle/gen_models.py oracle/fixtures/surface.json $$(grep -l '^# generated from surface.json' src/nomadpy/*.py)

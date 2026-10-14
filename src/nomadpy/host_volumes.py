@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from urllib.parse import quote, urlencode
 
 from .models import Model
+
+# generated from surface.json: file=host_volumes.go
+from . import allocations as _allocations  # noqa: E402
+from . import constraint as _constraint  # noqa: E402
 
 HOST_VOLUME_STATE_PENDING = "pending"
 HOST_VOLUME_STATE_READY = "ready"
@@ -17,13 +21,6 @@ HOST_VOLUME_ACCESS_MODE_SINGLE_NODE_READER = "single-node-reader-only"
 HOST_VOLUME_ACCESS_MODE_SINGLE_NODE_WRITER = "single-node-writer"
 HOST_VOLUME_ACCESS_MODE_SINGLE_NODE_SINGLE_WRITER = "single-node-single-writer"
 HOST_VOLUME_ACCESS_MODE_SINGLE_NODE_MULTI_WRITER = "single-node-multi-writer"
-
-if TYPE_CHECKING:
-    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
-from . import allocations as _allocations
-from . import constraint as _constraint
-HOST_VOLUME_ACCESS_MODE_SINGLE_NODE_MULTI_WRITER = "single-node-multi-writer"
-
 
 
 @dataclass
@@ -56,33 +53,9 @@ class HostVolumeCapability(Model):
 
 
 @dataclass
-class HostVolumeCreateRequest(Model):
-    volume: HostVolume | None = None
-    policy_override: bool = False
-
-
-@dataclass
 class HostVolumeCreateResponse(Model):
     volume: HostVolume | None = None
     warnings: str = ""
-
-
-@dataclass
-class HostVolumeDeleteRequest(Model):
-    id: str = field(default="", metadata={'json': 'ID'})
-    force: bool = False
-
-
-@dataclass
-class HostVolumeListRequest(Model):
-    node_id: str = field(default="", metadata={'json': 'NodeID'})
-    node_pool: str = ""
-
-
-@dataclass
-class HostVolumeRegisterRequest(Model):
-    volume: HostVolume | None = None
-    policy_override: bool = False
 
 
 @dataclass
@@ -105,6 +78,9 @@ class HostVolumeStub(Model):
     create_time: int = 0
     modify_index: int = 0
     modify_time: int = 0
+
+
+# end generated
 
 
 class HostVolumes:

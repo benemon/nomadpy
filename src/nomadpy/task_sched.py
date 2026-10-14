@@ -1,7 +1,8 @@
+# generated from surface.json: file=task_sched.go
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 from .models import Model
 
@@ -17,3 +18,4 @@ class TaskScheduleCron(Model):
     end: str = ""
     timezone: str = ""
 
+# end generated
