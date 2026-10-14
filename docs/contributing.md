@@ -47,7 +47,7 @@ HTTP requests the real Go client sends for a fixed table of calls.
 `tests/test_drift.py` holds the Python package to the surface and
 `tests/test_wire.py` replays the calls and compares the requests.
 `oracle/ledger.json` is the only place a gap may be declared, always with a
-reason or a bead id.
+reason.
 
 Porting a file: remove its ledger entry, add its calls to the op table in
 `oracle/wire.go` and `tests/test_wire.py`, regenerate, and make the drift
