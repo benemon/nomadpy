@@ -143,8 +143,10 @@ def ent_acl_agent():
     """An Enterprise dev agent with ACLs enabled, for the Enterprise features that require them."""
     binary = _binary("NOMADPY_TEST_ENT_BIN")
     license_path = os.environ.get("NOMAD_LICENSE_PATH")
-    if not license_path or not os.path.isfile(license_path):
+    if not license_path:
         pytest.skip("NOMAD_LICENSE_PATH not set")
+    if not os.path.isfile(license_path):
+        pytest.skip(f"NOMAD_LICENSE_PATH={license_path} does not exist")
     proc, address, workdir = start_agent(binary, "acl { enabled = true }\n", env={"NOMAD_LICENSE_PATH": license_path}, ready=leader_ready)
     yield address
     stop_agent(proc)

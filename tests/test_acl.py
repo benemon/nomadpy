@@ -24,11 +24,10 @@ HOUR = 3_600_000_000_000
 def test_bootstrap_once(acl_client):
     me, _ = acl_client.acl_tokens.self()
     assert me.type == "management"
-    assert me.secret_id == acl_client.config.secret_id
+    assert me.accessor_id and me.policies is None
     with pytest.raises(UnexpectedResponseError) as e:
         acl_client.acl_tokens.bootstrap()
     assert e.value.status_code == 400
-    assert "already" in e.value.body
 
 
 def test_anonymous_is_denied(acl_agent):

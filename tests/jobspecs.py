@@ -1,4 +1,4 @@
-"""Job specifications and wait helpers shared by the job, evaluation and deployment tests."""
+"""Job specifications and wait helpers for the tests that run jobs on an agent."""
 
 import time
 from datetime import timedelta

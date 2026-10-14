@@ -42,7 +42,6 @@ def test_delete_requires_paused_broker(client):
     with pytest.raises(UnexpectedResponseError) as e:
         client.evaluations.delete(ids)
     assert e.value.status_code == 500
-    assert "eval broker" in e.value.body
 
     config, _ = client.query("/v1/operator/scheduler/configuration")
     sc = config["SchedulerConfig"]

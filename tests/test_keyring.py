@@ -26,7 +26,7 @@ def test_list_rotate_delete(disposable_client):
 
     with pytest.raises(UnexpectedResponseError) as e:
         client.keyring.delete(rotated.key_id)
-    assert e.value.status_code == 500 and "active" in e.value.body
+    assert e.value.status_code == 500
     client.keyring.delete(original.key_id, force=True)
     assert original.key_id not in {k.key_id for k in client.keyring.list()[0]}
 

@@ -1,6 +1,8 @@
+import time
+
 import pytest
 
-from nomadpy import UnexpectedResponseError
+from nomadpy import QueryOptions, UnexpectedResponseError
 from nomadpy.deployments import (
     DEPLOYMENT_STATUS_FAILED,
     DEPLOYMENT_STATUS_PAUSED,
@@ -9,7 +11,7 @@ from nomadpy.deployments import (
 )
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
 
-from jobspecs import register_and_wait, service_job, wait_for_deployment, wait_for_eval
+from jobspecs import DEADLINE, WAIT, register_and_wait, service_job, wait_for_deployment, wait_for_eval
 
 
 def _second_version(client, job_id, **spec):
@@ -69,11 +71,6 @@ def test_promote_canary(client):
 
 
 def _wait_for_healthy_canary(client, deployment_id):
-    import time
-
-    from nomadpy import QueryOptions
-    from jobspecs import WAIT, DEADLINE
-
     index = 0
     deadline = time.monotonic() + DEADLINE
     while time.monotonic() < deadline:

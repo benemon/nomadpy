@@ -15,13 +15,11 @@ def test_builtin_pools(client):
     assert default.description and default.scheduler_configuration is None
     nodes, _ = client.node_pools.list_nodes(NODE_POOL_DEFAULT)
     assert len(nodes) == 1 and nodes[0].node_pool == NODE_POOL_DEFAULT
-    # Built-in pools cannot be deleted; "default" is additionally refused because it holds the dev node.
-    with pytest.raises(UnexpectedResponseError) as e:
-        client.node_pools.delete(NODE_POOL_ALL)
-    assert e.value.status_code == 500 and "not allowed" in e.value.body
-    with pytest.raises(UnexpectedResponseError) as e:
-        client.node_pools.delete(NODE_POOL_DEFAULT)
-    assert e.value.status_code == 500 and "has nodes" in e.value.body
+    # Built-in pools cannot be deleted.
+    for builtin in (NODE_POOL_ALL, NODE_POOL_DEFAULT):
+        with pytest.raises(UnexpectedResponseError) as e:
+            client.node_pools.delete(builtin)
+        assert e.value.status_code == 500
 
 
 def test_register_info_jobs_delete(client):

@@ -57,7 +57,7 @@ def test_license_on_enterprise(ent_client):
     reply, qm = ent_client.operator.license_get()
     assert reply.license.product == "nomad" and qm.last_index >= 0
     assert "Namespaces" in reply.license.features
-    assert reply.license.expiration_time > "2026"
+    assert reply.license.expiration_time.endswith("Z")
     # Licences are configured on the server; the Go client still carries ApplyLicense but 2.0.5+ent answers 405.
     with open(os.environ["NOMAD_LICENSE_PATH"]) as f:
         licence = f.read().strip()

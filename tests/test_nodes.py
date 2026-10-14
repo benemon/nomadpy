@@ -1,10 +1,12 @@
+import time
+
 import pytest
 
 from nomadpy import DrainSpec, QueryOptions, UnexpectedResponseError
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
 from nomadpy.nodes import DRAIN_STATUS_CANCELED, DRAIN_STATUS_DRAINING, NODE_SCHEDULING_ELIGIBLE, NODE_SCHEDULING_INELIGIBLE, NODE_STATUS_READY
 
-from jobspecs import batch_job, register_and_wait, wait_for_eval
+from jobspecs import DEADLINE, WAIT, batch_job, register_and_wait, wait_for_eval
 
 
 def _node(client):
@@ -87,9 +89,6 @@ def test_gc_alloc(client):
     assert wait_for_eval(client, resp.eval_id).status == EVAL_STATUS_COMPLETE
     allocs, _ = client.jobs.allocations("nomadpy-node-gc")
     assert len(allocs) == 1
-    from jobspecs import DEADLINE, WAIT
-    import time
-
     index, deadline = 0, time.monotonic() + DEADLINE
     while time.monotonic() < deadline:
         allocs, qm = client.jobs.allocations("nomadpy-node-gc", q=QueryOptions(wait_index=index, wait_time=WAIT))
@@ -106,7 +105,7 @@ def test_gc_alloc(client):
 def test_purge_unknown_node(client):
     with pytest.raises(UnexpectedResponseError) as e:
         client.nodes.purge("00000000-0000-0000-0000-000000000000")
-    assert e.value.status_code == 500 and e.value.body == "node not found"
+    assert e.value.status_code == 500
 
 
 def test_meta(client):

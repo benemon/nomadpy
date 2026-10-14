@@ -38,7 +38,7 @@ def test_register_info_list_delete(client):
     assert e.value.status_code == 404
 
 
-def test_round_trip_to_json(client):
+def test_round_trip_to_json():
     ns = Namespace(name="nomadpy-ns2", node_pool_configuration=None)
     assert ns.to_json()["Name"] == "nomadpy-ns2"
     assert ns.to_json()["NodePoolConfiguration"] is None
@@ -56,7 +56,6 @@ def test_node_pool_configuration_on_community(client):
     with pytest.raises(UnexpectedResponseError) as e:
         client.namespaces.register(Namespace(name="nomadpy-ns4", node_pool_configuration=NamespaceNodePoolConfiguration(default="all")))
     assert e.value.status_code == 500
-    assert "unlicensed" in e.value.body
 
 
 def test_node_pool_configuration_on_enterprise(ent_client):

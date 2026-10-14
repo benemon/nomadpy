@@ -17,6 +17,7 @@ from pathlib import Path
 
 import pytest
 
+from nomadpy.models import GO_ZERO_TIME
 from nomadpy import (
     ACLAuthMethod,
     ACLAuthMethodConfig,
@@ -67,7 +68,6 @@ MILLISECOND = 1_000_000
 SECOND = 1_000 * MILLISECOND
 MINUTE = 60 * SECOND
 HOUR = 60 * MINUTE
-GO_ZERO_TIME = "0001-01-01T00:00:00Z"
 # Every credential the op table sends; none may appear in a request line.
 CREDENTIALS = ("tok0", "tok1", "sec", "ott", "secret", "jwt", "02MV4UU43BK5", "csisecretvalue", "oidcstate", "oidccode", "gossipkey1")
 
