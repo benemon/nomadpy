@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote
 
 from .api import QueryOptions
 from .models import Model
@@ -94,7 +95,7 @@ class Evaluations:
         return resp["Count"], qm
 
     def info(self, eval_id: str, q: QueryOptions | None = None) -> tuple[Evaluation, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/evaluation/{eval_id}?related=true", q)
+        resp, qm = self._client.query(f"/v1/evaluation/{quote(eval_id, safe='')}?related=true", q)
         return Evaluation.from_json(resp), qm
 
     def delete(self, eval_ids: list[str] | None = None, w: WriteOptions | None = None, *, filter: str = "") -> tuple[int, WriteMeta]:
@@ -106,5 +107,5 @@ class Evaluations:
         return resp["Count"], wm
 
     def allocations(self, eval_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
-        resp, qm = self._client.query(f"/v1/evaluation/{eval_id}/allocations", q)
+        resp, qm = self._client.query(f"/v1/evaluation/{quote(eval_id, safe='')}/allocations", q)
         return _allocations.stubs(resp), qm

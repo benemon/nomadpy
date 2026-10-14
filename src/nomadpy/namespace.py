@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
+from urllib.parse import quote
 
 from .api import QueryOptions
 from .models import Model
@@ -82,13 +84,10 @@ class Namespaces:
         return namespaces, qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[Namespace], QueryMeta]:
-        if q is None:
-            q = QueryOptions()
-        q.prefix = prefix
-        return self.list(q)
+        return self.list(dataclasses.replace(q or QueryOptions(), prefix=prefix))
 
     def info(self, name: str, q: QueryOptions | None = None) -> tuple[Namespace, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/namespace/{name}", q)
+        resp, qm = self._client.query("/v1/namespace/" + quote(name, safe=""), q)
         return Namespace.from_json(resp), qm
 
     def register(self, namespace: Namespace, w: WriteOptions | None = None) -> WriteMeta:
@@ -96,5 +95,5 @@ class Namespaces:
         return wm
 
     def delete(self, name: str, w: WriteOptions | None = None) -> WriteMeta:
-        _, wm = self._client.delete(f"/v1/namespace/{name}", None, w)
+        _, wm = self._client.delete("/v1/namespace/" + quote(name, safe=""), None, w)
         return wm

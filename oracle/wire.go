@@ -272,7 +272,7 @@ var ops = []op{
 		return err
 	}},
 	{"acl_auth.complete_auth", `{}`, func(c *api.Client) error {
-		_, _, err := c.ACLAuth().CompleteAuth(&api.ACLOIDCCompleteAuthRequest{AuthMethodName: "m", ClientNonce: "n", State: "s", Code: "c", Iss: "i", RedirectURI: "http://127.0.0.1/cb"}, nil)
+		_, _, err := c.ACLAuth().CompleteAuth(&api.ACLOIDCCompleteAuthRequest{AuthMethodName: "m", ClientNonce: "n", State: "oidcstate", Code: "oidccode", Iss: "i", RedirectURI: "http://127.0.0.1/cb"}, nil)
 		return err
 	}},
 	{"acl_auth.login", `{}`, func(c *api.Client) error {
@@ -403,9 +403,9 @@ var ops = []op{
 	{"agent.set_servers", `{}`, func(c *api.Client) error { return c.Agent().SetServers([]string{"10.0.0.1:4647", "10.0.0.2:4647"}) }},
 	{"agent.list_keys", `{}`, func(c *api.Client) error { _, err := c.Agent().ListKeys(); return err }},
 	{"agent.reload", `{}`, func(c *api.Client) error { return c.Agent().Reload(nil, writeOpts()) }},
-	{"agent.install_key", `{}`, func(c *api.Client) error { _, err := c.Agent().InstallKey("k1"); return err }},
-	{"agent.use_key", `{}`, func(c *api.Client) error { _, err := c.Agent().UseKey("k1"); return err }},
-	{"agent.remove_key", `{}`, func(c *api.Client) error { _, err := c.Agent().RemoveKey("k1"); return err }},
+	{"agent.install_key", `{}`, func(c *api.Client) error { _, err := c.Agent().InstallKey("gossipkey1"); return err }},
+	{"agent.use_key", `{}`, func(c *api.Client) error { _, err := c.Agent().UseKey("gossipkey1"); return err }},
+	{"agent.remove_key", `{}`, func(c *api.Client) error { _, err := c.Agent().RemoveKey("gossipkey1"); return err }},
 	{"agent.health", `{}`, func(c *api.Client) error { _, err := c.Agent().Health(); return err }},
 	{"agent.host", `{}`, func(c *api.Client) error { _, err := c.Agent().Host("s1", "n1", nil); return err }},
 	{"agent.get_scheduler_worker_config", `{}`, func(c *api.Client) error { _, err := c.Agent().GetSchedulerWorkerConfig(nil); return err }},
@@ -527,7 +527,7 @@ var ops = []op{
 	{"csi_volumes.plugin_list", `[]`, func(c *api.Client) error { _, _, err := c.CSIVolumes().PluginList("plug"); return err }},
 	{"csi_volumes.info", `{}`, func(c *api.Client) error { _, _, err := c.CSIVolumes().Info("v1", nil); return err }},
 	{"csi_volumes.register", `{}`, func(c *api.Client) error {
-		_, err := c.CSIVolumes().Register(&api.CSIVolume{ID: "v1", Name: "vol", ExternalID: "ext", PluginID: "plug", RequestedCapabilities: []*api.CSIVolumeCapability{{AccessMode: api.CSIVolumeAccessModeSingleNodeWriter, AttachmentMode: api.CSIVolumeAttachmentModeFilesystem}}, Secrets: api.CSISecrets{"k": "v"}}, writeOpts())
+		_, err := c.CSIVolumes().Register(&api.CSIVolume{ID: "v1", Name: "vol", ExternalID: "ext", PluginID: "plug", RequestedCapabilities: []*api.CSIVolumeCapability{{AccessMode: api.CSIVolumeAccessModeSingleNodeWriter, AttachmentMode: api.CSIVolumeAttachmentModeFilesystem}}, Secrets: api.CSISecrets{"k": "csisecretvalue"}}, writeOpts())
 		return err
 	}},
 	{"csi_volumes.deregister", `{}`, func(c *api.Client) error { return c.CSIVolumes().Deregister("v 1", true, writeOpts()) }},
@@ -536,22 +536,22 @@ var ops = []op{
 		return err
 	}},
 	{"csi_volumes.delete", `{}`, func(c *api.Client) error {
-		return c.CSIVolumes().DeleteOpts(&api.CSIVolumeDeleteRequest{ExternalVolumeID: "ext 1", Secrets: api.CSISecrets{"k": "v"}}, writeOpts())
+		return c.CSIVolumes().DeleteOpts(&api.CSIVolumeDeleteRequest{ExternalVolumeID: "ext 1", Secrets: api.CSISecrets{"k": "csisecretvalue"}}, writeOpts())
 	}},
 	{"csi_volumes.detach", `{}`, func(c *api.Client) error { return c.CSIVolumes().Detach("v1", "n1", nil) }},
 	{"csi_volumes.create_snapshot", `{}`, func(c *api.Client) error {
-		_, _, err := c.CSIVolumes().CreateSnapshot(&api.CSISnapshot{Name: "snap", PluginID: "plug", SourceVolumeID: "v1", Secrets: api.CSISecrets{"k": "v"}}, nil)
+		_, _, err := c.CSIVolumes().CreateSnapshot(&api.CSISnapshot{Name: "snap", PluginID: "plug", SourceVolumeID: "v1", Secrets: api.CSISecrets{"k": "csisecretvalue"}}, nil)
 		return err
 	}},
 	{"csi_volumes.delete_snapshot", `{}`, func(c *api.Client) error {
-		return c.CSIVolumes().DeleteSnapshot(&api.CSISnapshot{ID: "s1", PluginID: "plug", Secrets: api.CSISecrets{"k": "v"}}, writeOpts())
+		return c.CSIVolumes().DeleteSnapshot(&api.CSISnapshot{ID: "s1", PluginID: "plug", Secrets: api.CSISecrets{"k": "csisecretvalue"}}, writeOpts())
 	}},
 	{"csi_volumes.list_snapshots", `{}`, func(c *api.Client) error {
 		_, _, err := c.CSIVolumes().ListSnapshots("plug", "", queryOpts())
 		return err
 	}},
 	{"csi_volumes.list_snapshots_opts", `{}`, func(c *api.Client) error {
-		_, _, err := c.CSIVolumes().ListSnapshotsOpts(&api.CSISnapshotListRequest{PluginID: "plug", Secrets: api.CSISecrets{"k": "v"}, QueryOptions: *queryOpts()})
+		_, _, err := c.CSIVolumes().ListSnapshotsOpts(&api.CSISnapshotListRequest{PluginID: "plug", Secrets: api.CSISecrets{"k": "csisecretvalue"}, QueryOptions: *queryOpts()})
 		return err
 	}},
 	{"csi_plugins.list", `[]`, func(c *api.Client) error { _, _, err := c.CSIPlugins().List(nil); return err }},

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -118,10 +119,7 @@ class Variables:
         return [VariableMetadata.from_json(v) for v in resp], qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[VariableMetadata], QueryMeta]:
-        if q is None:
-            q = QueryOptions()
-        q.prefix = prefix
-        return self.list(q)
+        return self.list(dataclasses.replace(q or QueryOptions(), prefix=prefix))
 
     def get_items(self, path: str, q: QueryOptions | None = None) -> tuple[dict[str, str], QueryMeta]:
         v, qm = self.read(path, q)

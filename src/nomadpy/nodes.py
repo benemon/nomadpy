@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote, urlencode
 
 from . import csi as _csi
 from .api import QueryOptions
@@ -392,52 +394,49 @@ class Nodes:
         return nodes, qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[NodeListStub], QueryMeta]:
-        if q is None:
-            q = QueryOptions()
-        q.prefix = prefix
-        return self.list(q)
+        return self.list(dataclasses.replace(q or QueryOptions(), prefix=prefix))
 
     def info(self, node_id: str, q: QueryOptions | None = None) -> tuple[Node, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/node/{node_id}", q)
+        resp, qm = self._client.query("/v1/node/" + quote(node_id, safe=""), q)
         return Node.from_json(resp), qm
 
     def update_drain(self, node_id: str, spec: DrainSpec | None, mark_eligible: bool = False, w: WriteOptions | None = None,
                      *, meta: dict[str, str] | None = None) -> tuple[NodeDrainUpdateResponse, WriteMeta]:
         """update_drain starts a drain with spec, or stops it when spec is None."""
         req = {"NodeID": node_id, "DrainSpec": spec.to_json() if spec else None, "MarkEligible": mark_eligible, "Meta": meta}
-        resp, wm = self._client.put(f"/v1/node/{node_id}/drain", req, w)
+        resp, wm = self._client.put("/v1/node/" + quote(node_id, safe="") + "/drain", req, w)
         return NodeDrainUpdateResponse.from_json(resp), wm
 
     def toggle_eligibility(self, node_id: str, eligible: bool, w: WriteOptions | None = None) -> tuple[NodeEligibilityUpdateResponse, WriteMeta]:
         req = {"NodeID": node_id, "Eligibility": NODE_SCHEDULING_ELIGIBLE if eligible else NODE_SCHEDULING_INELIGIBLE}
-        resp, wm = self._client.put(f"/v1/node/{node_id}/eligibility", req, w)
+        resp, wm = self._client.put("/v1/node/" + quote(node_id, safe="") + "/eligibility", req, w)
         return NodeEligibilityUpdateResponse.from_json(resp), wm
 
     def allocations(self, node_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.Allocation], QueryMeta]:
-        resp, qm = self._client.query(f"/v1/node/{node_id}/allocations", q)
+        resp, qm = self._client.query("/v1/node/" + quote(node_id, safe="") + "/allocations", q)
         allocs = [_allocations.Allocation.from_json(a) for a in resp]
         allocs.sort(key=lambda a: a.create_index, reverse=True)
         return allocs, qm
 
     def csi_volumes(self, node_id: str, q: QueryOptions | None = None) -> list[_csi.CSIVolumeListStub]:
-        resp, _ = self._client.query(f"/v1/volumes?type=csi&node_id={node_id}", q)
+        resp, _ = self._client.query("/v1/volumes?" + urlencode([("type", "csi"), ("node_id", node_id)]), q)
         return [_csi.CSIVolumeListStub.from_json(v) for v in resp]
 
     def force_evaluate(self, node_id: str, w: WriteOptions | None = None) -> tuple[str, WriteMeta]:
-        resp, wm = self._client.put(f"/v1/node/{node_id}/evaluate", None, w)
+        resp, wm = self._client.put("/v1/node/" + quote(node_id, safe="") + "/evaluate", None, w)
         # The server answers with EvalIDs, not EvalID; Go decodes that as an empty string and so does this.
         return resp.get("EvalID", ""), wm
 
     def stats(self, node_id: str, q: QueryOptions | None = None) -> HostStats:
-        resp, _ = self._client.query(f"/v1/client/stats?node_id={node_id}", q)
+        resp, _ = self._client.query("/v1/client/stats?" + urlencode([("node_id", node_id)]), q)
         return HostStats.from_json(resp)
 
     def gc(self, node_id: str, q: QueryOptions | None = None) -> None:
-        self._client.query(f"/v1/client/gc?node_id={node_id}", q)
+        self._client.query("/v1/client/gc?" + urlencode([("node_id", node_id)]), q)
 
     def gc_alloc(self, alloc_id: str, q: QueryOptions | None = None) -> None:
-        self._client.query(f"/v1/client/allocation/{alloc_id}/gc", q)
+        self._client.query("/v1/client/allocation/" + quote(alloc_id, safe="") + "/gc", q)
 
     def purge(self, node_id: str, q: QueryOptions | None = None) -> tuple[NodePurgeResponse, QueryMeta]:
-        resp, qm = self._client.put_query(f"/v1/node/{node_id}/purge", None, q)
+        resp, qm = self._client.put_query("/v1/node/" + quote(node_id, safe="") + "/purge", None, q)
         return NodePurgeResponse.from_json(resp), qm

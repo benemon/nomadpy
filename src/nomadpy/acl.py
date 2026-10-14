@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote
 
 from .models import Model
 
@@ -237,19 +238,19 @@ class ACLPolicies:
     def upsert(self, policy: ACLPolicy, w: WriteOptions | None = None) -> WriteMeta:
         if not policy.name:
             raise ValueError("missing policy name")
-        _, wm = self._client.put(f"/v1/acl/policy/{policy.name}", policy.to_json(), w)
+        _, wm = self._client.put(f"/v1/acl/policy/{quote(policy.name, safe='')}", policy.to_json(), w)
         return wm
 
     def delete(self, policy_name: str, w: WriteOptions | None = None) -> WriteMeta:
         if not policy_name:
             raise ValueError("missing policy name")
-        _, wm = self._client.delete(f"/v1/acl/policy/{policy_name}", None, w)
+        _, wm = self._client.delete(f"/v1/acl/policy/{quote(policy_name, safe='')}", None, w)
         return wm
 
     def info(self, policy_name: str, q: QueryOptions | None = None) -> tuple[ACLPolicy, QueryMeta]:
         if not policy_name:
             raise ValueError("missing policy name")
-        resp, qm = self._client.query(f"/v1/acl/policy/{policy_name}", q)
+        resp, qm = self._client.query(f"/v1/acl/policy/{quote(policy_name, safe='')}", q)
         return ACLPolicy.from_json(resp), qm
 
     def self(self, q: QueryOptions | None = None) -> tuple[list[ACLPolicyListStub], QueryMeta]:
@@ -285,25 +286,25 @@ class ACLTokens:
             raise ValueError("missing Secret ID")
         if token.type == "management":
             raise ValueError("cannot upload a management token")
-        resp, wm = self._client.put(f"/v1/acl/token/{token.accessor_id}", token.to_json(), w)
+        resp, wm = self._client.put(f"/v1/acl/token/{quote(token.accessor_id, safe='')}", token.to_json(), w)
         return ACLToken.from_json(resp), wm
 
     def update(self, token: ACLToken, w: WriteOptions | None = None) -> tuple[ACLToken, WriteMeta]:
         if not token.accessor_id:
             raise ValueError("missing Accessor ID")
-        resp, wm = self._client.put(f"/v1/acl/token/{token.accessor_id}", token.to_json(), w)
+        resp, wm = self._client.put(f"/v1/acl/token/{quote(token.accessor_id, safe='')}", token.to_json(), w)
         return ACLToken.from_json(resp), wm
 
     def delete(self, accessor_id: str, w: WriteOptions | None = None) -> WriteMeta:
         if not accessor_id:
             raise ValueError("missing accessor ID")
-        _, wm = self._client.delete(f"/v1/acl/token/{accessor_id}", None, w)
+        _, wm = self._client.delete(f"/v1/acl/token/{quote(accessor_id, safe='')}", None, w)
         return wm
 
     def info(self, accessor_id: str, q: QueryOptions | None = None) -> tuple[ACLToken, QueryMeta]:
         if not accessor_id:
             raise ValueError("missing accessor ID")
-        resp, qm = self._client.query(f"/v1/acl/token/{accessor_id}", q)
+        resp, qm = self._client.query(f"/v1/acl/token/{quote(accessor_id, safe='')}", q)
         return ACLToken.from_json(resp), qm
 
     def self(self, q: QueryOptions | None = None) -> tuple[ACLToken, QueryMeta]:
@@ -340,25 +341,25 @@ class ACLRoles:
     def update(self, role: ACLRole, w: WriteOptions | None = None) -> tuple[ACLRole, WriteMeta]:
         if not role.id:
             raise ValueError("missing ACL role ID")
-        resp, wm = self._client.put(f"/v1/acl/role/{role.id}", role.to_json(), w)
+        resp, wm = self._client.put(f"/v1/acl/role/{quote(role.id, safe='')}", role.to_json(), w)
         return ACLRole.from_json(resp), wm
 
     def delete(self, role_id: str, w: WriteOptions | None = None) -> WriteMeta:
         if not role_id:
             raise ValueError("missing ACL role ID")
-        _, wm = self._client.delete(f"/v1/acl/role/{role_id}", None, w)
+        _, wm = self._client.delete(f"/v1/acl/role/{quote(role_id, safe='')}", None, w)
         return wm
 
     def get(self, role_id: str, q: QueryOptions | None = None) -> tuple[ACLRole, QueryMeta]:
         if not role_id:
             raise ValueError("missing ACL role ID")
-        resp, qm = self._client.query(f"/v1/acl/role/{role_id}", q)
+        resp, qm = self._client.query(f"/v1/acl/role/{quote(role_id, safe='')}", q)
         return ACLRole.from_json(resp), qm
 
     def get_by_name(self, role_name: str, q: QueryOptions | None = None) -> tuple[ACLRole, QueryMeta]:
         if not role_name:
             raise ValueError("missing ACL role name")
-        resp, qm = self._client.query(f"/v1/acl/role/name/{role_name}", q)
+        resp, qm = self._client.query(f"/v1/acl/role/name/{quote(role_name, safe='')}", q)
         return ACLRole.from_json(resp), qm
 
 
@@ -381,19 +382,19 @@ class ACLAuthMethods:
     def update(self, auth_method: ACLAuthMethod, w: WriteOptions | None = None) -> tuple[ACLAuthMethod, WriteMeta]:
         if not auth_method.name:
             raise ValueError("missing ACL auth-method name")
-        resp, wm = self._client.put(f"/v1/acl/auth-method/{auth_method.name}", auth_method.to_json(), w)
+        resp, wm = self._client.put(f"/v1/acl/auth-method/{quote(auth_method.name, safe='')}", auth_method.to_json(), w)
         return ACLAuthMethod.from_json(resp), wm
 
     def delete(self, auth_method_name: str, w: WriteOptions | None = None) -> WriteMeta:
         if not auth_method_name:
             raise ValueError("missing ACL auth-method name")
-        _, wm = self._client.delete(f"/v1/acl/auth-method/{auth_method_name}", None, w)
+        _, wm = self._client.delete(f"/v1/acl/auth-method/{quote(auth_method_name, safe='')}", None, w)
         return wm
 
     def get(self, auth_method_name: str, q: QueryOptions | None = None) -> tuple[ACLAuthMethod, QueryMeta]:
         if not auth_method_name:
             raise ValueError("missing ACL auth-method name")
-        resp, qm = self._client.query(f"/v1/acl/auth-method/{auth_method_name}", q)
+        resp, qm = self._client.query(f"/v1/acl/auth-method/{quote(auth_method_name, safe='')}", q)
         return ACLAuthMethod.from_json(resp), qm
 
 
@@ -414,19 +415,19 @@ class ACLBindingRules:
     def update(self, binding_rule: ACLBindingRule, w: WriteOptions | None = None) -> tuple[ACLBindingRule, WriteMeta]:
         if not binding_rule.id:
             raise ValueError("missing ACL binding rule ID")
-        resp, wm = self._client.put(f"/v1/acl/binding-rule/{binding_rule.id}", binding_rule.to_json(), w)
+        resp, wm = self._client.put(f"/v1/acl/binding-rule/{quote(binding_rule.id, safe='')}", binding_rule.to_json(), w)
         return ACLBindingRule.from_json(resp), wm
 
     def delete(self, binding_rule_id: str, w: WriteOptions | None = None) -> WriteMeta:
         if not binding_rule_id:
             raise ValueError("missing ACL binding rule ID")
-        _, wm = self._client.delete(f"/v1/acl/binding-rule/{binding_rule_id}", None, w)
+        _, wm = self._client.delete(f"/v1/acl/binding-rule/{quote(binding_rule_id, safe='')}", None, w)
         return wm
 
     def get(self, binding_rule_id: str, q: QueryOptions | None = None) -> tuple[ACLBindingRule, QueryMeta]:
         if not binding_rule_id:
             raise ValueError("missing ACL binding rule ID")
-        resp, qm = self._client.query(f"/v1/acl/binding-rule/{binding_rule_id}", q)
+        resp, qm = self._client.query(f"/v1/acl/binding-rule/{quote(binding_rule_id, safe='')}", q)
         return ACLBindingRule.from_json(resp), qm
 
 

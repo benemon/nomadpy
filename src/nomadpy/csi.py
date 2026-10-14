@@ -224,12 +224,7 @@ class CSIVolumes:
         return stubs, qm
 
     def list_external(self, plugin_id: str, q: QueryOptions | None = None) -> tuple[CSIVolumeListExternalResponse, QueryMeta]:
-        params = [("plugin_id", plugin_id)]
-        if q is not None and q.next_token:
-            params.append(("next_token", q.next_token))
-        if q is not None and q.per_page:
-            params.append(("per_page", str(q.per_page)))
-        resp, qm = self._client.query("/v1/volumes/external?" + urlencode(params), q)
+        resp, qm = self._client.query("/v1/volumes/external?" + urlencode([("plugin_id", plugin_id)]), q)
         out = CSIVolumeListExternalResponse.from_json(resp)
         if out.volumes:
             out.volumes.sort(key=lambda v: v.external_id)
@@ -257,7 +252,7 @@ class CSIVolumes:
         self._client.delete(f"/v1/volume/csi/{quote(external_vol_id, safe='')}/delete", None, _headers(w, _secrets_header(secrets)))
 
     def detach(self, vol_id: str, node_id: str, w: WriteOptions | None = None) -> None:
-        self._client.delete(f"/v1/volume/csi/{quote(vol_id, safe='')}/detach?node={node_id}", None, w)
+        self._client.delete(f"/v1/volume/csi/{quote(vol_id, safe='')}/detach?" + urlencode([("node", node_id)]), None, w)
 
     def create_snapshot(self, snap: CSISnapshot, w: WriteOptions | None = None) -> tuple[CSISnapshotCreateResponse, WriteMeta]:
         req = {"Snapshots": [snap.to_json()]}
@@ -269,13 +264,7 @@ class CSIVolumes:
         self._client.delete("/v1/volumes/snapshot?" + params, None, _headers(w, _secrets_header(snap.secrets)))
 
     def list_snapshots(self, plugin_id: str = "", q: QueryOptions | None = None, *, secrets: dict[str, str] | None = None) -> tuple[CSISnapshotListResponse, QueryMeta]:
-        params = []
-        if plugin_id:
-            params.append(("plugin_id", plugin_id))
-        if q is not None and q.next_token:
-            params.append(("next_token", q.next_token))
-        if q is not None and q.per_page:
-            params.append(("per_page", str(q.per_page)))
+        params = [("plugin_id", plugin_id)] if plugin_id else []
         resp, qm = self._client.query("/v1/volumes/snapshot?" + urlencode(params), _headers(q, _secrets_header(secrets), query=True))
         out = CSISnapshotListResponse.from_json(resp)
         if out.snapshots:

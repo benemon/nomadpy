@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote
 
 from .api import QueryOptions
 from .models import Model
@@ -82,10 +84,7 @@ class Quotas:
         return specs, qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[QuotaSpec], QueryMeta]:
-        if q is None:
-            q = QueryOptions()
-        q.prefix = prefix
-        return self.list(q)
+        return self.list(dataclasses.replace(q or QueryOptions(), prefix=prefix))
 
     def list_usage(self, q: QueryOptions | None = None) -> tuple[list[QuotaUsage], QueryMeta]:
         resp, qm = self._client.query("/v1/quota-usages", q)
@@ -94,17 +93,14 @@ class Quotas:
         return usages, qm
 
     def prefix_list_usage(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[QuotaUsage], QueryMeta]:
-        if q is None:
-            q = QueryOptions()
-        q.prefix = prefix
-        return self.list_usage(q)
+        return self.list_usage(dataclasses.replace(q or QueryOptions(), prefix=prefix))
 
     def info(self, name: str, q: QueryOptions | None = None) -> tuple[QuotaSpec, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/quota/{name}", q)
+        resp, qm = self._client.query("/v1/quota/" + quote(name, safe=""), q)
         return QuotaSpec.from_json(resp), qm
 
     def usage(self, name: str, q: QueryOptions | None = None) -> tuple[QuotaUsage, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/quota/usage/{name}", q)
+        resp, qm = self._client.query("/v1/quota/usage/" + quote(name, safe=""), q)
         return QuotaUsage.from_json(resp), qm
 
     def register(self, spec: QuotaSpec, w: WriteOptions | None = None) -> WriteMeta:
@@ -112,5 +108,5 @@ class Quotas:
         return wm
 
     def delete(self, quota: str, w: WriteOptions | None = None) -> WriteMeta:
-        _, wm = self._client.delete(f"/v1/quota/{quota}", None, w)
+        _, wm = self._client.delete("/v1/quota/" + quote(quota, safe=""), None, w)
         return wm

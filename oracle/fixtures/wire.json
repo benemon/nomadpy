@@ -1777,10 +1777,10 @@
       "body": {
         "AuthMethodName": "m",
         "ClientNonce": "n",
-        "Code": "c",
+        "Code": "oidccode",
         "Iss": "i",
         "RedirectURI": "http://127.0.0.1/cb",
-        "State": "s"
+        "State": "oidcstate"
       },
       "response": "{}"
     },
@@ -3400,7 +3400,7 @@
         "X-Nomad-Token": "tok0"
       },
       "body": {
-        "Key": "k1"
+        "Key": "gossipkey1"
       },
       "response": "{}"
     },
@@ -3421,7 +3421,7 @@
         "X-Nomad-Token": "tok0"
       },
       "body": {
-        "Key": "k1"
+        "Key": "gossipkey1"
       },
       "response": "{}"
     },
@@ -3442,7 +3442,7 @@
         "X-Nomad-Token": "tok0"
       },
       "body": {
-        "Key": "k1"
+        "Key": "gossipkey1"
       },
       "response": "{}"
     },
@@ -5194,7 +5194,7 @@
             "ResourceExhausted": "0001-01-01T00:00:00Z",
             "Schedulable": false,
             "Secrets": {
-              "k": "v"
+              "k": "csisecretvalue"
             },
             "SnapshotID": "",
             "Topologies": null,
@@ -5309,7 +5309,7 @@
       },
       "headers": {
         "X-Custom": "1",
-        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Csi-Secrets": "k=csisecretvalue",
         "X-Nomad-Token": "tok1"
       },
       "body": null,
@@ -5351,7 +5351,7 @@
       },
       "headers": {
         "X-Custom": "1",
-        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Csi-Secrets": "k=csisecretvalue",
         "X-Nomad-Token": "tok0"
       },
       "body": {
@@ -5368,7 +5368,7 @@
             "Parameters": null,
             "PluginID": "plug",
             "Secrets": {
-              "k": "v"
+              "k": "csisecretvalue"
             },
             "SizeBytes": 0,
             "SourceVolumeID": "v1"
@@ -5400,7 +5400,7 @@
       },
       "headers": {
         "X-Custom": "1",
-        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Csi-Secrets": "k=csisecretvalue",
         "X-Nomad-Token": "tok1"
       },
       "body": null,
@@ -5499,7 +5499,7 @@
       },
       "headers": {
         "X-Custom": "1",
-        "X-Nomad-Csi-Secrets": "k=v",
+        "X-Nomad-Csi-Secrets": "k=csisecretvalue",
         "X-Nomad-Token": "tok1"
       },
       "body": null,

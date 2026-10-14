@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote, urlencode
 
 from .api import QueryOptions
 from .models import Model
@@ -309,40 +310,40 @@ class Allocations:
         return self.list(QueryOptions(prefix=prefix))
 
     def info(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[Allocation, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/allocation/{alloc_id}", q)
+        resp, qm = self._client.query(f"/v1/allocation/{quote(alloc_id, safe='')}", q)
         return Allocation.from_json(resp), qm
 
     def stats(self, alloc_id: str, q: QueryOptions | None = None) -> _tasks.AllocResourceUsage:
-        resp, _ = self._client.query(f"/v1/client/allocation/{alloc_id}/stats", q)
+        resp, _ = self._client.query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/stats", q)
         return _tasks.AllocResourceUsage.from_json(resp)
 
     def checks(self, alloc_id: str, q: QueryOptions | None = None) -> dict[str, _tasks.AllocCheckStatus]:
-        resp, _ = self._client.query(f"/v1/client/allocation/{alloc_id}/checks", q)
+        resp, _ = self._client.query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/checks", q)
         return {k: _tasks.AllocCheckStatus.from_json(v) for k, v in (resp or {}).items()}
 
     def gc(self, alloc_id: str, q: QueryOptions | None = None) -> None:
-        self._client.query(f"/v1/client/allocation/{alloc_id}/gc")
+        self._client.query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/gc")
 
     def restart(self, alloc_id: str, task_name: str = "", q: QueryOptions | None = None) -> None:
-        self._client.put_query(f"/v1/client/allocation/{alloc_id}/restart", {"TaskName": task_name, "AllTasks": False}, q)
+        self._client.put_query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/restart", {"TaskName": task_name, "AllTasks": False}, q)
 
     def restart_all_tasks(self, alloc_id: str, q: QueryOptions | None = None) -> None:
-        self._client.put_query(f"/v1/client/allocation/{alloc_id}/restart", {"TaskName": "", "AllTasks": True}, q)
+        self._client.put_query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/restart", {"TaskName": "", "AllTasks": True}, q)
 
     def stop(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[AllocStopResponse, QueryMeta]:
-        resp, qm = self._client.put_query(f"/v1/allocation/{alloc_id}/stop", None, q)
+        resp, qm = self._client.put_query(f"/v1/allocation/{quote(alloc_id, safe='')}/stop", None, q)
         return AllocStopResponse.from_json(resp), qm
 
     def signal(self, alloc_id: str, task: str, signal: str, q: QueryOptions | None = None) -> None:
-        self._client.put_query(f"/v1/client/allocation/{alloc_id}/signal", {"Task": task, "Signal": signal}, q)
+        self._client.put_query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/signal", {"Task": task, "Signal": signal}, q)
 
     def set_pause_state(self, alloc_id: str, task: str, state: str, q: QueryOptions | None = None) -> None:
-        self._client.put_query(f"/v1/client/allocation/{alloc_id}/pause", {"Task": task, "ScheduleState": state}, q)
+        self._client.put_query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/pause", {"Task": task, "ScheduleState": state}, q)
 
     def get_pause_state(self, alloc_id: str, task: str, q: QueryOptions | None = None) -> tuple[str, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/client/allocation/{alloc_id}/pause?task={task}", q)
+        resp, qm = self._client.query(f"/v1/client/allocation/{quote(alloc_id, safe='')}/pause?" + urlencode([("task", task)]), q)
         return resp.get("ScheduleState", ""), qm
 
     def services(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[list[ServiceRegistration], QueryMeta]:
-        resp, qm = self._client.query(f"/v1/allocation/{alloc_id}/services", q)
+        resp, qm = self._client.query(f"/v1/allocation/{quote(alloc_id, safe='')}/services", q)
         return [ServiceRegistration.from_json(s) for s in resp], qm

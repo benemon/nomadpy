@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 from urllib.parse import quote
@@ -46,10 +47,7 @@ class NodePools:
         return [NodePool.from_json(p) for p in resp], qm
 
     def prefix_list(self, prefix: str, q: QueryOptions | None = None) -> tuple[list[NodePool], QueryMeta]:
-        if q is None:
-            q = QueryOptions()
-        q.prefix = prefix
-        return self.list(q)
+        return self.list(dataclasses.replace(q or QueryOptions(), prefix=prefix))
 
     def info(self, name: str, q: QueryOptions | None = None) -> tuple[NodePool, QueryMeta]:
         if not name:

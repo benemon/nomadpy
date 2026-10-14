@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote
 
 from .api import QueryOptions
 from .models import Model
@@ -82,11 +83,11 @@ class Deployments:
         return self.list(QueryOptions(prefix=prefix))
 
     def info(self, deployment_id: str, q: QueryOptions | None = None) -> tuple[Deployment, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/deployment/{deployment_id}", q)
+        resp, qm = self._client.query(f"/v1/deployment/{quote(deployment_id, safe='')}", q)
         return Deployment.from_json(resp), qm
 
     def allocations(self, deployment_id: str, q: QueryOptions | None = None) -> tuple[list[_allocations.AllocationListStub], QueryMeta]:
-        resp, qm = self._client.query(f"/v1/deployment/allocations/{deployment_id}", q)
+        resp, qm = self._client.query(f"/v1/deployment/allocations/{quote(deployment_id, safe='')}", q)
         return _allocations.stubs(resp), qm
 
     def fail(self, deployment_id: str, w: WriteOptions | None = None) -> tuple[DeploymentUpdateResponse, WriteMeta]:
@@ -109,5 +110,5 @@ class Deployments:
         return self._update("allocation-health", deployment_id, req, w)
 
     def _update(self, action: str, deployment_id: str, req: dict[str, Any], w: WriteOptions | None) -> tuple[DeploymentUpdateResponse, WriteMeta]:
-        resp, wm = self._client.put(f"/v1/deployment/{action}/{deployment_id}", req, w)
+        resp, wm = self._client.put(f"/v1/deployment/{action}/{quote(deployment_id, safe='')}", req, w)
         return DeploymentUpdateResponse.from_json(resp), wm

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+from urllib.parse import quote
 
 from .models import Model
 
@@ -49,17 +50,17 @@ class SentinelPolicies:
     def upsert(self, policy: SentinelPolicy, w: WriteOptions | None = None) -> WriteMeta:
         if not policy.name:
             raise ValueError("missing policy name")
-        _, wm = self._client.put(f"/v1/sentinel/policy/{policy.name}", policy.to_json(), w)
+        _, wm = self._client.put("/v1/sentinel/policy/" + quote(policy.name, safe=""), policy.to_json(), w)
         return wm
 
     def delete(self, policy_name: str, w: WriteOptions | None = None) -> WriteMeta:
         if not policy_name:
             raise ValueError("missing policy name")
-        _, wm = self._client.delete(f"/v1/sentinel/policy/{policy_name}", None, w)
+        _, wm = self._client.delete("/v1/sentinel/policy/" + quote(policy_name, safe=""), None, w)
         return wm
 
     def info(self, policy_name: str, q: QueryOptions | None = None) -> tuple[SentinelPolicy, QueryMeta]:
         if not policy_name:
             raise ValueError("missing policy name")
-        resp, qm = self._client.query(f"/v1/sentinel/policy/{policy_name}", q)
+        resp, qm = self._client.query("/v1/sentinel/policy/" + quote(policy_name, safe=""), q)
         return SentinelPolicy.from_json(resp), qm

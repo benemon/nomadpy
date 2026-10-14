@@ -31,7 +31,7 @@ class QueryOptions:
     prefix: str = ""
     params: dict[str, str] = field(default_factory=dict)
     headers: dict[str, str] = field(default_factory=dict)
-    auth_token: str = ""
+    auth_token: str = field(default="", repr=False)
     filter: str = ""
     per_page: int = 0
     next_token: str = ""
@@ -44,7 +44,7 @@ class WriteOptions:
 
     region: str = ""
     namespace: str = ""
-    auth_token: str = ""
+    auth_token: str = field(default="", repr=False)
     headers: dict[str, str] = field(default_factory=dict)
     idempotency_token: str = ""
 
@@ -73,7 +73,7 @@ class HttpBasicAuth:
     """HttpBasicAuth is sent as the Authorization header on every request."""
 
     username: str
-    password: str = ""
+    password: str = field(default="", repr=False)
 
 
 @dataclass
@@ -94,7 +94,7 @@ class Config:
 
     address: str = ""
     region: str = ""
-    secret_id: str = ""
+    secret_id: str = field(default="", repr=False)
     namespace: str = ""
     http_auth: HttpBasicAuth | None = None
     wait_time: timedelta | None = None
@@ -188,9 +188,10 @@ class Client:
             config.address = default_config().address
         self.config = config
         self._url = urllib.parse.urlsplit(config.address)
-        if self._url.scheme not in ("http", "https"):
-            raise ValueError(f"invalid address '{config.address}': unsupported scheme")
         self._netloc = self._url.netloc.rpartition("@")[2]
+        if self._url.scheme not in ("http", "https"):
+            # Never echo the address as given: it may carry basic-auth userinfo.
+            raise ValueError(f"invalid address '{self._url.scheme}://{self._netloc}': unsupported scheme")
         handlers = []
         if self._url.scheme == "https":
             ctx = _ssl_context(config.tls_config)

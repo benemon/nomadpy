@@ -504,9 +504,9 @@ class Jobs:
     def tag_version(self, job_id: str, name: str, version: int = 0, description: str = "",
                     w: WriteOptions | None = None, *, latest: bool = False) -> WriteMeta:
         req = {"Version": version, "Latest": latest, "Description": description}
-        _, wm = self._client.put(_path(job_id) + f"/versions/{name}/tag", req, w)
+        _, wm = self._client.put(_path(job_id) + f"/versions/{quote(name, safe='')}/tag", req, w)
         return wm
 
     def untag_version(self, job_id: str, name: str, w: WriteOptions | None = None) -> WriteMeta:
-        _, wm = self._client.delete(_path(job_id) + f"/versions/{name}/tag", None, w)
+        _, wm = self._client.delete(_path(job_id) + f"/versions/{quote(name, safe='')}/tag", None, w)
         return wm

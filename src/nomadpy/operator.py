@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlencode
 
 from .jobs import JobListStub
 from .models import Model
@@ -120,16 +121,16 @@ class Operator:
         return RaftConfiguration.from_json(resp)
 
     def raft_remove_peer_by_address(self, address: str, w: WriteOptions | None = None) -> None:
-        self._client.delete(f"/v1/operator/raft/peer?address={address}", None, w)
+        self._client.delete("/v1/operator/raft/peer?" + urlencode([("address", address)]), None, w)
 
     def raft_remove_peer_by_id(self, id: str, w: WriteOptions | None = None) -> None:
-        self._client.delete(f"/v1/operator/raft/peer?id={id}", None, w)
+        self._client.delete("/v1/operator/raft/peer?" + urlencode([("id", id)]), None, w)
 
     def raft_transfer_leadership_by_address(self, address: str, w: WriteOptions | None = None) -> None:
-        self._client.put(f"/v1/operator/raft/transfer-leadership?address={address}", None, w)
+        self._client.put("/v1/operator/raft/transfer-leadership?" + urlencode([("address", address)]), None, w)
 
     def raft_transfer_leadership_by_id(self, id: str, w: WriteOptions | None = None) -> None:
-        self._client.put(f"/v1/operator/raft/transfer-leadership?id={id}", None, w)
+        self._client.put("/v1/operator/raft/transfer-leadership?" + urlencode([("id", id)]), None, w)
 
     def scheduler_get_configuration(self, q: QueryOptions | None = None) -> tuple[SchedulerConfigurationResponse, QueryMeta]:
         resp, qm = self._client.query("/v1/operator/scheduler/configuration", q)

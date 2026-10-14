@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -27,10 +28,8 @@ class NodeIdentity:
         self._client = client
 
     def get(self, node_id: str = "", q: QueryOptions | None = None) -> NodeIdentityGetResponse:
-        if q is None:
-            q = QueryOptions()
         if node_id:
-            q.params["node_id"] = node_id
+            q = dataclasses.replace(q or QueryOptions(), params={**(q.params if q else {}), "node_id": node_id})
         resp, _ = self._client.query("/v1/client/identity", q)
         return NodeIdentityGetResponse.from_json(resp)
 

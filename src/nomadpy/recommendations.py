@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote
 
 from .models import Model
 
@@ -67,7 +68,7 @@ class Recommendations:
         return [Recommendation.from_json(r) for r in resp], qm
 
     def info(self, id: str, q: QueryOptions | None = None) -> tuple[Recommendation, QueryMeta]:
-        resp, qm = self._client.query(f"/v1/recommendation/{id}", q)
+        resp, qm = self._client.query("/v1/recommendation/" + quote(id, safe=""), q)
         return Recommendation.from_json(resp), qm
 
     def upsert(self, rec: Recommendation, w: WriteOptions | None = None) -> tuple[Recommendation, WriteMeta]:

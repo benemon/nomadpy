@@ -183,3 +183,15 @@ def test_license_on_community(client):
 def test_license_on_enterprise(ent_client):
     resp, _ = ent_client.query("/v1/operator/license")
     assert resp["License"]["Product"] == "nomad"
+
+
+def test_options_repr_omits_credentials():
+    config = Config(address="http://127.0.0.1:1", secret_id="SECRET-ID", http_auth=HttpBasicAuth("user", "PASS-WORD"))
+    for text in (repr(config), str(config), repr(QueryOptions(auth_token="AUTH-TOKEN")), repr(WriteOptions(auth_token="AUTH-TOKEN"))):
+        assert "SECRET-ID" not in text and "PASS-WORD" not in text and "AUTH-TOKEN" not in text
+
+
+def test_unsupported_scheme_error_omits_userinfo():
+    with pytest.raises(ValueError) as e:
+        Client(Config(address="ftp://user:PASS-WORD@host:1"))
+    assert "PASS-WORD" not in str(e.value) and "user" not in str(e.value) and "ftp://host:1" in str(e.value)

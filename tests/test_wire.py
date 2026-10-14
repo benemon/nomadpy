@@ -68,6 +68,8 @@ SECOND = 1_000 * MILLISECOND
 MINUTE = 60 * SECOND
 HOUR = 60 * MINUTE
 GO_ZERO_TIME = "0001-01-01T00:00:00Z"
+# Every credential the op table sends; none may appear in a request line.
+CREDENTIALS = ("tok0", "tok1", "sec", "ott", "secret", "jwt", "02MV4UU43BK5", "csisecretvalue", "oidcstate", "oidccode", "gossipkey1")
 
 WIRE = json.loads((Path(__file__).resolve().parent.parent / "oracle/fixtures/wire.json").read_text())
 
@@ -161,7 +163,7 @@ OPS = {
     "acl_binding_rules.delete": lambda c: c.acl_binding_rules.delete("bid"),
     "acl_binding_rules.get": lambda c: c.acl_binding_rules.get("bid"),
     "acl_auth.get_auth_url": lambda c: c.acl_auth.get_auth_url("m", "http://127.0.0.1/cb", "n"),
-    "acl_auth.complete_auth": lambda c: c.acl_auth.complete_auth("m", "n", "s", "c", "i", "http://127.0.0.1/cb"),
+    "acl_auth.complete_auth": lambda c: c.acl_auth.complete_auth("m", "n", "oidcstate", "oidccode", "i", "http://127.0.0.1/cb"),
     "acl_auth.login": lambda c: c.acl_auth.login("m", "jwt"),
     "acl_identity.create_client_introduction_token": lambda c: c.acl_identity.create_client_introduction_token(5 * MINUTE, "n", "p", WRITE_OPTS),
 
@@ -231,9 +233,9 @@ OPS = {
     "agent.set_servers": lambda c: c.agent.set_servers(["10.0.0.1:4647", "10.0.0.2:4647"]),
     "agent.list_keys": lambda c: c.agent.list_keys(),
     "agent.reload": lambda c: c.agent.reload(WRITE_OPTS),
-    "agent.install_key": lambda c: c.agent.install_key("k1"),
-    "agent.use_key": lambda c: c.agent.use_key("k1"),
-    "agent.remove_key": lambda c: c.agent.remove_key("k1"),
+    "agent.install_key": lambda c: c.agent.install_key("gossipkey1"),
+    "agent.use_key": lambda c: c.agent.use_key("gossipkey1"),
+    "agent.remove_key": lambda c: c.agent.remove_key("gossipkey1"),
     "agent.health": lambda c: c.agent.health(),
     "agent.host": lambda c: c.agent.host("s1", "n1"),
     "agent.get_scheduler_worker_config": lambda c: c.agent.get_scheduler_worker_config(),
@@ -307,15 +309,15 @@ OPS = {
     "csi_volumes.info": lambda c: c.csi_volumes.info("v1"),
     "csi_volumes.register": lambda c: c.csi_volumes.register(CSIVolume(
         id="v1", name="vol", external_id="ext", plugin_id="plug",
-        requested_capabilities=[CSIVolumeCapability(access_mode="single-node-writer", attachment_mode="file-system")], secrets={"k": "v"}), WRITE_OPTS),
+        requested_capabilities=[CSIVolumeCapability(access_mode="single-node-writer", attachment_mode="file-system")], secrets={"k": "csisecretvalue"}), WRITE_OPTS),
     "csi_volumes.deregister": lambda c: c.csi_volumes.deregister("v 1", True, WRITE_OPTS),
     "csi_volumes.create": lambda c: c.csi_volumes.create(CSIVolume(id="v1", name="vol", plugin_id="plug", requested_capacity_min=1024)),
-    "csi_volumes.delete": lambda c: c.csi_volumes.delete("ext 1", WRITE_OPTS, secrets={"k": "v"}),
+    "csi_volumes.delete": lambda c: c.csi_volumes.delete("ext 1", WRITE_OPTS, secrets={"k": "csisecretvalue"}),
     "csi_volumes.detach": lambda c: c.csi_volumes.detach("v1", "n1"),
-    "csi_volumes.create_snapshot": lambda c: c.csi_volumes.create_snapshot(CSISnapshot(name="snap", plugin_id="plug", source_volume_id="v1", secrets={"k": "v"})),
-    "csi_volumes.delete_snapshot": lambda c: c.csi_volumes.delete_snapshot(CSISnapshot(id="s1", plugin_id="plug", secrets={"k": "v"}), WRITE_OPTS),
+    "csi_volumes.create_snapshot": lambda c: c.csi_volumes.create_snapshot(CSISnapshot(name="snap", plugin_id="plug", source_volume_id="v1", secrets={"k": "csisecretvalue"})),
+    "csi_volumes.delete_snapshot": lambda c: c.csi_volumes.delete_snapshot(CSISnapshot(id="s1", plugin_id="plug", secrets={"k": "csisecretvalue"}), WRITE_OPTS),
     "csi_volumes.list_snapshots": lambda c: c.csi_volumes.list_snapshots("plug", qopts()),
-    "csi_volumes.list_snapshots_opts": lambda c: c.csi_volumes.list_snapshots("plug", qopts(), secrets={"k": "v"}),
+    "csi_volumes.list_snapshots_opts": lambda c: c.csi_volumes.list_snapshots("plug", qopts(), secrets={"k": "csisecretvalue"}),
     "csi_plugins.list": lambda c: c.csi_plugins.list(),
     "csi_plugins.info": lambda c: c.csi_plugins.info("plug", qopts()),
     "host_volumes.create": lambda c: c.host_volumes.create(HostVolume(
@@ -414,7 +416,7 @@ def test_wire(recorder, expected):
     OPS[expected["op"]](client)
     got = recorder.last
     # Credentials travel in headers or bodies only; the recorder sees the full request line.
-    for secret in ("tok0", "tok1", "sec", "ott", "secret", "jwt", "02MV4UU43BK5"):
+    for secret in CREDENTIALS:
         assert secret not in got["path"], f"{secret!r} in path"
         assert secret not in urllib.parse.urlencode(got["query"], doseq=True), f"{secret!r} in query"
     assert got["method"] == expected["method"]

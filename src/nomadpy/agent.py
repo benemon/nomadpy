@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlencode
@@ -182,24 +183,26 @@ class Agent:
         return AgentHealthResponse.from_json(resp)
 
     def host(self, server_id: str = "", node_id: str = "", q: QueryOptions | None = None) -> HostDataResponse:
-        if q is None:
-            q = QueryOptions()
-        if server_id:
-            q.params["server_id"] = server_id
-        if node_id:
-            q.params["node_id"] = node_id
+        extra = {k: v for k, v in (("server_id", server_id), ("node_id", node_id)) if v}
+        if extra:
+            q = dataclasses.replace(q or QueryOptions(), params={**(q.params if q else {}), **extra})
         resp, _ = self._client.query("/v1/agent/host", q)
         return HostDataResponse.from_json(resp)
 
     def get_scheduler_worker_config(self, q: QueryOptions | None = None) -> SchedulerWorkerPoolArgs:
         resp, _ = self._client.query("/v1/agent/schedulers/config", q)
-        return SchedulerWorkerPoolArgs(resp.get("num_schedulers", 0), resp.get("enabled_schedulers"))
+        return _pool_args(resp)
 
     def set_scheduler_worker_config(self, args: SchedulerWorkerPoolArgs, w: WriteOptions | None = None) -> SchedulerWorkerPoolArgs:
         req = {"num_schedulers": args.num_schedulers, "enabled_schedulers": args.enabled_schedulers}
         resp, _ = self._client.put("/v1/agent/schedulers/config", req, w)
-        return SchedulerWorkerPoolArgs(resp.get("num_schedulers", 0), resp.get("enabled_schedulers"))
+        return _pool_args(resp)
 
     def get_scheduler_workers_info(self, q: QueryOptions | None = None) -> AgentSchedulerWorkersInfo:
         resp, _ = self._client.query("/v1/agent/schedulers", q)
         return AgentSchedulerWorkersInfo.from_json(resp)
+
+
+def _pool_args(resp: dict[str, Any]) -> SchedulerWorkerPoolArgs:
+    # The wire shape (AgentSchedulerWorkerConfigResponse) uses snake_case keys; the Go struct this mirrors does not.
+    return SchedulerWorkerPoolArgs(resp.get("num_schedulers", 0), resp.get("enabled_schedulers"))
