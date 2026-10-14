@@ -124,7 +124,7 @@ def test_methods(go_file):
             continue
         if receiver in LEDGER["receivers"] or receiver == "Client":
             continue
-        for python_name, member in inspect.getmembers(cls, callable):
+        for python_name, _member in inspect.getmembers(cls, callable):
             if python_name.startswith("_") or hasattr(Model, python_name):
                 continue
             if (receiver, python_name) not in expected_python and python_name not in ALL_PYTHON_NAMES[receiver]:
@@ -148,7 +148,7 @@ def find_class(module, receiver):
 def all_python_names():
     """Every Python method name any Go file maps onto, per receiver, so a receiver's methods can live in several Go files."""
     out = collections.defaultdict(set)
-    for go_file, file in SURFACE["files"].items():
+    for _go_file, file in SURFACE["files"].items():
         for m in file["methods"]:
             key = f'{m["receiver"]}.{m["name"]}'
             entry = LEDGER["methods"].get(key)

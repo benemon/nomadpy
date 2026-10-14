@@ -9,7 +9,7 @@ from .models import Model
 from .services import ServiceRegistration
 
 if TYPE_CHECKING:
-    from .api import Client, QueryMeta, WriteMeta
+    from .api import Client, QueryMeta
 
 @dataclass
 class AllocDeploymentStatus(Model):

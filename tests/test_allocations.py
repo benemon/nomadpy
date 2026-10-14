@@ -1,12 +1,11 @@
 import time
 
 import pytest
+from jobspecs import DEADLINE, WAIT, register_and_wait, wait_for_eval
 
 from nomadpy import QueryOptions, UnexpectedResponseError
 from nomadpy.allocations import ALLOC_CLIENT_STATUS_COMPLETE, ALLOC_CLIENT_STATUS_RUNNING, ALLOC_DESIRED_STATUS_STOP
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
-
-from jobspecs import DEADLINE, WAIT, register_and_wait, wait_for_eval
 
 
 def _wait_for_alloc(client, alloc_id, predicate):
@@ -55,7 +54,8 @@ def test_restart_signal_pause_stop(client):
         restarts = before.task_states["t"].restarts
         client.allocations.restart(stub.id, "t")
         # The restart count rises before the task is back up, so wait for it to be running again too.
-        running_again = lambda n: lambda a: a.task_states["t"].restarts >= n and a.task_states["t"].state == "running"
+        def running_again(n):
+            return lambda a: a.task_states["t"].restarts >= n and a.task_states["t"].state == "running"
         restarted = _wait_for_alloc(client, stub.id, running_again(restarts + 1))
         assert restarted.task_states["t"].started_at != before.task_states["t"].started_at
         client.allocations.restart_all_tasks(stub.id)

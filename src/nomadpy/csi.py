@@ -8,6 +8,9 @@ from urllib.parse import quote, urlencode
 from .api import QueryOptions
 from .models import Model
 
+if TYPE_CHECKING:
+    from .api import Client, QueryMeta, WriteMeta, WriteOptions
+
 
 # generated from surface.json: file=csi.go
 from . import allocations as _allocations  # noqa: E402

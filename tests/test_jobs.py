@@ -1,10 +1,9 @@
 import pytest
+from jobspecs import batch_job, register_and_wait, service_job, wait_for_deployment, wait_for_eval
 
 from nomadpy import QueryOptions, UnexpectedResponseError, WriteOptions
 from nomadpy.deployments import DEPLOYMENT_STATUS_SUCCESSFUL
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
-
-from jobspecs import batch_job, register_and_wait, service_job, wait_for_eval, wait_for_deployment
 
 
 def test_parse_hcl(client):

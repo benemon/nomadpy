@@ -1,11 +1,10 @@
 import time
 
 import pytest
+from jobspecs import DEADLINE, register_and_wait
 
 from nomadpy import QueryOptions, UnexpectedResponseError
 from nomadpy.event_stream import TOPIC_ALL, TOPIC_JOB, TOPIC_NODE
-
-from jobspecs import DEADLINE, WAIT, register_and_wait
 
 
 def test_event_stream_replays_buffered_events(client):

@@ -6,6 +6,9 @@ from urllib.parse import quote, urlencode
 
 from .models import Model
 
+if TYPE_CHECKING:
+    from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
+
 # generated from surface.json: file=host_volumes.go
 from . import allocations as _allocations  # noqa: E402
 from . import constraint as _constraint  # noqa: E402

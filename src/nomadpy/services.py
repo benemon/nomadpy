@@ -54,10 +54,6 @@ class Services:
 
 # The specification models below reference tasks and consul, which import jobs, which imports this module;
 # importing them here, after ServiceRegistration exists, keeps that cycle importable in any order.
-from . import consul as _consul  # noqa: E402
-from . import tasks as _tasks  # noqa: E402
-
-
 # generated from surface.json: file=services.go only=Service,ServiceCheck,CheckRestart,ServiceWeights
 from . import consul as _consul  # noqa: E402
 from . import tasks as _tasks  # noqa: E402

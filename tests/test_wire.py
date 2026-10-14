@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pytest
 
-from nomadpy.models import GO_ZERO_TIME
 from nomadpy import (
     ACLAuthMethod,
     ACLAuthMethodConfig,
@@ -29,10 +28,10 @@ from nomadpy import (
     ACLTokenRoleLink,
     AutopilotConfiguration,
     Client,
+    Config,
     CSISnapshot,
     CSIVolume,
     CSIVolumeCapability,
-    Config,
     DrainSpec,
     HostVolume,
     HostVolumeCapability,
@@ -63,6 +62,7 @@ from nomadpy import (
     VariableLock,
     WriteOptions,
 )
+from nomadpy.models import GO_ZERO_TIME
 
 MILLISECOND = 1_000_000
 SECOND = 1_000 * MILLISECOND

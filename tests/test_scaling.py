@@ -1,10 +1,9 @@
 import pytest
+from jobspecs import register_and_wait, wait_for_deployment, wait_for_eval
 
 from nomadpy import Recommendation, ScalingPolicy, ScalingRequest, UnexpectedResponseError
 from nomadpy.evaluations import EVAL_STATUS_COMPLETE
 from nomadpy.scaling import SCALING_POLICY_TYPE_HORIZONTAL
-
-from jobspecs import register_and_wait, wait_for_deployment, wait_for_eval
 
 ENT_ONLY = "Nomad Enterprise only endpoint"
 

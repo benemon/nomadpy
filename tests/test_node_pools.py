@@ -1,9 +1,8 @@
 import pytest
+from jobspecs import register_and_wait
 
 from nomadpy import NodePool, NodePoolSchedulerConfiguration, UnexpectedResponseError
 from nomadpy.node_pools import NODE_POOL_ALL, NODE_POOL_DEFAULT
-
-from jobspecs import register_and_wait
 
 HOUR = 3_600_000_000_000
 
