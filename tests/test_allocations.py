@@ -54,10 +54,12 @@ def test_restart_signal_pause_stop(client):
         before, _ = client.allocations.info(stub.id)
         restarts = before.task_states["t"].restarts
         client.allocations.restart(stub.id, "t")
-        restarted = _wait_for_alloc(client, stub.id, lambda a: a.task_states["t"].restarts >= restarts + 1)
+        # The restart count rises before the task is back up, so wait for it to be running again too.
+        running_again = lambda n: lambda a: a.task_states["t"].restarts >= n and a.task_states["t"].state == "running"
+        restarted = _wait_for_alloc(client, stub.id, running_again(restarts + 1))
         assert restarted.task_states["t"].started_at != before.task_states["t"].started_at
         client.allocations.restart_all_tasks(stub.id)
-        _wait_for_alloc(client, stub.id, lambda a: a.task_states["t"].restarts >= restarts + 2)
+        _wait_for_alloc(client, stub.id, running_again(restarts + 2))
 
         client.allocations.signal(stub.id, "t", "SIGUSR1")
         _wait_for_alloc(client, stub.id, lambda a: any(e.type == "Signaling" for e in a.task_states["t"].events))
