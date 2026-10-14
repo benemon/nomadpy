@@ -71,3 +71,15 @@ make bump     # move the pin to upstream main, then regenerate the fixtures
 
 After a bump, the failing drift tests are the list of what the port must
 catch up on.
+
+## Releases
+
+A release is a tag `v<version>` matching `project.version` in
+`pyproject.toml`. The release workflow refuses a tag that does not match,
+requires a green test run for the tagged commit, builds the sdist and wheel,
+publishes them to PyPI through trusted publishing from the `pypi`
+environment, and creates the GitHub release with generated notes.
+
+Prerequisites, once: a PyPI project `nomadpy` with this repository's
+`release.yml` registered as a trusted publisher for the `pypi` environment,
+and that environment created in the repository settings.
