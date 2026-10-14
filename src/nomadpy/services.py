@@ -9,12 +9,6 @@ from .models import Model
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, QueryOptions, WriteMeta, WriteOptions
 
-ON_UPDATE_REQUIRE_HEALTHY = "require_healthy"
-ON_UPDATE_IGNORE_WARN = "ignore_warnings"
-ON_UPDATE_IGNORE = "ignore"
-SERVICE_PROVIDER_CONSUL = "consul"
-
-
 @dataclass
 class ServiceRegistration(Model):
     id: str = field(default="", metadata={"json": "ID"})
@@ -30,18 +24,15 @@ class ServiceRegistration(Model):
     create_index: int = 0
     modify_index: int = 0
 
-
 @dataclass
 class ServiceRegistrationStub(Model):
     service_name: str = ""
     tags: list[str] | None = None
 
-
 @dataclass
 class ServiceRegistrationListStub(Model):
     namespace: str = ""
     services: list[ServiceRegistrationStub] | None = None
-
 
 class Services:
     """Services queries the Nomad-native service registration endpoints."""
@@ -60,7 +51,6 @@ class Services:
     def delete(self, service_name: str, service_id: str, w: WriteOptions | None = None) -> WriteMeta:
         _, wm = self._client.delete(f"/v1/service/{quote(service_name, safe='')}/{quote(service_id, safe='')}", None, w)
         return wm
-
 
 # The specification models below reference tasks and consul, which import jobs, which imports this module;
 # importing them here, after ServiceRegistration exists, keeps that cycle importable in any order.

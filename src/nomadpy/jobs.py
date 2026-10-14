@@ -16,18 +16,6 @@ if TYPE_CHECKING:
     from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
 
-JOB_TYPE_SERVICE = "service"
-JOB_TYPE_BATCH = "batch"
-JOB_TYPE_SYSTEM = "system"
-JOB_TYPE_SYSBATCH = "sysbatch"
-JOB_DEFAULT_PRIORITY = 50
-PERIODIC_SPEC_CRON = "cron"
-DEFAULT_NAMESPACE = "default"
-GLOBAL_REGION = "global"
-JOB_PERIODIC_LAUNCH_SUFFIX = "/periodic-"
-JOB_DISPATCH_LAUNCH_SUFFIX = "/dispatch-"
-
-
 # generated from surface.json: file=jobs.go only=Job,UpdateStrategy,Multiregion,MultiregionStrategy,MultiregionRegion,PeriodicConfig,ParameterizedJobConfig,JobSubmission,JobUIConfig,JobUILink,JobVersionTag,JobDiff,TaskGroupDiff,TaskDiff,FieldDiff,ObjectDiff,PlanAnnotations,DesiredUpdates
 from . import allocations as _allocations  # noqa: E402
 from . import constraint as _constraint  # noqa: E402

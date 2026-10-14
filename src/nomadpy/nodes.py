@@ -15,25 +15,6 @@ from .node_meta import NodeMeta
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, WriteMeta, WriteOptions
 
-NODE_STATUS_INIT = "initializing"
-NODE_STATUS_READY = "ready"
-NODE_STATUS_DOWN = "down"
-NODE_STATUS_DISCONNECTED = "disconnected"
-NODE_SCHEDULING_ELIGIBLE = "eligible"
-NODE_SCHEDULING_INELIGIBLE = "ineligible"
-DRAIN_STATUS_DRAINING = "draining"
-DRAIN_STATUS_COMPLETE = "complete"
-DRAIN_STATUS_CANCELED = "canceled"
-NODE_EVENT_SUBSYSTEM_DRAIN = "Drain"
-NODE_EVENT_SUBSYSTEM_DRIVER = "Driver"
-NODE_EVENT_SUBSYSTEM_HEARTBEAT = "Heartbeat"
-NODE_EVENT_SUBSYSTEM_CLUSTER = "Cluster"
-MONITOR_MSG_LEVEL_NORMAL = 0
-MONITOR_MSG_LEVEL_INFO = 1
-MONITOR_MSG_LEVEL_WARN = 2
-MONITOR_MSG_LEVEL_ERROR = 3
-
-
 @dataclass
 class DriverInfo(Model):
     attributes: dict[str, str] | None = None
@@ -41,7 +22,6 @@ class DriverInfo(Model):
     healthy: bool = False
     health_description: str = ""
     update_time: str = field(default="", metadata={"time": True})
-
 
 @dataclass
 class DrainMetadata(Model):
@@ -51,23 +31,19 @@ class DrainMetadata(Model):
     accessor_id: str = field(default="", metadata={"json": "AccessorID"})
     meta: dict[str, str] | None = None
 
-
 @dataclass
 class NodeCpuResources(Model):
     cpu_shares: int = 0
     total_cpu_cores: int = 0
     reservable_cpu_cores: list[int] | None = None
 
-
 @dataclass
 class NodeMemoryResources(Model):
     memory_mb: int = field(default=0, metadata={"json": "MemoryMB"})
 
-
 @dataclass
 class NodeDiskResources(Model):
     disk_mb: int = field(default=0, metadata={"json": "DiskMB"})
-
 
 @dataclass
 class NodeResources(Model):
@@ -79,26 +55,21 @@ class NodeResources(Model):
     min_dynamic_port: int = 0
     max_dynamic_port: int = 0
 
-
 @dataclass
 class NodeReservedCpuResources(Model):
     cpu_shares: int = 0
-
 
 @dataclass
 class NodeReservedMemoryResources(Model):
     memory_mb: int = field(default=0, metadata={"json": "MemoryMB"})
 
-
 @dataclass
 class NodeReservedDiskResources(Model):
     disk_mb: int = field(default=0, metadata={"json": "DiskMB"})
 
-
 @dataclass
 class NodeReservedNetworkResources(Model):
     reserved_host_ports: str = ""
-
 
 @dataclass
 class NodeReservedResources(Model):
@@ -106,7 +77,6 @@ class NodeReservedResources(Model):
     memory: NodeReservedMemoryResources = field(default_factory=NodeReservedMemoryResources)
     disk: NodeReservedDiskResources = field(default_factory=NodeReservedDiskResources)
     networks: NodeReservedNetworkResources = field(default_factory=NodeReservedNetworkResources)
-
 
 @dataclass
 class NodeListStub(Model):

@@ -11,25 +11,12 @@ from .services import ServiceRegistration
 if TYPE_CHECKING:
     from .api import Client, QueryMeta, WriteMeta
 
-ALLOC_DESIRED_STATUS_RUN = "run"
-ALLOC_DESIRED_STATUS_STOP = "stop"
-ALLOC_DESIRED_STATUS_EVICT = "evict"
-ALLOC_CLIENT_STATUS_PENDING = "pending"
-ALLOC_CLIENT_STATUS_RUNNING = "running"
-ALLOC_CLIENT_STATUS_COMPLETE = "complete"
-ALLOC_CLIENT_STATUS_FAILED = "failed"
-ALLOC_CLIENT_STATUS_LOST = "lost"
-ALLOC_CLIENT_STATUS_UNKNOWN = "unknown"
-ALLOC_RESTART_REASON_WITHIN_POLICY = "Restart within policy"
-
-
 @dataclass
 class AllocDeploymentStatus(Model):
     healthy: bool | None = None
     timestamp: str = field(default="", metadata={"time": True})
     canary: bool = False
     modify_index: int = 0
-
 
 @dataclass
 class PortMapping(Model):
@@ -38,18 +25,15 @@ class PortMapping(Model):
     to: int = 0
     host_ip: str = field(default="", metadata={"json": "HostIP"})
 
-
 @dataclass
 class AllocatedCpuResources(Model):
     cpu_shares: int = 0
     reserved_cores: list[int] | None = None
 
-
 @dataclass
 class AllocatedMemoryResources(Model):
     memory_mb: int = field(default=0, metadata={"json": "MemoryMB"})
     memory_max_mb: int = field(default=0, metadata={"json": "MemoryMaxMB"})
-
 
 @dataclass
 class AllocatedDeviceResource(Model):
@@ -58,7 +42,6 @@ class AllocatedDeviceResource(Model):
     name: str = ""
     device_ids: list[str] | None = field(default=None, metadata={"json": "DeviceIDs"})
 
-
 @dataclass
 class AllocatedTaskResources(Model):
     cpu: AllocatedCpuResources = field(default_factory=AllocatedCpuResources)
@@ -66,19 +49,16 @@ class AllocatedTaskResources(Model):
     networks: list[dict[str, Any]] | None = None
     devices: list[AllocatedDeviceResource] | None = None
 
-
 @dataclass
 class AllocatedSharedResources(Model):
     disk_mb: int = field(default=0, metadata={"json": "DiskMB"})
     networks: list[dict[str, Any]] | None = None
     ports: list[PortMapping] | None = None
 
-
 @dataclass
 class AllocatedResources(Model):
     tasks: dict[str, AllocatedTaskResources] | None = None
     shared: AllocatedSharedResources = field(default_factory=AllocatedSharedResources)
-
 
 @dataclass
 class RescheduleEvent(Model):
@@ -86,12 +66,10 @@ class RescheduleEvent(Model):
     prev_alloc_id: str = field(default="", metadata={"json": "PrevAllocID"})
     prev_node_id: str = field(default="", metadata={"json": "PrevNodeID"})
 
-
 @dataclass
 class RescheduleTracker(Model):
     events: list[RescheduleEvent] | None = None
     last_reschedule: str = ""
-
 
 @dataclass
 class AllocationListStub(Model):
@@ -122,11 +100,9 @@ class AllocationListStub(Model):
     create_time: int = 0
     modify_time: int = 0
 
-
 @dataclass
 class AllocStopResponse(Model):
     eval_id: str = field(default="", metadata={"json": "EvalID"})
-
 
 class DesiredTransitionMethods:
     def should_migrate(self) -> bool:
@@ -143,7 +119,6 @@ class DesiredTransitionMethods:
 
     def should_disable_migration_placement(self) -> bool:
         return bool(self.migrate_disable_placement)
-
 
 class AllocationMethods:
     def stub(self) -> AllocationListStub:
