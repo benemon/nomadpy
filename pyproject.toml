@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Python client for the HashiCorp Nomad HTTP API"
 readme = "README.md"
 license = "MPL-2.0"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = []
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -21,6 +21,7 @@ Homepage = "https://github.com/benemon/nomadpy"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-xdist>=3", "ruff>=0.14"]
+exec = ["websockets>=17"]
 docs = ["mkdocs-material>=9", "mkdocstrings[python]>=1", "mkdocs-literate-nav>=0.6"]
 
 [tool.setuptools.packages.find]
@@ -30,7 +31,7 @@ where = ["src"]
 testpaths = ["tests"]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 160
 
 [tool.ruff.lint]

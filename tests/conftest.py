@@ -204,6 +204,9 @@ class Recorder:
         recorder = self
 
         class Handler(BaseHTTPRequestHandler):
+            # A WebSocket client rejects an HTTP/1.0 status line; the recorder answers every request as the server would.
+            protocol_version = "HTTP/1.1"
+
             def do_GET(self):
                 self._record()
 

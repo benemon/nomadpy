@@ -58,6 +58,7 @@ from nomadpy import (
     SchedulerConfiguration,
     SchedulerWorkerPoolArgs,
     SentinelPolicy,
+    UnexpectedResponseError,
     Variable,
     VariableLock,
     WriteOptions,
@@ -338,6 +339,8 @@ OPS = {
     "alloc_fs.cat": lambda c: c.alloc_fs.cat("a1", "alloc/logs/t.stdout.0"),
     "alloc_fs.stream": lambda c: list(c.alloc_fs.stream("a1", "alloc/logs/t.stdout.0", "start", 5)),
     "alloc_fs.logs": lambda c: list(c.alloc_fs.logs("a1", True, "t", "stderr", "end", 0)),
+    "allocations.exec": lambda c: upgrade_refused(lambda: c.allocations.exec("a1", "t", ["sh", "-c", "echo hi"], tty=True, q=qopts())),
+    "jobs.action_exec": lambda c: upgrade_refused(lambda: c.jobs.action_exec("a1", "g", "j1", "t", ["sh"], "restart", q=qopts())),
 
     "namespaces.list": lambda c: c.namespaces.list(),
     "namespaces.prefix_list": lambda c: c.namespaces.prefix_list("pre", qopts()),
@@ -369,6 +372,13 @@ OPS = {
     "deployments.unblock": lambda c: c.deployments.unblock("d1"),
     "deployments.set_alloc_health": lambda c: c.deployments.set_alloc_health("d1", ["a1"], ["a2"], WRITE_OPTS),
 }
+
+def upgrade_refused(call):
+    """The recorder answers an upgrade with a plain 200, which the exec session reports as that status after the request was captured."""
+    with pytest.raises(UnexpectedResponseError) as e:
+        call()
+    assert e.value.status_code == 200
+
 
 # The recorder answers what Go's did, except where the Python method flattens a response field.
 RESPONSES = {

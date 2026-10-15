@@ -16,6 +16,10 @@ print(client.status.leader())
 The variables and their meaning are documented with the Nomad CLI:
 https://developer.hashicorp.com/nomad/commands#environment-variables
 
+The package has no dependencies. Allocation exec runs over a WebSocket and
+needs the `exec` extra, `pip install 'nomadpy[exec]'`, which installs the
+`websockets` package.
+
 ## Tests
 
 Integration tests start dev agents from binaries named explicitly. There
@@ -27,7 +31,7 @@ are no defaults: a lane whose variables are unset is skipped.
 | `NOMADPY_TEST_ENT_BIN` and `NOMAD_LICENSE_PATH` | Enterprise binary and its licence |
 
 ```
-pip install -e '.[dev]'
+pip install -e '.[dev,exec]'
 NOMADPY_TEST_CE_BIN=$(which nomad) pytest
 ```
 

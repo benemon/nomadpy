@@ -4,10 +4,12 @@ Python client for the HashiCorp Nomad HTTP API, Community and Enterprise.
 It is a port of the Go `api` package from `github.com/hashicorp/nomad`:
 one Python module per Go file, the same resource names, the same method
 set, with method and argument names in snake_case. It targets Nomad 2.0.x,
-needs Python 3.10 or later and uses only the standard library.
+needs Python 3.11 or later and uses only the standard library, except for
+allocation exec, which runs over a WebSocket and needs the `exec` extra.
 
 ```
 pip install nomadpy
+pip install 'nomadpy[exec]'   # with allocation exec
 ```
 
 ```python

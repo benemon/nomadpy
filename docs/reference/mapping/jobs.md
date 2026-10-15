@@ -4,6 +4,7 @@
 
 | Python | Go | HTTP | API docs |
 |---|---|---|---|
+| [action_exec][nomadpy.jobs.Jobs.action_exec] | ActionExec | `GET /v1/job/j1/action` | [jobs](https://developer.hashicorp.com/nomad/api-docs/jobs) |
 | [allocations][nomadpy.jobs.Jobs.allocations] | Allocations | `GET /v1/job/j1/allocations` | [jobs](https://developer.hashicorp.com/nomad/api-docs/jobs) |
 | [deployments][nomadpy.jobs.Jobs.deployments] | Deployments | `GET /v1/job/j1/deployments` | [jobs](https://developer.hashicorp.com/nomad/api-docs/jobs) |
 | [deregister][nomadpy.jobs.Jobs.deregister] | Deregister, DeregisterOpts | `DELETE /v1/job/j1` | [jobs](https://developer.hashicorp.com/nomad/api-docs/jobs) |

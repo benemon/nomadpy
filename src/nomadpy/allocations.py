@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, BinaryIO
 from urllib.parse import quote, urlencode
 
 from .api import QueryOptions
@@ -162,7 +163,7 @@ class AllocationMethods:
         return self.client_status in (ALLOC_CLIENT_STATUS_COMPLETE, ALLOC_CLIENT_STATUS_FAILED, ALLOC_CLIENT_STATUS_LOST)
 
 
-# generated from surface.json: file=allocations.go only=Allocation,AllocationMetric,NodeScoreMeta,AllocNetworkStatus,DesiredTransition mixins=Allocation:AllocationMethods,DesiredTransition:DesiredTransitionMethods
+# generated from surface.json: file=allocations.go only=Allocation,AllocationMetric,NodeScoreMeta,AllocNetworkStatus,DesiredTransition,ExecStreamingIOOperation,TerminalSize,ExecStreamingInput,ExecStreamingExitResult,ExecStreamingOutput mixins=Allocation:AllocationMethods,DesiredTransition:DesiredTransitionMethods
 from . import jobs as _jobs  # noqa: E402
 from . import resources as _resources  # noqa: E402
 from . import tasks as _tasks  # noqa: E402
@@ -217,10 +218,41 @@ class DesiredTransition(DesiredTransitionMethods, Model):
 
 
 @dataclass
+class ExecStreamingExitResult(Model):
+    exit_code: int = field(default=0, metadata={'json': 'exit_code'})
+
+
+@dataclass
+class ExecStreamingIOOperation(Model):
+    data: str | None = field(default=None, metadata={'json': 'data', 'omitempty': True})
+    close: bool = field(default=False, metadata={'json': 'close', 'omitempty': True})
+
+
+@dataclass
+class ExecStreamingInput(Model):
+    stdin: ExecStreamingIOOperation | None = field(default=None, metadata={'json': 'stdin', 'omitempty': True})
+    tty_size: TerminalSize | None = field(default=None, metadata={'json': 'tty_size', 'omitempty': True})
+
+
+@dataclass
+class ExecStreamingOutput(Model):
+    stdout: ExecStreamingIOOperation | None = field(default=None, metadata={'json': 'stdout', 'omitempty': True})
+    stderr: ExecStreamingIOOperation | None = field(default=None, metadata={'json': 'stderr', 'omitempty': True})
+    exited: bool = field(default=False, metadata={'json': 'exited', 'omitempty': True})
+    result: ExecStreamingExitResult | None = field(default=None, metadata={'json': 'result', 'omitempty': True})
+
+
+@dataclass
 class NodeScoreMeta(Model):
     node_id: str = field(default="", metadata={'json': 'NodeID'})
     scores: dict[str, float] | None = None
     norm_score: float = 0.0
+
+
+@dataclass
+class TerminalSize(Model):
+    height: int = field(default=0, metadata={'json': 'height', 'omitempty': True})
+    width: int = field(default=0, metadata={'json': 'width', 'omitempty': True})
 
 
 @dataclass
@@ -322,3 +354,19 @@ class Allocations:
     def services(self, alloc_id: str, q: QueryOptions | None = None) -> tuple[list[ServiceRegistration], QueryMeta]:
         resp, qm = self._client.query(f"/v1/allocation/{quote(alloc_id, safe='')}/services", q)
         return [ServiceRegistration.from_json(s) for s in resp], qm
+
+    def exec(self, alloc_id: str, task: str, command: list[str], *, tty: bool = False, stdin: BinaryIO | None = None,
+             stdout: BinaryIO | None = None, stderr: BinaryIO | None = None, resize: Iterable[TerminalSize] | None = None,
+             q: QueryOptions | None = None, timeout: float | None = None) -> int:
+        """exec runs command in the task over the exec WebSocket and returns its exit code; needs the `exec` extra.
+
+        stdin, stdout and stderr are binary file objects; stdin is sent until
+        EOF, and without one the command sees EOF at once. With tty, sizes
+        taken from `resize` are sent as the terminal size, and EOF on stdin
+        hangs the terminal up, so stdin must stay open until the command
+        exits. `timeout` bounds the handshake and each wait for output.
+        """
+        from .allocations_exec import exec_params, run
+
+        endpoint = f"/v1/client/allocation/{quote(alloc_id, safe='')}/exec?" + urlencode(exec_params(task, tty, command))
+        return run(self._client, endpoint, q, stdin, stdout, stderr, resize, timeout)
