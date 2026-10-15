@@ -51,9 +51,10 @@ func wire() (any, error) {
 	var captured []Request
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
-		// The Go filesystem methods first look the allocation's node up to connect to it directly; the
+		// The Go filesystem and exec methods first look the allocation's node up to connect to it directly; the
 		// Python client always goes through the server, so that lookup is not part of the call.
-		if strings.HasPrefix(current.name, "alloc_fs.") && strings.HasPrefix(r.URL.Path, "/v1/node/") {
+		direct := strings.HasPrefix(current.name, "alloc_fs.") || current.name == "allocations.exec" || current.name == "jobs.action_exec"
+		if direct && strings.HasPrefix(r.URL.Path, "/v1/node/") {
 			w.WriteHeader(http.StatusOK)
 			io.WriteString(w, `{}`)
 			return
@@ -625,6 +626,18 @@ var ops = []op{
 			}
 		default:
 		}
+		return nil
+	}},
+	// The recorder answers the upgrade with a plain 200, so the dial fails after the request it captures; the
+	// error is the handshake's and is not a fault of the call.
+	{"allocations.exec", ``, func(c *api.Client) error {
+		_, _ = c.Allocations().Exec(context.Background(), &api.Allocation{ID: "a1", NodeID: "n1"}, "t", true, []string{"sh", "-c", "echo hi"},
+			strings.NewReader(""), io.Discard, io.Discard, nil, queryOpts())
+		return nil
+	}},
+	{"jobs.action_exec", ``, func(c *api.Client) error {
+		_, _ = c.Jobs().ActionExec(context.Background(), &api.Allocation{ID: "a1", NodeID: "n1", TaskGroup: "g"}, "j1", "t", false, []string{"sh"}, "restart",
+			strings.NewReader(""), io.Discard, io.Discard, nil, queryOpts())
 		return nil
 	}},
 	{"alloc_fs.logs", `{}`, func(c *api.Client) error {

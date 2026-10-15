@@ -194,12 +194,13 @@ class Client:
             # Never echo the address as given: it may carry basic-auth userinfo.
             raise ValueError(f"invalid address '{self._url.scheme}://{self._netloc}': unsupported scheme")
         handlers = []
+        self._ssl_context = None
         if self._url.scheme == "https":
-            ctx = _ssl_context(config.tls_config)
+            self._ssl_context = _ssl_context(config.tls_config)
             if config.tls_config.tls_server_name:
-                handlers.append(_ServerNameHTTPSHandler(ctx, config.tls_config.tls_server_name))
+                handlers.append(_ServerNameHTTPSHandler(self._ssl_context, config.tls_config.tls_server_name))
             else:
-                handlers.append(urllib.request.HTTPSHandler(context=ctx))
+                handlers.append(urllib.request.HTTPSHandler(context=self._ssl_context))
         self._opener = urllib.request.build_opener(*handlers)
 
         self.acl_auth = ACLAuth(self)
@@ -307,6 +308,16 @@ class Client:
         finally:
             resp.close()
 
+    def websocket_target(self, endpoint: str, q: QueryOptions | None = None) -> tuple[str, dict[str, str], ssl.SSLContext | None, str]:
+        """websocket_target returns the ws or wss URL of `endpoint` with the query options applied, the request headers, the TLS context and the server name to verify."""
+        params, headers, token = self._base_request(endpoint)
+        token = self._apply_query_options(q, params, headers, token)
+        self._authorize(headers, token)
+        scheme = "wss" if self._url.scheme == "https" else "ws"
+        path = urllib.parse.urlsplit(endpoint).path
+        url = urllib.parse.urlunsplit((scheme, self._netloc, path, urllib.parse.urlencode(params, doseq=True), ""))
+        return url, headers, self._ssl_context, self.config.tls_config.tls_server_name
+
     def _query(self, method: str, endpoint: str, body: Any, q: QueryOptions | None,
                expected: tuple[int, ...] = (200,), decode: bool = True) -> tuple[int, Any, QueryMeta]:
         params, headers, token = self._base_request(endpoint)
@@ -394,16 +405,7 @@ class Client:
               expected: tuple[int, ...], timeout: float | None = None):
         path = urllib.parse.urlsplit(endpoint).path
         url = urllib.parse.urlunsplit((self._url.scheme, self._netloc, path, urllib.parse.urlencode(params, doseq=True), ""))
-        if self._url.username is not None:
-            auth = f"{self._url.username}:{self._url.password or ''}"
-        elif self.config.http_auth is not None:
-            auth = f"{self.config.http_auth.username}:{self.config.http_auth.password}"
-        else:
-            auth = ""
-        if auth:
-            headers["Authorization"] = "Basic " + base64.b64encode(auth.encode()).decode()
-        if token:
-            headers["X-Nomad-Token"] = token
+        self._authorize(headers, token)
         data = body if body is None or isinstance(body, bytes) else json.dumps(body).encode()
         req = urllib.request.Request(url, data=data, headers=headers, method=method)
         try:
@@ -415,6 +417,18 @@ class Client:
                 raw = resp.read()
             raise UnexpectedResponseError(resp.status, resp.reason, raw.decode(errors="replace").strip(), expected)
         return resp
+
+    def _authorize(self, headers: dict[str, str], token: str) -> None:
+        if self._url.username is not None:
+            auth = f"{self._url.username}:{self._url.password or ''}"
+        elif self.config.http_auth is not None:
+            auth = f"{self.config.http_auth.username}:{self.config.http_auth.password}"
+        else:
+            auth = ""
+        if auth:
+            headers["Authorization"] = "Basic " + base64.b64encode(auth.encode()).decode()
+        if token:
+            headers["X-Nomad-Token"] = token
 
 
 def _decode(raw: bytes) -> Any:

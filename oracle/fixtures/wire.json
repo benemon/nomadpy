@@ -6061,6 +6061,125 @@
       "response": "{}"
     },
     {
+      "op": "allocations.exec",
+      "method": "GET",
+      "path": "/v1/client/allocation/a1/exec",
+      "query": {
+        "command": [
+          "[\"sh\",\"-c\",\"echo hi\"]"
+        ],
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "task": [
+          "t"
+        ],
+        "tty": [
+          "true"
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": ""
+    },
+    {
+      "op": "jobs.action_exec",
+      "method": "GET",
+      "path": "/v1/job/j1/action",
+      "query": {
+        "action": [
+          "restart"
+        ],
+        "allocID": [
+          "a1"
+        ],
+        "command": [
+          "[\"sh\"]"
+        ],
+        "filter": [
+          "f == 1"
+        ],
+        "group": [
+          "g"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "task": [
+          "t"
+        ],
+        "tty": [
+          "false"
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": ""
+    },
+    {
       "op": "alloc_fs.logs",
       "method": "GET",
       "path": "/v1/client/fs/logs/a1",

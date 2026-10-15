@@ -5,6 +5,7 @@
 | Python | Go | HTTP | API docs |
 |---|---|---|---|
 | [checks][nomadpy.allocations.Allocations.checks] | Checks | `GET /v1/client/allocation/a1/checks` | [allocations](https://developer.hashicorp.com/nomad/api-docs/allocations) |
+| [exec][nomadpy.allocations.Allocations.exec] | Exec | `GET /v1/client/allocation/a1/exec` | [allocations](https://developer.hashicorp.com/nomad/api-docs/allocations) |
 | [gc][nomadpy.allocations.Allocations.gc] | GC | `GET /v1/client/allocation/a1/gc` | [client](https://developer.hashicorp.com/nomad/api-docs/client) |
 | [get_pause_state][nomadpy.allocations.Allocations.get_pause_state] | GetPauseState | `GET /v1/client/allocation/a1/pause` | [allocations](https://developer.hashicorp.com/nomad/api-docs/allocations) Enterprise |
 | [info][nomadpy.allocations.Allocations.info] | Info | `GET /v1/allocation/a1` | [allocations](https://developer.hashicorp.com/nomad/api-docs/allocations) |

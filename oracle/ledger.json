@@ -1,7 +1,6 @@
 {
   "_": "Every deliberate gap between the pinned Go api surface and nomadpy, with its reason. tests/test_drift.py fails on any gap not listed here and on any entry that is no longer a gap.",
   "files": {
-    "allocations_exec.go": "pn-k6m",
     "ioutil.go": "internal io helpers",
     "locks.go": "client-side lease orchestration over the variables lock endpoints, which are ported; out of scope by decision on 2026-10-14",
     "raw.go": "Raw.Query/Write/Delete are the untyped request form; Client.request and raw_query cover it",
@@ -75,7 +74,6 @@
     "Client.Close": "urllib opens a connection per request; nothing to close",
     "Client.GetNodeClient": "the Python client always goes through the server; see the alloc_fs capture rule in wire.go",
     "Client.GetNodeClientWithTimeout": "the Python client always goes through the server; see the alloc_fs capture rule in wire.go",
-    "Jobs.ActionExec": "pn-k6m",
     "Jobs.EnforceRegister": {
       "folded": "register"
     },
@@ -103,7 +101,6 @@
     "Nodes.MonitorDrain": "channel-based drain monitor; streaming is deferred with pn-gq4",
     "DrainStrategy.Equal": "dataclass equality",
     "DrainStrategy.String": "__str__",
-    "Allocations.Exec": "pn-k6m",
     "Agent.MembersOpts": {
       "folded": "members"
     },
@@ -176,11 +173,6 @@
     },
     "allocations.go": {
       "GenericResponse": "only WriteMeta, which the client returns separately",
-      "ExecStreamingIOOperation": "pn-k6m",
-      "TerminalSize": "pn-k6m",
-      "ExecStreamingInput": "pn-k6m",
-      "ExecStreamingExitResult": "pn-k6m",
-      "ExecStreamingOutput": "pn-k6m",
       "AllocGetPauseResponse": "flattened to the schedule state string"
     },
     "agent.go": {

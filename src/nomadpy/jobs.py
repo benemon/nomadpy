@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import base64
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
-from urllib.parse import quote
+from typing import TYPE_CHECKING, Any, BinaryIO
+from urllib.parse import quote, urlencode
 
 from .deployments import Deployment, deployments
 from .evaluations import Evaluation
@@ -378,6 +379,16 @@ class Jobs:
     def info(self, job_id: str, q: QueryOptions | None = None) -> tuple[Job, QueryMeta]:
         resp, qm = self._client.query(_path(job_id), q)
         return Job.from_json(resp), qm
+
+    def action_exec(self, alloc_id: str, task_group: str, job_id: str, task: str, command: list[str], action: str, *, tty: bool = False,
+                    stdin: BinaryIO | None = None, stdout: BinaryIO | None = None, stderr: BinaryIO | None = None,
+                    resize: Iterable[_allocations.TerminalSize] | None = None, q: QueryOptions | None = None,
+                    timeout: float | None = None) -> int:
+        """action_exec runs a job action's command in the allocation's task and returns its exit code, as Allocations.exec does; needs the `exec` extra."""
+        from .allocations_exec import exec_params, run
+
+        params = exec_params(task, tty, command) + [("action", action), ("allocID", alloc_id), ("group", task_group)]
+        return run(self._client, _path(job_id) + "/action?" + urlencode(params), q, stdin, stdout, stderr, resize, timeout)
 
     def scale(self, job_id: str, group: str, count: int | None = None, message: str = "", error: bool = False,
               meta: dict[str, Any] | None = None, w: WriteOptions | None = None) -> tuple[JobRegisterResponse, WriteMeta]:

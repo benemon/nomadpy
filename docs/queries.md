@@ -87,3 +87,28 @@ The event stream, allocation logs and the filesystem stream are generators
 over [Client.stream_json][nomadpy.api.Client.stream_json]. Each yields the
 decoded JSON values as they arrive; closing the generator closes the
 connection. The `timeout` argument bounds each wait for more bytes.
+
+## Allocation exec
+
+[Allocations.exec][nomadpy.allocations.Allocations.exec] and
+[Jobs.action_exec][nomadpy.jobs.Jobs.action_exec] run a command in a task
+over the exec WebSocket and return its exit code. They need the `exec`
+extra, which installs the `websockets` package; without it the call raises
+`ImportError`. The connection goes through the server, with the same
+address, token, TLS and query options as every other call.
+
+```python
+import io
+
+out = io.BytesIO()
+code = client.allocations.exec(alloc_id, "web", ["sh", "-c", "cat /etc/hostname"], stdout=out, timeout=30)
+```
+
+`stdin`, `stdout` and `stderr` are binary file objects. The task reads
+`stdin` until EOF, and sees EOF at once when none is given. With `tty`,
+terminal sizes taken from `resize` are sent to the task, and EOF on `stdin`
+hangs the terminal up, so give a `stdin` that stays open until the command
+exits. A connection the
+server closes before the command exits raises `ConnectionError` with the
+server's reason, and a handshake it refuses raises
+`UnexpectedResponseError` with the status.

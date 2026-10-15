@@ -11,7 +11,7 @@ WAIT = timedelta(seconds=10)
 DEADLINE = 90
 
 
-def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False, scaling=False, command=None):
+def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False, scaling=False, command=None, actions=False):
     service = ""
     if scaling:
         service += """
@@ -35,6 +35,14 @@ def service_job(job_id, count=1, canary=0, sleep=600, nomad_service=False, scali
       port     = "http"
       tags     = ["nomadpy"]
     }}
+"""
+    action = ""
+    if actions:
+        action = """
+      action "say" {
+        command = "/bin/sh"
+        args    = ["-c", "echo acted"]
+      }
 """
     return f"""
 job "{job_id}" {{
@@ -63,6 +71,7 @@ job "{job_id}" {{
         cpu    = 10
         memory = 32
       }}
+{action}
     }}
   }}
 }}
