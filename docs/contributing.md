@@ -61,7 +61,13 @@ make docs     # regenerate the reference pages, then build the site with --stric
 ```
 
 After a bump, the failing drift tests are the list of what the port must
-catch up on. Go is needed to regenerate the fixtures; the fixtures, models
+catch up on.
+
+The `compat` workflow runs daily. It bumps the pin to upstream main and
+runs the drift tests, and runs the test suite against the newest Community
+and Enterprise releases, independent of the versions `ci` pins. A failure
+opens an issue labelled `compat`, or comments on the open one for the same
+versions. Go is needed to regenerate the fixtures; the fixtures, models
 and reference pages are committed, so the tests and the docs build need
 only Python.
 
