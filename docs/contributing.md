@@ -63,11 +63,15 @@ make docs     # regenerate the reference pages, then build the site with --stric
 After a bump, the failing drift tests are the list of what the port must
 catch up on.
 
-The `compat` workflow runs daily. It bumps the pin to upstream main and
-runs the drift tests, and runs the test suite against the newest Community
-and Enterprise releases, independent of the versions `ci` pins. A failure
+`.nomad-version` pins the newest Nomad release for `ci`; a green `main` is
+the compatibility claim for that release. The `compat` workflow runs daily
+against what moves: it bumps the oracle pin to upstream main and runs the
+drift tests, builds Nomad from upstream main for the Community lane, and
+takes the newest Enterprise release, which has no public source. A failure
 opens an issue labelled `compat`, or comments on the open one for the same
-versions. Go is needed to regenerate the fixtures; the fixtures, models
+versions. When a newer release appears it opens a PR moving
+`.nomad-version`, which needs the `COMPAT_PR_TOKEN` repository secret, a
+fine-grained token with contents and pull-requests write. Go is needed to regenerate the fixtures; the fixtures, models
 and reference pages are committed, so the tests and the docs build need
 only Python.
 
