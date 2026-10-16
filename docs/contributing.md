@@ -64,7 +64,7 @@ After a bump, the failing drift tests are the list of what the port must
 catch up on.
 
 `.nomad-version` pins the newest Nomad release for `ci`; a green `main` is
-the compatibility claim for that release. The `compat` workflow runs daily
+the compatibility claim for that release. The `compat` workflow runs weekly
 against what moves: it bumps the oracle pin to upstream main and runs the
 drift tests, builds Nomad from upstream main for the Community lane, and
 takes the newest Enterprise release, which has no public source. A failure
