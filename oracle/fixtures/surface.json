@@ -1,6 +1,6 @@
 {
   "module": "github.com/hashicorp/nomad/api",
-  "version": "v0.0.0-20261013065900-bf24b0dd9743",
+  "version": "v0.0.0-20261102183041-8384458dc8ac",
   "files": {
     "acl.go": {
       "methods": [
@@ -3759,6 +3759,321 @@
         }
       ],
       "types": {}
+    },
+    "batch_job_queue.go": {
+      "methods": [
+        {
+          "receiver": "BatchQueue",
+          "name": "Jobs",
+          "params": [
+            "*QueryOptions"
+          ],
+          "results": [
+            "*BatchJobQueueJobsResponse",
+            "*QueryMeta",
+            "error"
+          ]
+        },
+        {
+          "receiver": "BatchQueue",
+          "name": "Status",
+          "params": [
+            "*QueryOptions"
+          ],
+          "results": [
+            "*BatchJobQueueStatusResponse",
+            "*QueryMeta",
+            "error"
+          ]
+        },
+        {
+          "receiver": "Client",
+          "name": "BatchQueue",
+          "params": [],
+          "results": [
+            "*BatchQueue"
+          ]
+        }
+      ],
+      "structs": {
+        "AgeConfig": {
+          "fields": [
+            {
+              "name": "Weight",
+              "json": "Weight",
+              "type": "int"
+            },
+            {
+              "name": "Max",
+              "json": "Max",
+              "type": "time.Duration"
+            }
+          ]
+        },
+        "BatchJobQueueJobsResponse": {
+          "fields": [
+            {
+              "name": "Type",
+              "json": "Type",
+              "type": "BatchQueueType"
+            },
+            {
+              "name": "Workloads",
+              "json": "Workloads",
+              "type": "any"
+            }
+          ]
+        },
+        "BatchJobQueueStatusResponse": {
+          "fields": [
+            {
+              "name": "Type",
+              "json": "Type",
+              "type": "BatchQueueType"
+            },
+            {
+              "name": "Status",
+              "json": "Status",
+              "type": "any"
+            }
+          ]
+        },
+        "BatchQueue": {
+          "fields": []
+        },
+        "BatchQueueConfig": {
+          "fields": [
+            {
+              "name": "ConstraintTimeout",
+              "json": "ConstraintTimeout",
+              "type": "time.Duration"
+            },
+            {
+              "name": "DynamicPriority",
+              "json": "DynamicPriority",
+              "type": "*DynamicQueueConfig"
+            },
+            {
+              "name": "Fifo",
+              "json": "Fifo",
+              "type": "*FifoQueueConfig"
+            }
+          ]
+        },
+        "DynamicPriorityTenant": {
+          "fields": [
+            {
+              "name": "TenantID",
+              "json": "TenantID",
+              "type": "string"
+            },
+            {
+              "name": "PercentageUsed",
+              "json": "PercentageUsed",
+              "type": "int"
+            },
+            {
+              "name": "TenantFairshare",
+              "json": "TenantFairshare",
+              "type": "map[string]float64"
+            },
+            {
+              "name": "TotalFairshare",
+              "json": "TotalFairshare",
+              "type": "map[string]float64"
+            }
+          ]
+        },
+        "DynamicPriorityWorkload": {
+          "fields": [
+            {
+              "name": "JobID",
+              "json": "JobID",
+              "type": "string"
+            },
+            {
+              "name": "Tenant",
+              "json": "Tenant",
+              "type": "string"
+            },
+            {
+              "name": "Status",
+              "json": "Status",
+              "type": "string"
+            },
+            {
+              "name": "Position",
+              "json": "Position",
+              "type": "int"
+            },
+            {
+              "name": "AdjustedPriority",
+              "json": "AdjustedPriority",
+              "type": "int"
+            },
+            {
+              "name": "BasePriority",
+              "json": "BasePriority",
+              "type": "int"
+            },
+            {
+              "name": "FairshareAdjustment",
+              "json": "FairshareAdjustment",
+              "type": "int"
+            },
+            {
+              "name": "AgeAdjustment",
+              "json": "AgeAdjustment",
+              "type": "int"
+            },
+            {
+              "name": "CpuAdjustment",
+              "json": "CpuAdjustment",
+              "type": "int"
+            },
+            {
+              "name": "MemoryAdjustment",
+              "json": "MemoryAdjustment",
+              "type": "int"
+            },
+            {
+              "name": "CreatedAt",
+              "json": "CreatedAt",
+              "type": "int64"
+            }
+          ]
+        },
+        "DynamicQueueConfig": {
+          "fields": [
+            {
+              "name": "CalcInterval",
+              "json": "CalcInterval",
+              "type": "time.Duration"
+            },
+            {
+              "name": "TenantFairshare",
+              "json": "TenantFairshare",
+              "type": "TenantFairshareConfig"
+            },
+            {
+              "name": "Age",
+              "json": "Age",
+              "type": "AgeConfig"
+            },
+            {
+              "name": "JobSize",
+              "json": "JobSize",
+              "type": "JobSizeConfig"
+            }
+          ]
+        },
+        "FifoQueueConfig": {
+          "fields": []
+        },
+        "JobSizeConfig": {
+          "fields": [
+            {
+              "name": "CpuWeight",
+              "json": "CpuWeight",
+              "type": "int"
+            },
+            {
+              "name": "CpuMax",
+              "json": "CpuMax",
+              "type": "int"
+            },
+            {
+              "name": "MemoryWeight",
+              "json": "MemoryWeight",
+              "type": "int"
+            },
+            {
+              "name": "MemoryMax",
+              "json": "MemoryMax",
+              "type": "int"
+            }
+          ]
+        },
+        "TenantFairshareConfig": {
+          "fields": [
+            {
+              "name": "TenantType",
+              "json": "TenantType",
+              "type": "BatchQueueTenant"
+            },
+            {
+              "name": "MetadataKey",
+              "json": "MetadataKey",
+              "type": "string"
+            },
+            {
+              "name": "CpuWeight",
+              "json": "CpuWeight",
+              "type": "int"
+            },
+            {
+              "name": "MemoryWeight",
+              "json": "MemoryWeight",
+              "type": "int"
+            },
+            {
+              "name": "ExcludeAllocStatuses",
+              "json": "ExcludeAllocStatuses",
+              "type": "[]string"
+            }
+          ]
+        },
+        "Workload": {
+          "fields": [
+            {
+              "name": "JobID",
+              "json": "JobID",
+              "type": "string"
+            },
+            {
+              "name": "Position",
+              "json": "Position",
+              "type": "int"
+            },
+            {
+              "name": "Status",
+              "json": "Status",
+              "type": "string"
+            },
+            {
+              "name": "CreatedAt",
+              "json": "CreatedAt",
+              "type": "int64"
+            }
+          ]
+        }
+      },
+      "consts": [
+        {
+          "name": "BatchQueueTenantMetadata",
+          "value": "\"metadata\""
+        },
+        {
+          "name": "BatchQueueTenantNamespace",
+          "value": "\"namespace\""
+        },
+        {
+          "name": "BatchQueueTypeDynamic",
+          "value": "\"dynamic_priority\""
+        },
+        {
+          "name": "BatchQueueTypeFifo",
+          "value": "\"fifo\""
+        },
+        {
+          "name": "BatchQueueTypePassthrough",
+          "value": "\"passthrough\""
+        }
+      ],
+      "types": {
+        "BatchQueueTenant": "string",
+        "BatchQueueType": "string"
+      }
     },
     "constraint.go": {
       "methods": [],
@@ -11063,6 +11378,11 @@
               "name": "SchedulerConfiguration",
               "json": "SchedulerConfiguration",
               "type": "*NodePoolSchedulerConfiguration"
+            },
+            {
+              "name": "BatchQueueConfig",
+              "json": "BatchQueueConfig",
+              "type": "*BatchQueueConfig"
             },
             {
               "name": "CreateIndex",

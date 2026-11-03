@@ -50,7 +50,7 @@ the licence, and Sentinel requires ACLs to be enabled on the server.
 
 ### Observed Community responses
 
-Nomad Community 2.0.5 answers Enterprise calls as follows. The integration
+Nomad Community 2.1.1 answers Enterprise calls as follows. The integration
 tests assert these responses.
 
 | Request | Community response |
@@ -61,4 +61,4 @@ tests assert these responses.
 | Node pool with `SchedulerConfiguration` | 500, body `Feature "Node Pools Governance" is unlicensed` |
 | Allocation task pause endpoints | 500, body `Enterprise only` |
 | `POST /v1/operator/utilization` | 501, body `Nomad Enterprise only endpoint` |
-| `PUT /v1/operator/license` | 405 `Invalid method` on both editions in 2.0.5; licences are server configuration |
+| `PUT /v1/operator/license` | 501, body `Nomad Enterprise only endpoint`; licences are server configuration |

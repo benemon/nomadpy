@@ -2,7 +2,7 @@ module nomadpy-oracle
 
 go 1.27
 
-require github.com/hashicorp/nomad/api v0.0.0-20261013065900-bf24b0dd9743
+require github.com/hashicorp/nomad/api v0.0.0-20261102183041-8384458dc8ac
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

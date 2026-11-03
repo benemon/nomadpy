@@ -312,12 +312,31 @@ var ops = []op{
 	}},
 	{"allocations.services", `[]`, func(c *api.Client) error { _, _, err := c.Allocations().Services("a1", nil); return err }},
 
+	{"batch_queue.jobs", `{"Type":"fifo","Workloads":[]}`, func(c *api.Client) error { _, _, err := c.BatchQueue().Jobs(queryOpts()); return err }},
+	{"batch_queue.status", `{"Type":"fifo","Status":{"Ready":1}}`, func(c *api.Client) error { _, _, err := c.BatchQueue().Status(queryOpts()); return err }},
+
 	{"node_pools.list", `[]`, func(c *api.Client) error { _, _, err := c.NodePools().List(nil); return err }},
 	{"node_pools.prefix_list", `[]`, func(c *api.Client) error { _, _, err := c.NodePools().PrefixList("pre", queryOpts()); return err }},
 	{"node_pools.info", `{}`, func(c *api.Client) error { _, _, err := c.NodePools().Info("p 1", nil); return err }},
 	{"node_pools.register", `{}`, func(c *api.Client) error {
 		_, err := c.NodePools().Register(&api.NodePool{Name: "p1", Description: "d", Meta: map[string]string{"k": "v"}, NodeIdentityTTL: time.Hour,
 			SchedulerConfiguration: &api.NodePoolSchedulerConfiguration{SchedulerAlgorithm: api.SchedulerAlgorithmSpread, MemoryOversubscriptionEnabled: new(true)}}, writeOpts())
+		return err
+	}},
+	{"node_pools.register_fifo_queue", `{}`, func(c *api.Client) error {
+		_, err := c.NodePools().Register(&api.NodePool{Name: "p-fifo", BatchQueueConfig: &api.BatchQueueConfig{
+			ConstraintTimeout: 15 * time.Second, Fifo: &api.FifoQueueConfig{}}}, nil)
+		return err
+	}},
+	{"node_pools.register_dynamic_queue", `{}`, func(c *api.Client) error {
+		_, err := c.NodePools().Register(&api.NodePool{Name: "p-dynamic", BatchQueueConfig: &api.BatchQueueConfig{
+			ConstraintTimeout: 15 * time.Second,
+			DynamicPriority: &api.DynamicQueueConfig{
+				CalcInterval: 20 * time.Second,
+				TenantFairshare: api.TenantFairshareConfig{TenantType: api.BatchQueueTenantNamespace, CpuWeight: 1, MemoryWeight: 2},
+				Age: api.AgeConfig{Weight: 3, Max: 4 * time.Hour},
+				JobSize: api.JobSizeConfig{CpuWeight: 5, CpuMax: 6000, MemoryWeight: 7, MemoryMax: 8000},
+			}}}, nil)
 		return err
 	}},
 	{"node_pools.register_minimal", `{}`, func(c *api.Client) error {

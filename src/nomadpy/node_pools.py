@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 from urllib.parse import quote
 
+from .batch_job_queue import BatchQueueConfig
 from .jobs import JobListStub
 from .api import QueryOptions
 from .models import Model
@@ -32,6 +33,7 @@ class NodePool(Model):
     meta: dict[str, str] | None = None
     node_identity_ttl: int = field(default=0, metadata={"json": "NodeIdentityTTL", "duration": "string"})
     scheduler_configuration: NodePoolSchedulerConfiguration | None = None
+    batch_queue_config: BatchQueueConfig | None = None
     create_index: int = 0
     modify_index: int = 0
 

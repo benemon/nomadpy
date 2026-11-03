@@ -213,6 +213,7 @@ class Client:
         self.agent = Agent(self)
         self.alloc_fs = AllocFS(self)
         self.allocations = Allocations(self)
+        self.batch_queue = BatchQueue(self)
         self.csi_plugins = CSIPlugins(self)
         self.csi_volumes = CSIVolumes(self)
         self.deployments = Deployments(self)
@@ -446,6 +447,7 @@ def _decode(raw: bytes) -> Any:
 from .agent import Agent  # noqa: E402
 from .acl import ACLAuth, ACLAuthMethods, ACLBindingRules, ACLIdentity, ACLPolicies, ACLRoles, ACLTokens  # noqa: E402
 from .allocations import Allocations  # noqa: E402
+from .batch_job_queue import BatchQueue  # noqa: E402
 from .csi import CSIPlugins, CSIVolumes  # noqa: E402
 from .deployments import Deployments  # noqa: E402
 from .host_volume_claims import TaskGroupHostVolumeClaims  # noqa: E402

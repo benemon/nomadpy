@@ -27,6 +27,7 @@ FILE_PAGES = {
     "acl.go": "acl",
     "agent.go": "agent",
     "allocations.go": "allocations",
+    "batch_job_queue.go": "batch-job-queue",
     "csi.go": "volumes",
     "deployments.go": "deployments",
     "evaluations.go": "evaluations",
