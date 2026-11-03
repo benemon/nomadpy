@@ -12,6 +12,7 @@ One table per service class: the Python method, the Go methods of the pinned `ap
 - [Agent](agent.md)
 - [AllocFS](alloc_fs.md)
 - [Allocations](allocations.md)
+- [BatchQueue](batch_queue.md)
 - [CSIPlugins](csi_plugins.md)
 - [CSIVolumes](csi_volumes.md)
 - [Deployments](deployments.md)

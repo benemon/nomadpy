@@ -1,6 +1,6 @@
 {
   "module": "github.com/hashicorp/nomad/api",
-  "version": "v0.0.0-20261013065900-bf24b0dd9743",
+  "version": "v0.0.0-20261102183041-8384458dc8ac",
   "requests": [
     {
       "op": "status.leader",
@@ -2152,6 +2152,98 @@
       "response": "[]"
     },
     {
+      "op": "batch_queue.jobs",
+      "method": "GET",
+      "path": "/v1/queue/jobs",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{\"Type\":\"fifo\",\"Workloads\":[]}"
+    },
+    {
+      "op": "batch_queue.status",
+      "method": "GET",
+      "path": "/v1/queue/status",
+      "query": {
+        "filter": [
+          "f == 1"
+        ],
+        "index": [
+          "12"
+        ],
+        "namespace": [
+          "ns1"
+        ],
+        "next_token": [
+          "nt"
+        ],
+        "per_page": [
+          "5"
+        ],
+        "prefix": [
+          "p"
+        ],
+        "region": [
+          "r1"
+        ],
+        "reverse": [
+          "true"
+        ],
+        "stale": [
+          ""
+        ],
+        "wait": [
+          "1500ms"
+        ],
+        "x": [
+          "y"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok1"
+      },
+      "body": null,
+      "response": "{\"Type\":\"fifo\",\"Status\":{\"Ready\":1}}"
+    },
+    {
       "op": "node_pools.list",
       "method": "GET",
       "path": "/v1/node/pools",
@@ -2255,6 +2347,7 @@
         "X-Nomad-Token": "tok1"
       },
       "body": {
+        "BatchQueueConfig": null,
         "CreateIndex": 0,
         "Description": "d",
         "Meta": {
@@ -2267,6 +2360,89 @@
           "MemoryOversubscriptionEnabled": true,
           "SchedulerAlgorithm": "spread"
         }
+      },
+      "response": "{}"
+    },
+    {
+      "op": "node_pools.register_fifo_queue",
+      "method": "PUT",
+      "path": "/v1/node/pools",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "BatchQueueConfig": {
+          "ConstraintTimeout": 15000000000,
+          "DynamicPriority": null,
+          "Fifo": {}
+        },
+        "CreateIndex": 0,
+        "Description": "",
+        "Meta": null,
+        "ModifyIndex": 0,
+        "Name": "p-fifo",
+        "NodeIdentityTTL": "",
+        "SchedulerConfiguration": null
+      },
+      "response": "{}"
+    },
+    {
+      "op": "node_pools.register_dynamic_queue",
+      "method": "PUT",
+      "path": "/v1/node/pools",
+      "query": {
+        "namespace": [
+          "ns0"
+        ],
+        "region": [
+          "r0"
+        ]
+      },
+      "headers": {
+        "X-Custom": "1",
+        "X-Nomad-Token": "tok0"
+      },
+      "body": {
+        "BatchQueueConfig": {
+          "ConstraintTimeout": 15000000000,
+          "DynamicPriority": {
+            "Age": {
+              "Max": 14400000000000,
+              "Weight": 3
+            },
+            "CalcInterval": 20000000000,
+            "JobSize": {
+              "CpuMax": 6000,
+              "CpuWeight": 5,
+              "MemoryMax": 8000,
+              "MemoryWeight": 7
+            },
+            "TenantFairshare": {
+              "CpuWeight": 1,
+              "ExcludeAllocStatuses": null,
+              "MemoryWeight": 2,
+              "MetadataKey": "",
+              "TenantType": "namespace"
+            }
+          },
+          "Fifo": null
+        },
+        "CreateIndex": 0,
+        "Description": "",
+        "Meta": null,
+        "ModifyIndex": 0,
+        "Name": "p-dynamic",
+        "NodeIdentityTTL": "",
+        "SchedulerConfiguration": null
       },
       "response": "{}"
     },
@@ -2287,6 +2463,7 @@
         "X-Nomad-Token": "tok0"
       },
       "body": {
+        "BatchQueueConfig": null,
         "CreateIndex": 0,
         "Description": "",
         "Meta": null,

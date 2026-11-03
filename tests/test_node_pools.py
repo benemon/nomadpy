@@ -1,10 +1,21 @@
 import pytest
 from jobspecs import register_and_wait
 
-from nomadpy import NodePool, NodePoolSchedulerConfiguration, UnexpectedResponseError
+from nomadpy import (
+    AgeConfig,
+    BatchQueueConfig,
+    DynamicQueueConfig,
+    FifoQueueConfig,
+    JobSizeConfig,
+    NodePool,
+    NodePoolSchedulerConfiguration,
+    TenantFairshareConfig,
+    UnexpectedResponseError,
+)
 from nomadpy.node_pools import NODE_POOL_ALL, NODE_POOL_DEFAULT
 
 HOUR = 3_600_000_000_000
+SECOND = 1_000_000_000
 
 
 def test_builtin_pools(client):
@@ -66,3 +77,47 @@ def test_scheduler_configuration_on_enterprise(ent_client):
         assert got.scheduler_configuration.memory_oversubscription_enabled is True
     finally:
         ent_client.node_pools.delete("nomadpy-pool-sched")
+
+
+def test_fifo_batch_queue_config(client):
+    name = "nomadpy-pool-fifo"
+    client.node_pools.register(NodePool(name=name, batch_queue_config=BatchQueueConfig(fifo=FifoQueueConfig())))
+    try:
+        got, _ = client.node_pools.info(name)
+        assert got.batch_queue_config.fifo == FifoQueueConfig()
+    finally:
+        client.node_pools.delete(name)
+
+
+def test_dynamic_batch_queue_config_survives_reregister(client):
+    name = "nomadpy-pool-dynamic"
+    config = BatchQueueConfig(
+        constraint_timeout=15 * SECOND,
+        dynamic_priority=DynamicQueueConfig(
+            calc_interval=20 * SECOND,
+            tenant_fairshare=TenantFairshareConfig(tenant_type="namespace", cpu_weight=1, memory_weight=2),
+            age=AgeConfig(weight=3, max=4 * HOUR),
+            job_size=JobSizeConfig(cpu_weight=5, cpu_max=6000, memory_weight=7, memory_max=8000),
+        ),
+    )
+    client.node_pools.register(NodePool(name=name, batch_queue_config=config))
+    try:
+        got, _ = client.node_pools.info(name)
+        before = got.batch_queue_config
+        assert before == config
+        got.description = "updated without changing the queue"
+        client.node_pools.register(got)
+        updated, _ = client.node_pools.info(name)
+        assert updated.batch_queue_config == before
+    finally:
+        client.node_pools.delete(name)
+
+
+def test_node_pool_without_batch_queue_config(client):
+    name = "nomadpy-pool-no-queue"
+    client.node_pools.register(NodePool(name=name))
+    try:
+        got, _ = client.node_pools.info(name)
+        assert got.batch_queue_config is None
+    finally:
+        client.node_pools.delete(name)
